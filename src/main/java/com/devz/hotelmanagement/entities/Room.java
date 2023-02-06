@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "rooms")
-public class Room extends EntityBase{
+public class Room extends EntityBase {
 
     @Column()
     private Integer number;
@@ -34,5 +34,9 @@ public class Room extends EntityBase{
     @ManyToOne
     @JoinColumn(name = "room_type_id")
     private RoomType roomType;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "room")
+    private List<RoomImage> roomImages;
 
 }
