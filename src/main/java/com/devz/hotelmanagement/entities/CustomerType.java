@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "customer_type")
+@Table(name = "customer_types")
 public class CustomerType extends TypeBase {
 
     @JsonIgnore

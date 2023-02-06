@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "booking")
+@Table(name = "bookings")
 public class Booking extends EntityBase {
 
     @ManyToOne

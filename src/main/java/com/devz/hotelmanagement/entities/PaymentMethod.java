@@ -15,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "payment_method")
-public class PaymentMethod extends TypeBase{
+@Table(name = "payment_methods")
+public class PaymentMethod extends TypeBase {
 
     @Column()
     private Integer status;
@@ -24,9 +24,5 @@ public class PaymentMethod extends TypeBase{
     @JsonIgnore
     @OneToMany(mappedBy = "payment")
     private List<Invoice> invoices;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "payment")
-    private List<SupplyInvoice> supplyInvoices;
 
 }

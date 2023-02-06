@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "schedules")
-public class Schedule extends EntityBase{
+public class Schedule extends EntityBase {
 
     @Column()
     private String note;

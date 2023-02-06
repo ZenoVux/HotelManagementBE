@@ -22,9 +22,6 @@ public class Supply extends EntityBase {
     private Integer quantity;
 
     @Column()
-    private Double price;
-
-    @Column()
     private String image;
 
     @Column()
@@ -36,10 +33,6 @@ public class Supply extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "supply_type_id")
     private SupplyType supplyType;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "supply")
-    private List<SupplyInvoiceDetail> supplyInvoiceDetails;
 
     @JsonIgnore
     @OneToMany(mappedBy = "supply")

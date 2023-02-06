@@ -17,8 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "schedules")
-public class Shift extends EntityBase{
+@Table(name = "shifts")
+public class Shift extends EntityBase {
 
     @Column()
     private Date start;

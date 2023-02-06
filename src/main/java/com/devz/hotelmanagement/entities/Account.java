@@ -42,18 +42,10 @@ public class Account extends EntityBase {
 
     @JsonIgnore
     @OneToMany(mappedBy = "account")
-    private List<Post> posts;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "account")
     private List<Invoice> invoices;
 
     @JsonIgnore
     @OneToMany(mappedBy = "account")
     private List<Shift> shifts;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "account")
-    private List<SupplyInvoice> supplyInvoices;
 
 }

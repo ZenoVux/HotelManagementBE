@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "booking_detail")
+@Table(name = "hosted_ats")
 public class HostedAt extends EntityBase {
 
     @ManyToOne

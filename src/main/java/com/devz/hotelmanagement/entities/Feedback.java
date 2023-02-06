@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "feedback")
+@Table(name = "feedbacks")
 public class Feedback extends EntityBase {
 
     @Column()

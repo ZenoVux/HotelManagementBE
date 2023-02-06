@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "invoie_type")
+@Table(name = "invoice_types")
 public class InvoiceType extends TypeBase {
 
     @JsonIgnore

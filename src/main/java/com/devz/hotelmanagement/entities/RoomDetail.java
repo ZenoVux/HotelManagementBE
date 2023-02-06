@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "room_details")
-public class RoomDetail extends EntityBase{
+public class RoomDetail extends EntityBase {
 
     @ManyToOne
-    @JoinColumn(name = "room__id")
+    @JoinColumn(name = "room_id")
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "supply__id")
+    @JoinColumn(name = "supply_id")
     private Supply supply;
 
 }

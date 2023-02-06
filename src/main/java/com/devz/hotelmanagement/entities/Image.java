@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "supplies")
+@Table(name = "images")
 public class Image extends EntityBase {
 
     @Column

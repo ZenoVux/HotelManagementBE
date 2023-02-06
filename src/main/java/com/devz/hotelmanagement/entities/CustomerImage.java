@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "customer_image")
+@Table(name = "customer_images")
 public class CustomerImage extends EntityBase {
 
     @ManyToOne
