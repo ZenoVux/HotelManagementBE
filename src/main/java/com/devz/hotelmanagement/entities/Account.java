@@ -15,6 +15,10 @@ import java.util.List;
 @Table(name = "accounts")
 public class Account extends EntityBase {
 
+    @ManyToOne
+    @JoinColumn(name = "customer_type")
+    private CustomerType customerType;
+
     @Column(name = "full_name")
     private String fullName;
 
@@ -46,6 +50,6 @@ public class Account extends EntityBase {
 
     @JsonIgnore
     @OneToMany(mappedBy = "account")
-    private List<Shift> shifts;
+    private List<Schedule> schedules;
 
 }

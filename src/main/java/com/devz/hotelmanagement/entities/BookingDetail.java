@@ -30,7 +30,7 @@ public class BookingDetail extends EntityBase {
     @Column(name = "num_adults")
     private Integer numAdults;
 
-    @Column(name = "num_adults")
+    @Column(name = "num_children")
     private Integer numChildren;
 
     @Column

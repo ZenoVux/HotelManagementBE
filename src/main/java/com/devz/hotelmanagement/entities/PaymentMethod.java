@@ -22,7 +22,7 @@ public class PaymentMethod extends TypeBase {
     private Integer status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "payment")
+    @OneToMany(mappedBy = "paymentMethod")
     private List<Invoice> invoices;
 
 }

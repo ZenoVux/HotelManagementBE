@@ -1,9 +1,6 @@
 package com.devz.hotelmanagement.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,15 +11,15 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "used_service")
+@Table(name = "used_services")
 public class UsedService extends EntityBase {
 
     @ManyToOne
-    @Column(name = "service_id")
+    @JoinColumn(name = "service_id")
     private Service service;
 
     @ManyToOne
-    @Column(name = "booking_detail")
+    @JoinColumn(name = "booking_detail")
     private BookingDetail bookingDetail;
 
     @Column(name = "stated_time")
