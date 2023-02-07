@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.UserRoleService;
 
 @Service
-public class UserRoleServiceImpl implements UserRoleService{
+public class UserRoleServiceImpl implements UserRoleService {
 
 }

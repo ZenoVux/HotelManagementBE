@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.InvoiceService;
 
 @Service
-public class InvoiceServiceImpl implements InvoiceService{
+public class InvoiceServiceImpl implements InvoiceService {
 
 }

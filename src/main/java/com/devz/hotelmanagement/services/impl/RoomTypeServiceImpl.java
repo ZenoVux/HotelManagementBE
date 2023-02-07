@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.RoomTypeService;
 
 @Service
-public class RoomTypeServiceImpl implements RoomTypeService{
+public class RoomTypeServiceImpl implements RoomTypeService {
 
 }

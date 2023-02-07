@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.CustomerImageService;
 
 @Service
-public class CustomerImageServiceImpl implements CustomerImageService{
+public class CustomerImageServiceImpl implements CustomerImageService {
 
 }

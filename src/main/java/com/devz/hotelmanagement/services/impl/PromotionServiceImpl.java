@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.PromotionService;
 
 @Service
-public class PromotionServiceImpl implements PromotionService{
+public class PromotionServiceImpl implements PromotionService {
 
 }

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.devz.hotelmanagement.entities.Booking;
 
 @Repository
-public interface BookingRepository extends JpaRepository<Integer, Booking>{
+public interface BookingRepository extends JpaRepository<Booking, Integer>{
 
 }

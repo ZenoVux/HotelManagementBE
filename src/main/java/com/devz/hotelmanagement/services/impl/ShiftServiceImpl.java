@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.ShiftService;
 
 @Service
-public class ShiftServiceImpl implements ShiftService{
+public class ShiftServiceImpl implements ShiftService {
 
 }

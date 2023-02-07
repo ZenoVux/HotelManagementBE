@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.SupplyTypeService;
 
 @Service
-public class SupplyTypeServiceImpl implements SupplyTypeService{
+public class SupplyTypeServiceImpl implements SupplyTypeService {
 
 }

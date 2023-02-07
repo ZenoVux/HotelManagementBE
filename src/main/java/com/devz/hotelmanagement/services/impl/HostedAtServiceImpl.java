@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import com.devz.hotelmanagement.services.HostedAtService;
 
 @Service
-public class HostedAtServiceImpl implements HostedAtService{
+public class HostedAtServiceImpl implements HostedAtService {
 
 }
