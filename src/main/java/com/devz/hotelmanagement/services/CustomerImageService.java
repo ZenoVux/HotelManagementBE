@@ -11,5 +11,5 @@ public interface CustomerImageService {
 
 	CustomerImage create(CustomerImage customerImage);
 
-	CustomerImage upadte(CustomerImage customerImage);
+	CustomerImage update(CustomerImage customerImage);
 }

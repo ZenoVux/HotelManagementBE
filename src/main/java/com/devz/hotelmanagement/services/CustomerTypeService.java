@@ -11,5 +11,5 @@ public interface CustomerTypeService {
 
 	CustomerType create(CustomerType customerType);
 
-	CustomerType upadte(CustomerType customerType);
+	CustomerType update(CustomerType customerType);
 }

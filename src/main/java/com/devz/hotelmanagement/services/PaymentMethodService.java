@@ -11,5 +11,5 @@ public interface PaymentMethodService {
 
 	PaymentMethod create(PaymentMethod paymentMethod);
 
-	PaymentMethod upadte(PaymentMethod paymentMethod);
+	PaymentMethod update(PaymentMethod paymentMethod);
 }

@@ -11,5 +11,5 @@ public interface ScheduleService {
 
 	Schedule create(Schedule schedule);
 
-	Schedule upadte(Schedule schedule);
+	Schedule update(Schedule schedule);
 }

@@ -12,5 +12,5 @@ public interface ShiftService {
 
 	Shift create(Shift shift);
 
-	Shift upadte(Shift shift);
+	Shift update(Shift shift);
 }

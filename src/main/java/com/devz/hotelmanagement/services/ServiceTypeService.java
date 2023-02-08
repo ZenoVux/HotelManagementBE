@@ -11,5 +11,5 @@ public interface ServiceTypeService {
 
 	ServiceType create(ServiceType serviceType);
 
-	ServiceType upadte(ServiceType serviceType);
+	ServiceType update(ServiceType serviceType);
 }

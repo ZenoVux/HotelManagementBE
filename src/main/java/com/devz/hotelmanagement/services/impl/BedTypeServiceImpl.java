@@ -37,7 +37,7 @@ public class BedTypeServiceImpl implements BedTypeService {
     }
 
     @Override
-    public BedType upadte(BedType bedType) {
+    public BedType update(BedType bedType) {
         return bedTypeRepo.save(bedType);
     }
 }

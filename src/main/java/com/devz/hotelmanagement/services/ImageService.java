@@ -11,5 +11,5 @@ public interface ImageService {
 
 	Image create(Image image);
 
-	Image upadte(Image image);
+	Image update(Image image);
 }

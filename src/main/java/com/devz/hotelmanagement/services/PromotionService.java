@@ -11,5 +11,5 @@ public interface PromotionService {
 
 	Promotion create(Promotion promotion);
 
-	Promotion upadte(Promotion promotion);
+	Promotion update(Promotion promotion);
 }

@@ -11,5 +11,5 @@ public interface InvoiceTypeService {
 
 	InvoiceType create(InvoiceType invoiceType);
 
-	InvoiceType upadte(InvoiceType invoiceType);
+	InvoiceType update(InvoiceType invoiceType);
 }

@@ -38,7 +38,7 @@ public class CustomerTypeServiceImpl implements CustomerTypeService {
 	}
 
 	@Override
-	public CustomerType upadte(CustomerType customerType) {
+	public CustomerType update(CustomerType customerType) {
 		return customerTypeRepo.save(customerType);
 	}
 

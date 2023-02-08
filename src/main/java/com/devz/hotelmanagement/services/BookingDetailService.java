@@ -12,5 +12,5 @@ public interface BookingDetailService {
 
 	BookingDetail create(BookingDetail bookingDetail);
 
-	BookingDetail upadte(BookingDetail bookingDetail);
+	BookingDetail update(BookingDetail bookingDetail);
 }

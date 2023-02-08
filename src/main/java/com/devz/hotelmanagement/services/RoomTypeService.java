@@ -11,5 +11,5 @@ public interface RoomTypeService {
 
 	RoomType create(RoomType roomType);
 
-	RoomType upadte(RoomType roomType);
+	RoomType update(RoomType roomType);
 }

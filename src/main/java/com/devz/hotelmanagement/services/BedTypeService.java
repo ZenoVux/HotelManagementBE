@@ -13,5 +13,5 @@ public interface BedTypeService {
 
     BedType create(BedType bedType);
 
-    BedType upadte(BedType bedType);
+    BedType update(BedType bedType);
 }

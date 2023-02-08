@@ -11,5 +11,5 @@ public interface RoomService {
 
 	Room create(Room room);
 
-    Room upadte(Room room);
+    Room update(Room room);
 }

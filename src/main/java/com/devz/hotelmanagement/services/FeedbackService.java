@@ -11,5 +11,5 @@ public interface FeedbackService {
 
 	Feedback create(Feedback feedback);
 
-	Feedback upadte(Feedback feedback);
+	Feedback update(Feedback feedback);
 }

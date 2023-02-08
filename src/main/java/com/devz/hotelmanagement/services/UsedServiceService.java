@@ -11,5 +11,5 @@ public interface UsedServiceService {
 
 	UsedService create(UsedService usedService);
 
-	UsedService upadte(UsedService usedService);
+	UsedService update(UsedService usedService);
 }

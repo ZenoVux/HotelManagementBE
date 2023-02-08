@@ -11,5 +11,5 @@ public interface HostedAtService {
 
 	HostedAt create(HostedAt hostedAt);
 
-	HostedAt upadte(HostedAt hostedAt);
+	HostedAt update(HostedAt hostedAt);
 }

@@ -11,5 +11,5 @@ public interface SupplyTypeService {
 
 	SupplyType create(SupplyType supplyType);
 
-	SupplyType upadte(SupplyType supplyType);
+	SupplyType update(SupplyType supplyType);
 }

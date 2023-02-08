@@ -11,5 +11,5 @@ public interface InvoiceService {
 
 	Invoice create(Invoice invoice);
 
-	Invoice upadte(Invoice invoice);
+	Invoice update(Invoice invoice);
 }

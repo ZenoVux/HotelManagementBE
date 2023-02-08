@@ -11,5 +11,5 @@ public interface ServiceService {
 
 	Service create(Service service);
 
-	Service upadte(Service service);
+	Service update(Service service);
 }

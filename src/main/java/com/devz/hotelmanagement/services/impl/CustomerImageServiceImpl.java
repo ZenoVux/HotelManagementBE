@@ -38,7 +38,7 @@ public class CustomerImageServiceImpl implements CustomerImageService {
 	}
 
 	@Override
-	public CustomerImage upadte(CustomerImage customerImage) {
+	public CustomerImage update(CustomerImage customerImage) {
 		return customerImageRepo.save(customerImage);
 	}
 

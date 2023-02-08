@@ -12,5 +12,5 @@ public interface AccountService {
 
     Account create(Account account);
 
-    Account upadte(Account account);
+    Account update(Account account);
 }

@@ -37,7 +37,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
 	}
 
 	@Override
-	public BookingDetail upadte(BookingDetail bookingDetail) {
+	public BookingDetail update(BookingDetail bookingDetail) {
 		return bookingDetailRepo.save(bookingDetail);
 	}
 

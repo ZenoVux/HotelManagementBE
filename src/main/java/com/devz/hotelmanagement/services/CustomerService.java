@@ -11,5 +11,5 @@ public interface CustomerService {
 
 	Customer create(Customer customer);
 
-	Customer upadte(Customer customer);
+	Customer update(Customer customer);
 }

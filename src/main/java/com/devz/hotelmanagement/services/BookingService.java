@@ -11,5 +11,5 @@ public interface BookingService {
 
 	Booking create(Booking booking);
 
-	Booking upadte(Booking booking);
+	Booking update(Booking booking);
 }

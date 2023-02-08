@@ -11,5 +11,5 @@ public interface RoomImageService {
 
 	RoomImage create(RoomImage roomImage);
 
-	RoomImage upadte(RoomImage roomImage);
+	RoomImage update(RoomImage roomImage);
 }

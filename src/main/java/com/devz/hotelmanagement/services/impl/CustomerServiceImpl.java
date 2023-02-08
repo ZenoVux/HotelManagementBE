@@ -38,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer upadte(Customer customer) {
+	public Customer update(Customer customer) {
 		 return customerRepo.save(customer);
 	}
 

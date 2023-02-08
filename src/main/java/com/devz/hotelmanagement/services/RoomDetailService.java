@@ -11,5 +11,5 @@ public interface RoomDetailService {
 
 	RoomDetail create(RoomDetail roomDetail);
 
-	RoomDetail upadte(RoomDetail roomDetail);
+	RoomDetail update(RoomDetail roomDetail);
 }
