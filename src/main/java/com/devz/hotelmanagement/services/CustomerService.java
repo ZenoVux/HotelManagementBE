@@ -1,5 +1,15 @@
 package com.devz.hotelmanagement.services;
 
-public interface CustomerService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.Customer;
+
+public interface CustomerService {
+	List<Customer> findAll();
+
+	Customer findById(int id);
+
+	Customer create(Customer customer);
+
+	Customer upadte(Customer customer);
 }

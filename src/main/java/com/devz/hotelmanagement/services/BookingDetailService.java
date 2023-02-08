@@ -1,5 +1,16 @@
 package com.devz.hotelmanagement.services;
 
-public interface BookingDetailService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.BookingDetail;
+
+
+public interface BookingDetailService {
+	List<BookingDetail> findAll();
+
+	BookingDetail findById(int id);
+
+	BookingDetail create(BookingDetail bookingDetail);
+
+	BookingDetail upadte(BookingDetail bookingDetail);
 }

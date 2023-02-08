@@ -1,5 +1,15 @@
 package com.devz.hotelmanagement.services;
 
-public interface RoomService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.Room;
+
+public interface RoomService {
+	List<Room> findAll();
+
+	Room findById(int id);
+
+	Room create(Room room);
+
+    Room upadte(Room room);
 }

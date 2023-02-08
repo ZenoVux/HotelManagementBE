@@ -1,5 +1,15 @@
 package com.devz.hotelmanagement.services;
 
-public interface UserRoleService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.UserRole;
+
+public interface UserRoleService {
+	List<UserRole> findAll();
+
+	UserRole findById(int id);
+
+	UserRole create(UserRole userRole);
+
+	UserRole upadte(UserRole userRole);
 }

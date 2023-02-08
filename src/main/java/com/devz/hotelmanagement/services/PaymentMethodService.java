@@ -1,5 +1,15 @@
 package com.devz.hotelmanagement.services;
 
-public interface PaymentMethodService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.PaymentMethod;
+
+public interface PaymentMethodService {
+	List<PaymentMethod> findAll();
+
+	PaymentMethod findById(int id);
+
+	PaymentMethod create(PaymentMethod paymentMethod);
+
+	PaymentMethod upadte(PaymentMethod paymentMethod);
 }

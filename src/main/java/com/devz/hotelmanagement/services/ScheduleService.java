@@ -1,5 +1,15 @@
 package com.devz.hotelmanagement.services;
 
-public interface ScheduleService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.Schedule;
+
+public interface ScheduleService {
+	List<Schedule> findAll();
+
+	Schedule findById(int id);
+
+	Schedule create(Schedule schedule);
+
+	Schedule upadte(Schedule schedule);
 }

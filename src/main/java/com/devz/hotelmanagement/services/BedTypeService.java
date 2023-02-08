@@ -1,6 +1,6 @@
 package com.devz.hotelmanagement.services;
 
-import com.devz.hotelmanagement.entities.Account;
+
 import com.devz.hotelmanagement.entities.BedType;
 
 import java.util.List;

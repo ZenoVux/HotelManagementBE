@@ -1,5 +1,15 @@
 package com.devz.hotelmanagement.services;
 
-public interface SupplyService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.Supply;
+
+public interface SupplyService {
+	List<Supply> findAll();
+
+	Supply findById(int id);
+
+	Supply create(Supply supply);
+
+	Supply upadte(Supply supply);
 }

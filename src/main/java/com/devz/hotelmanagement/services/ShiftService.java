@@ -1,5 +1,16 @@
 package com.devz.hotelmanagement.services;
 
-public interface ShiftService {
+import java.util.List;
 
+import com.devz.hotelmanagement.entities.Shift;
+
+
+public interface ShiftService {
+	List<Shift> findAll();
+
+	Shift findById(int id);
+
+	Shift create(Shift shift);
+
+	Shift upadte(Shift shift);
 }
