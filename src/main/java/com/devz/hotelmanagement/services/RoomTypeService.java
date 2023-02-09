@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.RoomType;
 
 public interface RoomTypeService {
-	List<RoomType> findAll();
+    List<RoomType> findAll();
 
-	RoomType findById(int id);
+    RoomType findById(int id);
 
-	RoomType create(RoomType roomType);
+    RoomType create(RoomType roomType);
 
-	RoomType update(RoomType roomType);
+    RoomType update(RoomType roomType);
 }

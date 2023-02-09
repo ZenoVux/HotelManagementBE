@@ -13,32 +13,32 @@ import com.devz.hotelmanagement.services.HostedAtService;
 @Service
 public class HostedAtServiceImpl implements HostedAtService {
 
-	@Autowired
-	HostedAtRepository hostedAtRepo;
-	
-	@Override
-	public List<HostedAt> findAll() {
-		return hostedAtRepo.findAll();
-	}
+    @Autowired
+    HostedAtRepository hostedAtRepo;
 
-	@Override
-	public HostedAt findById(int id) {
-		Optional<HostedAt> optional = hostedAtRepo.findById(id);
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-		return null;
-	}
+    @Override
+    public List<HostedAt> findAll() {
+        return hostedAtRepo.findAll();
+    }
 
-	@Override
-	public HostedAt create(HostedAt hostedAt) {
-		hostedAt.setId(null);
-		return hostedAtRepo.save(hostedAt);
-	}
+    @Override
+    public HostedAt findById(int id) {
+        Optional<HostedAt> optional = hostedAtRepo.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
 
-	@Override
-	public HostedAt update(HostedAt hostedAt) {
-		return hostedAtRepo.save(hostedAt);
-	}
+    @Override
+    public HostedAt create(HostedAt hostedAt) {
+        hostedAt.setId(null);
+        return hostedAtRepo.save(hostedAt);
+    }
+
+    @Override
+    public HostedAt update(HostedAt hostedAt) {
+        return hostedAtRepo.save(hostedAt);
+    }
 
 }

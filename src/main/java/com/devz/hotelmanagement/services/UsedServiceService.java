@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.UsedService;
 
 public interface UsedServiceService {
-	List<UsedService> findAll();
+    List<UsedService> findAll();
 
-	UsedService findById(int id);
+    UsedService findById(int id);
 
-	UsedService create(UsedService usedService);
+    UsedService create(UsedService usedService);
 
-	UsedService update(UsedService usedService);
+    UsedService update(UsedService usedService);
 }

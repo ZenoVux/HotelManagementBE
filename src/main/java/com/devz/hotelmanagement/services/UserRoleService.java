@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.UserRole;
 
 public interface UserRoleService {
-	List<UserRole> findAll();
+    List<UserRole> findAll();
 
-	UserRole findById(int id);
+    UserRole findById(int id);
 
-	UserRole create(UserRole userRole);
+    UserRole create(UserRole userRole);
 
-	UserRole update(UserRole userRole);
+    UserRole update(UserRole userRole);
 }

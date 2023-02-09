@@ -1,11 +1,11 @@
 package com.devz.hotelmanagement.repositories;
 
-import com.devz.hotelmanagement.entities.UserRole;
+import com.devz.hotelmanagement.entities.UsedService;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UseRoleRepository extends JpaRepository<UserRole, Integer> {
+public interface UsedServiceRepository extends JpaRepository<UsedService, Integer> {
 
 }

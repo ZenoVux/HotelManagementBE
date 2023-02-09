@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.Customer;
 
 public interface CustomerService {
-	List<Customer> findAll();
+    List<Customer> findAll();
 
-	Customer findById(int id);
+    Customer findById(int id);
 
-	Customer create(Customer customer);
+    Customer create(Customer customer);
 
-	Customer update(Customer customer);
+    Customer update(Customer customer);
 }

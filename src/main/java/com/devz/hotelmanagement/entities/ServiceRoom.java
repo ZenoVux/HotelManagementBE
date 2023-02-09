@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "services")
-public class Service extends EntityBase {
+public class ServiceRoom extends EntityBase {
 
     @ManyToOne
     @JoinColumn(name = "service_type_id")

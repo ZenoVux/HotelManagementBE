@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.InvoiceType;
 
 public interface InvoiceTypeService {
-	List<InvoiceType> findAll();
+    List<InvoiceType> findAll();
 
-	InvoiceType findById(int id);
+    InvoiceType findById(int id);
 
-	InvoiceType create(InvoiceType invoiceType);
+    InvoiceType create(InvoiceType invoiceType);
 
-	InvoiceType update(InvoiceType invoiceType);
+    InvoiceType update(InvoiceType invoiceType);
 }

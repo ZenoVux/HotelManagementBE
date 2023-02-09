@@ -13,9 +13,9 @@ import java.util.Optional;
 
 @Service
 public class PaymentMethodServiceImpl implements PaymentMethodService {
-	@Autowired 
-	PaymentMethodRepository paymentMethodRepo;
-	
+    @Autowired
+    PaymentMethodRepository paymentMethodRepo;
+
     @Override
     public List<PaymentMethod> findAll() {
         return paymentMethodRepo.findAll();
@@ -23,21 +23,21 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
     @Override
     public PaymentMethod findById(int id) {
-    	Optional<PaymentMethod> optional = paymentMethodRepo.findById(id);
-    	if (optional.isPresent()) {
-			return optional.get();
-		}
+        Optional<PaymentMethod> optional = paymentMethodRepo.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
         return null;
     }
 
     @Override
     public PaymentMethod create(PaymentMethod paymentMethod) {
-    	paymentMethod.setId(null);
+        paymentMethod.setId(null);
         return paymentMethodRepo.save(paymentMethod);
     }
 
     @Override
     public PaymentMethod update(PaymentMethod paymentMethod) {
-    	return paymentMethodRepo.save(paymentMethod);
+        return paymentMethodRepo.save(paymentMethod);
     }
 }

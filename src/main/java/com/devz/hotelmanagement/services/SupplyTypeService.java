@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.SupplyType;
 
 public interface SupplyTypeService {
-	List<SupplyType> findAll();
+    List<SupplyType> findAll();
 
-	SupplyType findById(int id);
+    SupplyType findById(int id);
 
-	SupplyType create(SupplyType supplyType);
+    SupplyType create(SupplyType supplyType);
 
-	SupplyType update(SupplyType supplyType);
+    SupplyType update(SupplyType supplyType);
 }

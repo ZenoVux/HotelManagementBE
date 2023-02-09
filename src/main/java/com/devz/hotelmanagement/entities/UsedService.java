@@ -16,7 +16,7 @@ public class UsedService extends EntityBase {
 
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private Service service;
+    private ServiceRoom serviceRoom;
 
     @ManyToOne
     @JoinColumn(name = "booking_detail")

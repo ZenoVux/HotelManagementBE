@@ -13,32 +13,32 @@ import com.devz.hotelmanagement.services.BookingDetailService;
 @Service
 public class BookingDetailServiceImpl implements BookingDetailService {
 
-	@Autowired
-	private BookingDetailRepository bookingDetailRepo;
-	
-	@Override
-	public List<BookingDetail> findAll() {
-		return bookingDetailRepo.findAll();
-	}
+    @Autowired
+    private BookingDetailRepository bookingDetailRepo;
 
-	@Override
-	public BookingDetail findById(int id) {
-		Optional<BookingDetail> optional = bookingDetailRepo.findById(id);
+    @Override
+    public List<BookingDetail> findAll() {
+        return bookingDetailRepo.findAll();
+    }
+
+    @Override
+    public BookingDetail findById(int id) {
+        Optional<BookingDetail> optional = bookingDetailRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public BookingDetail create(BookingDetail bookingDetail) {
-		bookingDetail.setId(null);
+    @Override
+    public BookingDetail create(BookingDetail bookingDetail) {
+        bookingDetail.setId(null);
         return bookingDetailRepo.save(bookingDetail);
-	}
+    }
 
-	@Override
-	public BookingDetail update(BookingDetail bookingDetail) {
-		return bookingDetailRepo.save(bookingDetail);
-	}
+    @Override
+    public BookingDetail update(BookingDetail bookingDetail) {
+        return bookingDetailRepo.save(bookingDetail);
+    }
 
 }

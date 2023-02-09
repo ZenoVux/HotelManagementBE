@@ -19,6 +19,6 @@ public class ServiceType extends TypeBase {
 
     @JsonIgnore
     @OneToMany(mappedBy = "serviceType")
-    private List<Service> services;
+    private List<ServiceRoom> serviceRooms;
 
 }

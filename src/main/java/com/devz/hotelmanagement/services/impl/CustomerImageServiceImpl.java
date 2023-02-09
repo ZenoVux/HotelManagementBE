@@ -14,32 +14,32 @@ import com.devz.hotelmanagement.services.CustomerImageService;
 @Service
 public class CustomerImageServiceImpl implements CustomerImageService {
 
-	@Autowired
-	private CustomerImageRepository customerImageRepo;
-	
-	@Override
-	public List<CustomerImage> findAll() {
-		return customerImageRepo.findAll();
-	}
+    @Autowired
+    private CustomerImageRepository customerImageRepo;
 
-	@Override
-	public CustomerImage findById(int id) {
-		Optional<CustomerImage> optional = customerImageRepo.findById(id);
+    @Override
+    public List<CustomerImage> findAll() {
+        return customerImageRepo.findAll();
+    }
+
+    @Override
+    public CustomerImage findById(int id) {
+        Optional<CustomerImage> optional = customerImageRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public CustomerImage create(CustomerImage customerImage) {
-		customerImage.setId(null);
+    @Override
+    public CustomerImage create(CustomerImage customerImage) {
+        customerImage.setId(null);
         return customerImageRepo.save(customerImage);
-	}
+    }
 
-	@Override
-	public CustomerImage update(CustomerImage customerImage) {
-		return customerImageRepo.save(customerImage);
-	}
+    @Override
+    public CustomerImage update(CustomerImage customerImage) {
+        return customerImageRepo.save(customerImage);
+    }
 
 }

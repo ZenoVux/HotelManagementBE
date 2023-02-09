@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.Image;
 
 public interface ImageService {
-	List<Image> findAll();
+    List<Image> findAll();
 
-	Image findById(int id);
+    Image findById(int id);
 
-	Image create(Image image);
+    Image create(Image image);
 
-	Image update(Image image);
+    Image update(Image image);
 }

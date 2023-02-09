@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.Schedule;
 
 public interface ScheduleService {
-	List<Schedule> findAll();
+    List<Schedule> findAll();
 
-	Schedule findById(int id);
+    Schedule findById(int id);
 
-	Schedule create(Schedule schedule);
+    Schedule create(Schedule schedule);
 
-	Schedule update(Schedule schedule);
+    Schedule update(Schedule schedule);
 }

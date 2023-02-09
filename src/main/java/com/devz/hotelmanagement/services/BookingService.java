@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.Booking;
 
 public interface BookingService {
-	List<Booking> findAll();
+    List<Booking> findAll();
 
-	Booking findById(int id);
+    Booking findById(int id);
 
-	Booking create(Booking booking);
+    Booking create(Booking booking);
 
-	Booking update(Booking booking);
+    Booking update(Booking booking);
 }

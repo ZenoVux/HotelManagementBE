@@ -1,32 +1,43 @@
 package com.devz.hotelmanagement.services.impl;
 
 import com.devz.hotelmanagement.entities.UsedService;
+import com.devz.hotelmanagement.repositories.UsedServiceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.devz.hotelmanagement.services.UsedServiceService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsedServiceServiceImpl implements UsedServiceService {
 
+    @Autowired
+    UsedServiceRepository usedServiceRepository;
+
     @Override
     public List<UsedService> findAll() {
-        return null;
+        return usedServiceRepository.findAll();
     }
 
     @Override
     public UsedService findById(int id) {
+        Optional<UsedService> optional = usedServiceRepository.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
         return null;
     }
 
     @Override
     public UsedService create(UsedService usedService) {
-        return null;
+        usedService.setId(null);
+        return usedServiceRepository.save(usedService);
     }
 
     @Override
     public UsedService update(UsedService usedService) {
-        return null;
+        return usedServiceRepository.save(usedService);
     }
 }

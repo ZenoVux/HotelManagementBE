@@ -14,9 +14,9 @@ import java.util.Optional;
 
 @Service
 public class InvoiceTypeServiceImpl implements InvoiceTypeService {
-	@Autowired
-	InvoiceTypeRepository invoiceTypeRepo;
-	
+    @Autowired
+    InvoiceTypeRepository invoiceTypeRepo;
+
     @Override
     public List<InvoiceType> findAll() {
         return invoiceTypeRepo.findAll();
@@ -24,21 +24,21 @@ public class InvoiceTypeServiceImpl implements InvoiceTypeService {
 
     @Override
     public InvoiceType findById(int id) {
-    	Optional<InvoiceType> optional = invoiceTypeRepo.findById(id);
-    	if (optional.isPresent()) {
-			return optional.get();
-		}
+        Optional<InvoiceType> optional = invoiceTypeRepo.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
         return null;
     }
 
     @Override
     public InvoiceType create(InvoiceType invoiceType) {
-    	invoiceType.setId(null);
+        invoiceType.setId(null);
         return invoiceTypeRepo.save(invoiceType);
     }
 
     @Override
     public InvoiceType update(InvoiceType invoiceType) {
-    	return invoiceTypeRepo.save(invoiceType);
+        return invoiceTypeRepo.save(invoiceType);
     }
 }

@@ -6,11 +6,11 @@ import com.devz.hotelmanagement.entities.Shift;
 
 
 public interface ShiftService {
-	List<Shift> findAll();
+    List<Shift> findAll();
 
-	Shift findById(int id);
+    Shift findById(int id);
 
-	Shift create(Shift shift);
+    Shift create(Shift shift);
 
-	Shift update(Shift shift);
+    Shift update(Shift shift);
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "room_types")
-public class RoomType extends EntityBase{
+public class RoomType extends EntityBase {
 
     @Column()
     private String name;

@@ -13,33 +13,33 @@ import com.devz.hotelmanagement.services.CustomerTypeService;
 
 @Service
 public class CustomerTypeServiceImpl implements CustomerTypeService {
-	
-	@Autowired
-	private CustomerTypeRepository customerTypeRepo;
-	
-	@Override
-	public List<CustomerType> findAll() {
-		 return customerTypeRepo.findAll();
-	}
 
-	@Override
-	public CustomerType findById(int id) {
-		Optional<CustomerType> optional = customerTypeRepo.findById(id);
+    @Autowired
+    private CustomerTypeRepository customerTypeRepo;
+
+    @Override
+    public List<CustomerType> findAll() {
+        return customerTypeRepo.findAll();
+    }
+
+    @Override
+    public CustomerType findById(int id) {
+        Optional<CustomerType> optional = customerTypeRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public CustomerType create(CustomerType customerType) {
-		customerType.setId(null);
-	        return customerTypeRepo.save(customerType);
-	}
+    @Override
+    public CustomerType create(CustomerType customerType) {
+        customerType.setId(null);
+        return customerTypeRepo.save(customerType);
+    }
 
-	@Override
-	public CustomerType update(CustomerType customerType) {
-		return customerTypeRepo.save(customerType);
-	}
+    @Override
+    public CustomerType update(CustomerType customerType) {
+        return customerTypeRepo.save(customerType);
+    }
 
 }

@@ -5,12 +5,12 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.Role;
 
 public interface RoleService {
-	List<Role> findAll();
+    List<Role> findAll();
 
-	Role findById(int id);
+    Role findById(int id);
 
-	Role create(Role role);
+    Role create(Role role);
 
-	Role update(Role role);
+    Role update(Role role);
 
 }

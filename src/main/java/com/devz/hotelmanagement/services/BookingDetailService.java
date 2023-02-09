@@ -6,11 +6,11 @@ import com.devz.hotelmanagement.entities.BookingDetail;
 
 
 public interface BookingDetailService {
-	List<BookingDetail> findAll();
+    List<BookingDetail> findAll();
 
-	BookingDetail findById(int id);
+    BookingDetail findById(int id);
 
-	BookingDetail create(BookingDetail bookingDetail);
+    BookingDetail create(BookingDetail bookingDetail);
 
-	BookingDetail update(BookingDetail bookingDetail);
+    BookingDetail update(BookingDetail bookingDetail);
 }

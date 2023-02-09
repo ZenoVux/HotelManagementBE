@@ -12,32 +12,32 @@ import com.devz.hotelmanagement.services.FeedbackService;
 
 @Service
 public class FeedBackServiceImpl implements FeedbackService {
-	@Autowired
-	private FeedbackRepository feedbackRepo;
-	
-	@Override
-	public List<Feedback> findAll() {
-		return feedbackRepo.findAll();
-	}
+    @Autowired
+    private FeedbackRepository feedbackRepo;
 
-	@Override
-	public Feedback findById(int id) {
-		Optional<Feedback> optional = feedbackRepo.findById(id);
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-		return null;
-	}
+    @Override
+    public List<Feedback> findAll() {
+        return feedbackRepo.findAll();
+    }
 
-	@Override
-	public Feedback create(Feedback feedback) {
-		feedback.setId(null);
-		return feedbackRepo.save(feedback);
-	}
+    @Override
+    public Feedback findById(int id) {
+        Optional<Feedback> optional = feedbackRepo.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
 
-	@Override
-	public Feedback update(Feedback feedback) {
-		return feedbackRepo.save(feedback);
-	}
+    @Override
+    public Feedback create(Feedback feedback) {
+        feedback.setId(null);
+        return feedbackRepo.save(feedback);
+    }
+
+    @Override
+    public Feedback update(Feedback feedback) {
+        return feedbackRepo.save(feedback);
+    }
 
 }

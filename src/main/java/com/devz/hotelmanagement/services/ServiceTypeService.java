@@ -5,11 +5,11 @@ import java.util.List;
 import com.devz.hotelmanagement.entities.ServiceType;
 
 public interface ServiceTypeService {
-	List<ServiceType> findAll();
+    List<ServiceType> findAll();
 
-	ServiceType findById(int id);
+    ServiceType findById(int id);
 
-	ServiceType create(ServiceType serviceType);
+    ServiceType create(ServiceType serviceType);
 
-	ServiceType update(ServiceType serviceType);
+    ServiceType update(ServiceType serviceType);
 }
