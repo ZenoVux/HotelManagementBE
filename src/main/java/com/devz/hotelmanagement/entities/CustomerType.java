@@ -19,6 +19,6 @@ public class CustomerType extends TypeBase {
 
     @JsonIgnore
     @OneToMany(mappedBy = "customerType")
-    private List<Account> accounts;
+    private List<Customer> customers;
 
 }

@@ -15,10 +15,6 @@ import java.util.List;
 @Table(name = "accounts")
 public class Account extends EntityBase {
 
-    @ManyToOne
-    @JoinColumn(name = "customer_type")
-    private CustomerType customerType;
-
     @Column(name = "full_name")
     private String fullName;
 
