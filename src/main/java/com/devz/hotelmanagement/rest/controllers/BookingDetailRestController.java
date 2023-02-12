@@ -1,8 +1,6 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import com.devz.hotelmanagement.entities.Account;
 import com.devz.hotelmanagement.entities.BookingDetail;
-import com.devz.hotelmanagement.services.AccountService;
 import com.devz.hotelmanagement.services.BookingDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +9,9 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/bookingdetails")
+@RequestMapping("/api/booking-details")
 public class BookingDetailRestController {
+
     @Autowired
     private BookingDetailService bookingDetailService;
 

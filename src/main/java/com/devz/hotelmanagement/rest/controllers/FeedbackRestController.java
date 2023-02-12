@@ -18,7 +18,8 @@ import com.devz.hotelmanagement.services.FeedbackService;
 @RestController
 @RequestMapping("/api/feedbacks")
 public class FeedbackRestController {
-	@Autowired
+
+    @Autowired
     private FeedbackService feedbackService;
 
     @GetMapping

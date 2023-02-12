@@ -16,9 +16,10 @@ import com.devz.hotelmanagement.services.CustomerTypeService;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/customerTypes")
+@RequestMapping("/api/customer-types")
 public class CustomerTypeRestController {
-	@Autowired
+
+    @Autowired
     private CustomerTypeService customerTypeService;
 
     @GetMapping

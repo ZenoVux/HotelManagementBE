@@ -1,6 +1,5 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import com.devz.hotelmanagement.entities.Account;
 import com.devz.hotelmanagement.entities.BedType;
 import com.devz.hotelmanagement.services.BedTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +9,12 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/bedtypes")
+@RequestMapping("/api/bed-types")
 public class BedTypeRestController {
+
     @Autowired
-    BedTypeService bedTypeService ;
+    private BedTypeService bedTypeService;
+
     @GetMapping
     public List<BedType> getAll() {
         return bedTypeService.findAll();

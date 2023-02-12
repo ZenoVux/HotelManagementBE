@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/api/room-types")
 public class RoomTypeRestController {
     @Autowired
-    RoomTypeService roomTypeService;
+    private RoomTypeService roomTypeService;
 
     @GetMapping
     public List<RoomType> getAll() {

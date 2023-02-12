@@ -18,6 +18,7 @@ import com.devz.hotelmanagement.services.ImageService;
 @RestController
 @RequestMapping("/api/images")
 public class ImageRestController {
+
 	@Autowired
     private ImageService imageService;
 

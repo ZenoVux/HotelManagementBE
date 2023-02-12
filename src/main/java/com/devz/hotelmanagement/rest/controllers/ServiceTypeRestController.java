@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/api/service-types")
 public class ServiceTypeRestController {
     @Autowired
-    ServiceTypeService serviceTypeService;
+    private ServiceTypeService serviceTypeService;
 
     @GetMapping
     public List<ServiceType> getAll() {

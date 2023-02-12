@@ -16,9 +16,10 @@ import com.devz.hotelmanagement.services.HostedAtService;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/hostedAts")
+@RequestMapping("/api/hosted-ats")
 public class HostedAtRestController {
-	@Autowired
+
+    @Autowired
     private HostedAtService hostedAtService;
 
     @GetMapping

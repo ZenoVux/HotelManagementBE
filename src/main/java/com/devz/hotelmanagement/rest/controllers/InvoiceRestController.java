@@ -18,6 +18,7 @@ import com.devz.hotelmanagement.services.InvoiceService;
 @RestController
 @RequestMapping("/api/invoices")
 public class InvoiceRestController {
+
 	@Autowired
     private InvoiceService invoiceService;
 

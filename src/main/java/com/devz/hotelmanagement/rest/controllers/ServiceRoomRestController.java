@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/api/service-rooms")
 public class ServiceRoomRestController {
     @Autowired
-    ServiceRoomService serviceRoomService;
+    private ServiceRoomService serviceRoomService;
 
     @GetMapping
     public List<ServiceRoom> getAll(){

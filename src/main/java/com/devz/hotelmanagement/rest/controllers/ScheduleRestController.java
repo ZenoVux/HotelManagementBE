@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/api/schedules")
 public class ScheduleRestController {
     @Autowired
-    ScheduleService scheduleService;
+    private ScheduleService scheduleService;
 
     @GetMapping
     public List<Schedule> getAll() {
