@@ -9,7 +9,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/used-service")
+@RequestMapping("/api/used-services")
 public class UsedServiceRestController {
 
     @Autowired

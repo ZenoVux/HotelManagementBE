@@ -9,7 +9,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/shift")
+@RequestMapping("/api/shifts")
 public class ShiftRestController {
 
     @Autowired

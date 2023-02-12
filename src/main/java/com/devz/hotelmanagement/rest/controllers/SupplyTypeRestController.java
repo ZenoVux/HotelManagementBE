@@ -9,7 +9,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/supply-type")
+@RequestMapping("/api/supply-types")
 public class SupplyTypeRestController {
 
     @Autowired
