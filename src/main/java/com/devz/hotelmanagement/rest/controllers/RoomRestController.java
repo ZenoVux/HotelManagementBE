@@ -24,7 +24,7 @@ public class RoomRestController {
         return roomService.create(room);
     }
 
-    @PostMapping
+    @PutMapping
     public Room update(@RequestBody Room room) {
         return roomService.update(room);
     }
