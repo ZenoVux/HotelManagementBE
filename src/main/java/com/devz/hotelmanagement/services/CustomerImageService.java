@@ -1,15 +1,7 @@
 package com.devz.hotelmanagement.services;
 
-import java.util.List;
-
 import com.devz.hotelmanagement.entities.CustomerImage;
 
-public interface CustomerImageService {
-    List<CustomerImage> findAll();
+public interface CustomerImageService extends ServiceBase<CustomerImage> {
 
-    CustomerImage findById(int id);
-
-    CustomerImage create(CustomerImage customerImage);
-
-    CustomerImage update(CustomerImage customerImage);
 }

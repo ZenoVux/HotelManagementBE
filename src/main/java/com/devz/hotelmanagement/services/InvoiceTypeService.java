@@ -1,15 +1,7 @@
 package com.devz.hotelmanagement.services;
 
-import java.util.List;
-
 import com.devz.hotelmanagement.entities.InvoiceType;
 
-public interface InvoiceTypeService {
-    List<InvoiceType> findAll();
+public interface InvoiceTypeService extends ServiceBase<InvoiceType> {
 
-    InvoiceType findById(int id);
-
-    InvoiceType create(InvoiceType invoiceType);
-
-    InvoiceType update(InvoiceType invoiceType);
 }

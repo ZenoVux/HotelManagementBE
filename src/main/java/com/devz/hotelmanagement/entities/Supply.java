@@ -25,6 +25,9 @@ public class Supply extends EntityBase {
     private String image;
 
     @Column()
+    private String unit;
+
+    @Column()
     private String description;
 
     @Column()

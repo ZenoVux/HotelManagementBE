@@ -1,15 +1,7 @@
 package com.devz.hotelmanagement.services;
 
-import java.util.List;
-
 import com.devz.hotelmanagement.entities.PaymentMethod;
 
-public interface PaymentMethodService {
-    List<PaymentMethod> findAll();
+public interface PaymentMethodService extends ServiceBase<PaymentMethod> {
 
-    PaymentMethod findById(int id);
-
-    PaymentMethod create(PaymentMethod paymentMethod);
-
-    PaymentMethod update(PaymentMethod paymentMethod);
 }

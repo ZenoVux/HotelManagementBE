@@ -1,15 +1,7 @@
 package com.devz.hotelmanagement.services;
 
-import java.util.List;
-
 import com.devz.hotelmanagement.entities.CustomerType;
 
-public interface CustomerTypeService {
-    List<CustomerType> findAll();
+public interface CustomerTypeService extends ServiceBase<CustomerType> {
 
-    CustomerType findById(int id);
-
-    CustomerType create(CustomerType customerType);
-
-    CustomerType update(CustomerType customerType);
 }

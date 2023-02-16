@@ -1,11 +1,13 @@
 package com.devz.hotelmanagement.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -44,5 +46,9 @@ public class Invoice extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "payment_id")
     private PaymentMethod paymentMethod;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "invoice")
+    private List<InvoiceDetail> invoiceDetails;
 
 }

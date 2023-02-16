@@ -11,24 +11,23 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "hosted_ats")
-public class HostedAt extends EntityBase {
-
-    @ManyToOne
-    @JoinColumn(name = "booking_detail_id")
-    private BookingDetail bookingDetail;
+@Table(name = "invoice_detail_histories")
+public class InvoiceDetailHistory extends EntityBase {
 
     @ManyToOne
     @JoinColumn(name = "invoice_detail_id")
     private InvoiceDetail invoiceDetail;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @Column(name = "num_adults")
+    private Integer numAdults;
+
+    @Column(name = "num_children")
+    private Integer numChildren;
 
     @Column
-    private Date checkin;
+    private String note;
 
-    @Column(name = "checkout")
-    private Date checkout;
+    @Column(name = "update_date")
+    private Date updateDate;
+
 }

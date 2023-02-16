@@ -1,15 +1,7 @@
 package com.devz.hotelmanagement.services;
 
-import java.util.List;
-
 import com.devz.hotelmanagement.entities.Booking;
 
-public interface BookingService {
-    List<Booking> findAll();
+public interface BookingService extends ServiceBase<Booking> {
 
-    Booking findById(int id);
-
-    Booking create(Booking booking);
-
-    Booking update(Booking booking);
 }

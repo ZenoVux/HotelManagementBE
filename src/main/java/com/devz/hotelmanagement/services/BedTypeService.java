@@ -1,17 +1,7 @@
 package com.devz.hotelmanagement.services;
 
-
 import com.devz.hotelmanagement.entities.BedType;
 
-import java.util.List;
+public interface BedTypeService extends ServiceBase<BedType> {
 
-public interface BedTypeService {
-
-    List<BedType> findAll();
-
-    BedType findById(int id);
-
-    BedType create(BedType bedType);
-
-    BedType update(BedType bedType);
 }

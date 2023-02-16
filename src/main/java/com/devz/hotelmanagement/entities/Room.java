@@ -27,16 +27,24 @@ public class Room extends EntityBase {
     @Column()
     private Integer status;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "room")
-    private List<RoomDetail> roomDetails;
-
     @ManyToOne
     @JoinColumn(name = "room_type_id")
     private RoomType roomType;
 
     @JsonIgnore
     @OneToMany(mappedBy = "room")
+    private List<RoomDetail> roomDetails;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "room")
     private List<RoomImage> roomImages;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "room")
+    private List<BookingDetail> bookingDetails;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "room")
+    private List<InvoiceDetail> invoiceDetails;
 
 }

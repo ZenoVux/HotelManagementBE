@@ -1,15 +1,7 @@
 package com.devz.hotelmanagement.services;
 
-import java.util.List;
-
 import com.devz.hotelmanagement.entities.Schedule;
 
-public interface ScheduleService {
-    List<Schedule> findAll();
+public interface ScheduleService extends ServiceBase<Schedule> {
 
-    Schedule findById(int id);
-
-    Schedule create(Schedule schedule);
-
-    Schedule update(Schedule schedule);
 }

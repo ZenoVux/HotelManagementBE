@@ -12,16 +12,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "booking_details")
-public class BookingDetail extends EntityBase {
+@Table(name = "invoice_details")
+public class InvoiceDetail extends EntityBase {
 
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
 
     @Column(name = "num_adults")
     private Integer numAdults;
@@ -36,11 +36,15 @@ public class BookingDetail extends EntityBase {
     private Integer status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "bookingDetail")
+    @OneToMany(mappedBy = "invoiceDetail")
     private List<HostedAt> hostedAts;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "bookingDetail")
-    private List<BookingDetailHistory> bookingDetailHistories;
+    @OneToMany(mappedBy = "invoiceDetail")
+    private List<UsedService> usedServices;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "invoiceDetail")
+    private List<InvoiceDetailHistory> invoiceDetailHistories;
 
 }
