@@ -20,6 +20,14 @@ public class CustomerRestController {
         return customerService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Customer getCustomerById(@PathVariable int id) {
+        Customer customer = customerService.findById(id);
+        if (customer == null) {
+        }
+        return customer;
+    }
+
     @PostMapping
     public Customer create(@RequestBody Customer customer) {
         return customerService.create(customer);
@@ -29,4 +37,5 @@ public class CustomerRestController {
     public Customer update(@RequestBody Customer customer) {
         return customerService.update(customer);
     }
+
 }
