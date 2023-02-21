@@ -31,6 +31,11 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
     }
 
     @Override
+    public ServiceType findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public ServiceType create(ServiceType serviceType) {
         serviceType.setId(null);
         serviceTypeRepository.save(serviceType);

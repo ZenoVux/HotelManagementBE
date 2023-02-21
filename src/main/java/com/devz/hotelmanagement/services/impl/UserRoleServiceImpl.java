@@ -31,6 +31,11 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    public UserRole findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public UserRole create(UserRole userRole) {
         userRole.setId(null);
         return userRoleRepository.save(userRole);
@@ -39,5 +44,15 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public UserRole update(UserRole userRole) {
         return userRoleRepository.save(userRole);
+    }
+
+    @Override
+    public List<UserRole> findByAccountId(Integer accountId) {
+        return userRoleRepository.findByAccountId(accountId);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        userRoleRepository.deleteById(id);
     }
 }

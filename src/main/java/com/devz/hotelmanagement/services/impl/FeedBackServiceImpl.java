@@ -30,6 +30,11 @@ public class FeedBackServiceImpl implements FeedbackService {
     }
 
     @Override
+    public Feedback findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Feedback create(Feedback feedback) {
         feedback.setId(null);
         return feedbackRepo.save(feedback);

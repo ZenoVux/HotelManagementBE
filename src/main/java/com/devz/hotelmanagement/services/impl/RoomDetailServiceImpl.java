@@ -31,6 +31,11 @@ public class RoomDetailServiceImpl implements RoomDetailService {
     }
 
     @Override
+    public RoomDetail findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public RoomDetail create(RoomDetail roomDetail) {
         roomDetail.setId(null);
         return roomDetailRepo.save(roomDetail);

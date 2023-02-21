@@ -30,6 +30,11 @@ public class InvoiceDetailHistoryServiceImpl implements InvoiceDetailHistoryServ
     }
 
     @Override
+    public InvoiceDetailHistory findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public InvoiceDetailHistory create(InvoiceDetailHistory invoiceDetailHistory) {
         invoiceDetailHistory.setId(null);
         return invoiceDetailHistoryRepo.save(invoiceDetailHistory);

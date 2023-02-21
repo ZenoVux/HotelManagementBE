@@ -31,6 +31,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public Room findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Room create(Room room) {
         room.setId(null);
         return roomRepo.save(room);

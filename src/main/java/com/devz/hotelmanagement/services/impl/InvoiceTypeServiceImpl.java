@@ -32,6 +32,11 @@ public class InvoiceTypeServiceImpl implements InvoiceTypeService {
     }
 
     @Override
+    public InvoiceType findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public InvoiceType create(InvoiceType invoiceType) {
         invoiceType.setId(null);
         return invoiceTypeRepo.save(invoiceType);

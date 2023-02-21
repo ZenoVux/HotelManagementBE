@@ -31,6 +31,11 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
+    public Promotion findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Promotion create(Promotion promotion) {
         promotion.setId(null);
         return promotionRepo.save(promotion);

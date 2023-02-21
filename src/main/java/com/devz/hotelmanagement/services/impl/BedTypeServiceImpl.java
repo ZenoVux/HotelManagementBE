@@ -31,6 +31,11 @@ public class BedTypeServiceImpl implements BedTypeService {
     }
 
     @Override
+    public BedType findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public BedType create(BedType bedType) {
         bedType.setId(null);
         return bedTypeRepo.save(bedType);

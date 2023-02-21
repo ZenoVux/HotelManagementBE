@@ -31,6 +31,11 @@ public class HostedAtServiceImpl implements HostedAtService {
     }
 
     @Override
+    public HostedAt findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public HostedAt create(HostedAt hostedAt) {
         hostedAt.setId(null);
         return hostedAtRepo.save(hostedAt);

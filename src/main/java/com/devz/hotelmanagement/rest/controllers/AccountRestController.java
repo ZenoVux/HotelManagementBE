@@ -3,6 +3,8 @@ package com.devz.hotelmanagement.rest.controllers;
 import com.devz.hotelmanagement.entities.Account;
 import com.devz.hotelmanagement.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,15 @@ public class AccountRestController {
     @GetMapping
     public List<Account> getAll() {
         return accountService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Account> getById(@PathVariable("id") Integer id) {
+        Account account = accountService.findById(id);
+        if (account != null) {
+            return ResponseEntity.ok(account);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping
