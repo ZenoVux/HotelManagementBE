@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.rest.controllers;
 
+
 import com.devz.hotelmanagement.entities.RoomType;
 import com.devz.hotelmanagement.services.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/room-types")
+    @RequestMapping("/api/room-types")
 public class RoomTypeRestController {
     @Autowired
     private RoomTypeService roomTypeService;
@@ -17,6 +18,11 @@ public class RoomTypeRestController {
     @GetMapping
     public List<RoomType> getAll() {
         return roomTypeService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public RoomType getOne(@PathVariable("id") Integer id) {
+        return roomTypeService.findById(id);
     }
 
     @PostMapping
