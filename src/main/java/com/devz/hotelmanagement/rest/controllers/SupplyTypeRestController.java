@@ -20,6 +20,10 @@ public class SupplyTypeRestController {
         return supplyTypeService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public SupplyType getOne(@PathVariable("id") Integer id) {
+        return supplyTypeService.findById(id);
+    }
     @PostMapping
     public SupplyType create(@RequestBody SupplyType supplyType) {
         return supplyTypeService.create(supplyType);

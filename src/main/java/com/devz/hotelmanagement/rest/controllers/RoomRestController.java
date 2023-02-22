@@ -19,6 +19,11 @@ public class RoomRestController {
         return roomService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Room getOne(@PathVariable("id") Integer id) {
+        return roomService.findById(id);
+    }
+
     @PostMapping
     public Room create(@RequestBody Room room) {
         return roomService.create(room);
