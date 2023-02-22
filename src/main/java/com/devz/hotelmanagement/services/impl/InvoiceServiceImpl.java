@@ -30,6 +30,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    public Invoice findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Invoice create(Invoice invoice) {
         invoice.setId(null);
         return invoiceRepo.save(invoice);

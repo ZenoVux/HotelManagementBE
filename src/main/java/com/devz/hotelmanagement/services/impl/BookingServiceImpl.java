@@ -31,6 +31,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public Booking findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Booking create(Booking booking) {
         booking.setId(null);
         return bookingRepo.save(booking);

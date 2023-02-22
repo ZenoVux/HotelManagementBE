@@ -30,6 +30,11 @@ public class BookingDetailHistoryServiceImpl implements BookingDetailHistoryServ
     }
 
     @Override
+    public BookingDetailHistory findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public BookingDetailHistory create(BookingDetailHistory bookingDetailHistory) {
         bookingDetailHistory.setId(null);
         return bookingDetailHistoryRepo.save(bookingDetailHistory);

@@ -31,6 +31,11 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     }
 
     @Override
+    public UsedService findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public UsedService create(UsedService usedService) {
         usedService.setId(null);
         return usedServiceRepository.save(usedService);

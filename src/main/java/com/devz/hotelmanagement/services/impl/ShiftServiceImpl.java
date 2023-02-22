@@ -31,6 +31,11 @@ public class ShiftServiceImpl implements ShiftService {
     }
 
     @Override
+    public Shift findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Shift create(Shift shift) {
         shift.setId(null);
         return shiftRepository.save(shift);

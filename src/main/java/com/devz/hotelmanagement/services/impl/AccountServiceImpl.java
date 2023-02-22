@@ -30,6 +30,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Account create(Account account) {
         account.setId(null);
         return accountRepo.save(account);

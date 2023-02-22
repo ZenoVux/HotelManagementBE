@@ -31,6 +31,11 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     @Override
+    public PaymentMethod findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public PaymentMethod create(PaymentMethod paymentMethod) {
         paymentMethod.setId(null);
         return paymentMethodRepo.save(paymentMethod);

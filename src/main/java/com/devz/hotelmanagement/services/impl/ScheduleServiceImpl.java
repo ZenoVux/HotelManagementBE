@@ -31,6 +31,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Schedule findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Schedule create(Schedule schedule) {
         schedule.setId(null);
         return scheduleRepository.save(schedule);

@@ -31,6 +31,11 @@ public class RoomImageServiceImpl implements RoomImageService {
     }
 
     @Override
+    public RoomImage findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public RoomImage create(RoomImage roomImage) {
         roomImage.setId(null);
         return roomImageRepo.save(roomImage);

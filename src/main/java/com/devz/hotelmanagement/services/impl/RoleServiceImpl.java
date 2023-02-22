@@ -31,6 +31,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Role create(Role role) {
         role.setId(null);
         return roleRepo.save(role);

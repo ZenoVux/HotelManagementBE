@@ -31,6 +31,11 @@ public class SupplyTypeServiceImpl implements SupplyTypeService {
     }
 
     @Override
+    public SupplyType findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public SupplyType create(SupplyType supplyType) {
         supplyType.setId(null);
         return supplyTypeRepository.save(supplyType);

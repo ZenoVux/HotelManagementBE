@@ -8,6 +8,8 @@ public interface ServiceBase<E> {
 
     E findById(int id);
 
+    E findByCode(String code);
+
     E create(E entity);
 
     E update(E entity);

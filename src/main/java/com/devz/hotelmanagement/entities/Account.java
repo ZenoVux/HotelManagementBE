@@ -21,6 +21,7 @@ public class Account extends EntityBase {
     @Column()
     private String username;
 
+    @JsonIgnore
     @Column()
     private String password;
 
@@ -34,7 +35,7 @@ public class Account extends EntityBase {
     private String email;
 
     @Column()
-    private Integer status;
+    private Boolean status;
 
     @JsonIgnore
     @OneToMany(mappedBy = "account")

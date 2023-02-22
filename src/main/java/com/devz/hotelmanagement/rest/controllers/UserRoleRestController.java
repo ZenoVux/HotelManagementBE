@@ -30,4 +30,9 @@ public class UserRoleRestController {
         return userRoleService.update(userRole);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Integer id) {
+        userRoleService.delete(id);
+    }
+
 }

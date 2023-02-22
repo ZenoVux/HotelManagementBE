@@ -31,6 +31,11 @@ public class SupplyServiceImpl implements SupplyService {
     }
 
     @Override
+    public Supply findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Supply create(Supply supply) {
         supply.setId(null);
         return supplyRepository.save(supply);

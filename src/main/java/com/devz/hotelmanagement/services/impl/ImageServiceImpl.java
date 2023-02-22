@@ -31,6 +31,11 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public Image findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Image create(Image image) {
         image.setId(null);
         return imageRepo.save(image);

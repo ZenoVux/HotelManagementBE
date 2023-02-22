@@ -32,6 +32,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Customer findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public Customer create(Customer customer) {
         customer.setId(null);
         return customerRepo.save(customer);

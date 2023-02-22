@@ -32,6 +32,11 @@ public class CustomerImageServiceImpl implements CustomerImageService {
     }
 
     @Override
+    public CustomerImage findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public CustomerImage create(CustomerImage customerImage) {
         customerImage.setId(null);
         return customerImageRepo.save(customerImage);

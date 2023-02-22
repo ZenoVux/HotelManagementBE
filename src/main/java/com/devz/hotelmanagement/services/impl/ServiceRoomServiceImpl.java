@@ -31,6 +31,11 @@ public class ServiceRoomServiceImpl implements ServiceRoomService {
     }
 
     @Override
+    public ServiceRoom findByCode(String code) {
+        return null;
+    }
+
+    @Override
     public ServiceRoom create(ServiceRoom serviceRoom) {
         serviceRoom.setId(null);
         serviceRoomRepository.save(serviceRoom);
