@@ -19,6 +19,6 @@ public class BedType extends TypeBase {
 
     @JsonIgnore
     @OneToMany(mappedBy = "bedType")
-    private List<RoomType> roomTypes;
+    private List<BedRoom> bedRooms;
 
 }
