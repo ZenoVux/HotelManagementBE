@@ -3,6 +3,8 @@ package com.devz.hotelmanagement.rest.controllers;
 import com.devz.hotelmanagement.entities.Room;
 import com.devz.hotelmanagement.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +22,12 @@ public class RoomRestController {
     }
 
     @GetMapping("/{id}")
-    public Room getOne(@PathVariable("id") Integer id) {
-        return roomService.findById(id);
+    public ResponseEntity<Room> getOne(@PathVariable("id") Integer id) {
+        Room room = roomService.findById(id);
+        if (room != null){
+            return ResponseEntity.ok(room);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping

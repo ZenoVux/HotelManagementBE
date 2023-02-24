@@ -1,9 +1,6 @@
 package com.devz.hotelmanagement.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +11,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "room_details")
 public class RoomDetail extends EntityBase {
+
+    @Column()
+    private Integer quantitySupply;
 
     @ManyToOne
     @JoinColumn(name = "room_id")
