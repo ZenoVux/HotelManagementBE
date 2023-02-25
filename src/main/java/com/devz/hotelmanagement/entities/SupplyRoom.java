@@ -9,11 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "room_details")
-public class RoomDetail extends EntityBase {
-
-    @Column()
-    private Integer quantitySupply;
+@Table(name = "supply_rooms")
+public class SupplyRoom extends EntityBase {
 
     @ManyToOne
     @JoinColumn(name = "room_id")
@@ -22,5 +19,8 @@ public class RoomDetail extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "supply_id")
     private Supply supply;
+
+    @Column()
+    private Integer quantity;
 
 }
