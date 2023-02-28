@@ -1,6 +1,7 @@
 package com.devz.hotelmanagement.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -21,6 +22,7 @@ public class Floor extends EntityBase {
     @Column
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "floor")
     private List<Room> rooms;
 }
