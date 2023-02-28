@@ -29,10 +29,11 @@ public class RoomServiceImpl implements RoomService {
         }
         return null;
     }
-
+ 
     @Override
     public Room findByCode(String code) {
-        return null;
+    	Room room = roomRepo.findByCode(code);
+        return room;
     }
 
     @Override

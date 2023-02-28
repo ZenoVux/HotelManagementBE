@@ -30,6 +30,11 @@ public class RoomRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("code-room/{code}")
+    public Room getByCode(@PathVariable("code") String code) {
+        return roomService.findByCode(code);
+    }
+    
     @PostMapping
     public Room create(@RequestBody Room room) {
         return roomService.create(room);
