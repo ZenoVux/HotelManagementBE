@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
+import com.devz.hotelmanagement.entities.BedRoom;
 import com.devz.hotelmanagement.entities.Room;
 import com.devz.hotelmanagement.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +46,9 @@ public class RoomServiceImpl implements RoomService {
     public Room update(Room room) {
         return roomRepo.save(room);
     }
+
+    public List<Room> getRoomBookings(String roomTypeCode){
+        return roomRepo.getRoomBookings(roomTypeCode);
+    }
+
 }
