@@ -1,4 +1,4 @@
-package com.devz.hotelmanagement.entities;
+package com.devz.hotelmanagement.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

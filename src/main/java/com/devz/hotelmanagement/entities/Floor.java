@@ -1,6 +1,6 @@
 package com.devz.hotelmanagement.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -15,17 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bed_types")
-public class BedType extends TypeBase {
+@Table(name = "floors")
+public class Floor extends EntityBase {
 
-    @Column(name = "max_childs")
-    private Integer maxChilds;
+    @Column
+    private String name;
 
-    @Column(name = "max_adults")
-    private Integer maxAdults;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "bedType")
-    private List<BedRoom> bedRooms;
-
+    @OneToMany(mappedBy = "floor")
+    private List<Room> rooms;
 }

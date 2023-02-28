@@ -21,17 +21,11 @@ public class Room extends EntityBase {
     @Column()
     private Double price;
 
-    @Column(name = "max_adults")
-    private Integer maxAdult;
+    @Column(name = "max_adults_add")
+    private Integer maxAdultsAdd;
 
-    @Column(name = "max_adult_add")
-    private Integer maxAdultAdd;
-
-    @Column(name = "max_child")
-    private Integer maxChild;
-
-    @Column(name = "max_child_add")
-    private Integer maxChildAdd;
+    @Column(name = "max_childs_add")
+    private Integer maxChildsAdd;
 
     @Column()
     private Double area;
@@ -48,6 +42,10 @@ public class Room extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "room_type_id")
     private RoomType roomType;
+
+    @ManyToOne
+    @JoinColumn(name = "floor_id")
+    private Floor floor;
 
     @JsonIgnore
     @OneToMany(mappedBy = "room")

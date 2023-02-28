@@ -1,6 +1,7 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.*;
+import com.devz.hotelmanagement.models.RoomBooking;
 import com.devz.hotelmanagement.services.BedRoomService;
 import com.devz.hotelmanagement.services.BookingService;
 import com.devz.hotelmanagement.services.RoomService;
