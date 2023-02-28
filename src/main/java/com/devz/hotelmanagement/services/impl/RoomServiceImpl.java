@@ -1,7 +1,7 @@
 package com.devz.hotelmanagement.services.impl;
 
-import com.devz.hotelmanagement.entities.BedRoom;
 import com.devz.hotelmanagement.entities.Room;
+import com.devz.hotelmanagement.models.RoomStatusCount;
 import com.devz.hotelmanagement.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,4 +52,8 @@ public class RoomServiceImpl implements RoomService {
         return roomRepo.getRoomBookings(roomTypeCode);
     }
 
+    @Override
+    public List<RoomStatusCount> getStatusCount() {
+        return roomRepo.getStatusCount();
+    }
 }
