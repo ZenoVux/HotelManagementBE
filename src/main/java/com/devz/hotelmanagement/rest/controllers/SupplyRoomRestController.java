@@ -20,7 +20,12 @@ public class SupplyRoomRestController {
     public List<SupplyRoom> getAll() {
         return supplyRoomService.findAll();
     }
-
+    
+    @GetMapping("/{code}")
+    public List<SupplyRoom> getByCodeRoom(@PathVariable("code") String code) {
+        return supplyRoomService.findByCodeRoom(code);
+    }
+    
     @PostMapping
     public SupplyRoom create(@RequestBody SupplyRoom supplyRoom) {
         return supplyRoomService.create(supplyRoom);

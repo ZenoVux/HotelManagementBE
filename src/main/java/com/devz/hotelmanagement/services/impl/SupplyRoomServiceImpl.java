@@ -32,7 +32,7 @@ public class SupplyRoomServiceImpl implements SupplyRoomService {
 
     @Override
     public SupplyRoom findByCode(String code) {
-        return null;
+    	return null;
     }
 
     @Override
@@ -45,4 +45,10 @@ public class SupplyRoomServiceImpl implements SupplyRoomService {
     public SupplyRoom update(SupplyRoom supplyRoom) {
         return supplyRoomRepo.save(supplyRoom);
     }
+
+	@Override
+	public List<SupplyRoom> findByCodeRoom(String code) {
+		return supplyRoomRepo.findByCodeRoom(code);
+	}
+
 }
