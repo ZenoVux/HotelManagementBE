@@ -35,4 +35,9 @@ public class SupplyRoomRestController {
     public SupplyRoom update(@RequestBody SupplyRoom supplyRoom) {
         return supplyRoomService.update(supplyRoom);
     }
+    
+    @DeleteMapping("{id}")
+    public void deleteByID(@PathVariable("id") Integer id) {
+    	supplyRoomService.deleteById(id);
+    }
 }

@@ -49,4 +49,15 @@ public class BedRoomServiceImpl implements BedRoomService {
         return bedRoomRepo.getBedRoomsByRoomId(id);
     }
 
+	@Override
+	public List<BedRoom> findByCodeRoom(String code) {
+		return bedRoomRepo.findByCodeRoom(code);
+	}
+
+	@Override
+	public void deleteById(Integer id) {
+		bedRoomRepo.deleteById(id);
+		
+	}
+
 }

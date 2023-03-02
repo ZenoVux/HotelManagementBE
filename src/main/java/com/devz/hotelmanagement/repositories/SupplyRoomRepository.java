@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SupplyRoomRepository extends JpaRepository<SupplyRoom, Integer> {
-
 	@Query("SELECT p FROM SupplyRoom p WHERE p.room.code=?1")
 	List<SupplyRoom> findByCodeRoom(String code);
-
 }

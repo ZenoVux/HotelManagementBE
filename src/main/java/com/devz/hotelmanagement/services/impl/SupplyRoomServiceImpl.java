@@ -51,4 +51,10 @@ public class SupplyRoomServiceImpl implements SupplyRoomService {
 		return supplyRoomRepo.findByCodeRoom(code);
 	}
 
+	@Override
+	public void deleteById(Integer id) {
+		supplyRoomRepo.deleteById(id);
+		
+	}
+
 }
