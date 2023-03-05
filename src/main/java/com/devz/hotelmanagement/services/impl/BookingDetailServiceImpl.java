@@ -46,4 +46,12 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         return bookingDetailRepo.save(bookingDetail);
     }
 
+    @Override
+    public BookingDetail findByCheckinRoomCode(String code) {
+        Optional<BookingDetail> optional = bookingDetailRepo.findByCheckinRoomCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
 }

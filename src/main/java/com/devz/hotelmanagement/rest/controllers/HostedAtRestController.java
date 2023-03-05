@@ -3,13 +3,7 @@ package com.devz.hotelmanagement.rest.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.devz.hotelmanagement.entities.HostedAt;
 import com.devz.hotelmanagement.services.HostedAtService;
@@ -35,5 +29,10 @@ public class HostedAtRestController {
     @PutMapping
     public HostedAt update(@RequestBody HostedAt hostedAt) {
         return hostedAtService.update(hostedAt);
+    }
+
+    @GetMapping("/booking-detail/{id}")
+    public List<HostedAt> findAllByBookingDetailId(@PathVariable("id") Integer id) {
+        return hostedAtService.findAllByBookingDetailId(id);
     }
 }

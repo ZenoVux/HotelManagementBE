@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
+import com.devz.hotelmanagement.entities.HostedAt;
 import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.repositories.UsedServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,10 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     @Override
     public UsedService update(UsedService usedService) {
         return usedServiceRepository.save(usedService);
+    }
+
+    @Override
+    public List<UsedService> findAllByBookingDetailId(Integer id) {
+        return usedServiceRepository.findAllByBookingDetailId(id);
     }
 }
