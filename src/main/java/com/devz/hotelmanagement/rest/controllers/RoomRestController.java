@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -25,7 +26,7 @@ public class RoomRestController {
     @GetMapping("/{id}")
     public ResponseEntity<Room> getOne(@PathVariable("id") Integer id) {
         Room room = roomService.findById(id);
-        if (room != null){
+        if (room != null) {
             return ResponseEntity.ok(room);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -35,7 +36,7 @@ public class RoomRestController {
     public Room getByCode(@PathVariable("code") String code) {
         return roomService.findByCode(code);
     }
-    
+
     @PostMapping
     public Room create(@RequestBody Room room) {
         return roomService.create(room);
@@ -49,5 +50,13 @@ public class RoomRestController {
     @GetMapping("/status-count")
     public List<RoomStatusCount> getStatusCount() {
         return roomService.getStatusCount();
+    }
+
+    @GetMapping("/floor/{id}")
+    public ResponseEntity<List<Room>> getByFlooId(@PathVariable("id") Optional<Integer> id) {
+        if (id.isPresent()) {
+            return ResponseEntity.ok(roomService.getByFloorId(id.get()));
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

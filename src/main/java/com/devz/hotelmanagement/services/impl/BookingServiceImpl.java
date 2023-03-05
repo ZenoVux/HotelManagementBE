@@ -46,4 +46,8 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepo.save(booking);
     }
 
+    @Override
+    public List<Object[]> getInfoRoomBooking() {
+        return null;
+    }
 }

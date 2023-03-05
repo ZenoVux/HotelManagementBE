@@ -56,4 +56,9 @@ public class RoomServiceImpl implements RoomService {
     public List<RoomStatusCount> getStatusCount() {
         return roomRepo.getStatusCount();
     }
+
+    @Override
+    public List<Room> getByFloorId(int id) {
+        return roomRepo.getByFloorId(id);
+    }
 }
