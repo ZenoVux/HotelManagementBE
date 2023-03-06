@@ -26,5 +26,5 @@ public class ServiceRoom extends EntityBase {
     private String description;
 
     @Column()
-    private Integer status;
+    private Boolean status;
 }

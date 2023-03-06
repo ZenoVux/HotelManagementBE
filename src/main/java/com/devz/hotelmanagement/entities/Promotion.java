@@ -27,14 +27,14 @@ public class Promotion extends EntityBase {
     @Column(name = "max_discount")
     private Double maxDiscount;
 
-    @Column(name = "min_discount")
-    private Double minDiscount;
+    @Column(name = "min_amount")
+    private Double minAmount;
 
     @Column()
     private String description;
 
     @Column()
-    private Integer status;
+    private Boolean status;
 
     @JsonIgnore
     @OneToMany(mappedBy = "promotion")
