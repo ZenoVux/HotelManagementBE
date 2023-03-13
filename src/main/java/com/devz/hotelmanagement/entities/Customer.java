@@ -30,6 +30,9 @@ public class Customer extends EntityBase {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column
+    private Boolean gender;
+
     @Column(name = "people_id")
     private String peopleId;
 
