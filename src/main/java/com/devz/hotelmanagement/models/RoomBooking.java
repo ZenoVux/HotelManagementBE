@@ -1,26 +1,37 @@
 package com.devz.hotelmanagement.models;
 
+import com.devz.hotelmanagement.entities.Room;
+import com.devz.hotelmanagement.entities.RoomType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class RoomBooking {
 
-    @Id
-    String name; //Loại phòng + loại giường + số lượnng
+    RoomType roomType;
 
-    Integer maxAdults;
+    String name;
 
-    Integer maxChild;
+    String image;
 
-    Integer quantity;
+    Long quantity;
 
-    Double price;
+    BigDecimal maxAdults;
+
+    BigDecimal maxChilds;
+
+    List<Room> listRooms;
+
+    Double minPrice;
+
+    Double maxPrice;
 
 }

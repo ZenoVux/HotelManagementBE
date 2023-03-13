@@ -19,8 +19,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     @Query("SELECT new com.devz.hotelmanagement.models.RoomStatusCount(r.status, COUNT(r)) FROM Room r GROUP BY r.status")
     List<RoomStatusCount> getStatusCount();
 
-    @Query("SELECT room FROM Room room WHERE room.roomType.code = :roomType")
-    List<Room> getRoomBookings(@Param("roomType") String roomType);
+
 
     @Query("SELECT room FROM Room room WHERE room.floor.id = :id")
     List<Room> getByFloorId(int id);
