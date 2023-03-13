@@ -7,7 +7,5 @@ import java.util.List;
 
 public interface RoomService extends ServiceBase<Room> {
 
-    List<Room> getRoomBookings(String roomTypeCode);
-
     List<RoomStatusCount> getStatusCount();
 }

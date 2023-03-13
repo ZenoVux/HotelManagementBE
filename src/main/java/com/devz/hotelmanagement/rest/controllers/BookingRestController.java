@@ -2,15 +2,14 @@ package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.*;
 import com.devz.hotelmanagement.models.RoomBooking;
-import com.devz.hotelmanagement.services.BedRoomService;
-import com.devz.hotelmanagement.services.BookingService;
-import com.devz.hotelmanagement.services.RoomService;
-import com.devz.hotelmanagement.services.RoomTypeService;
+import com.devz.hotelmanagement.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 @CrossOrigin("*")
 @RestController
@@ -24,6 +23,9 @@ public class BookingRestController {
     private RoomService roomService;
 
     @Autowired
+    private BedTypeService bedTypeService;
+
+    @Autowired
     private RoomTypeService roomTypeService;
 
     @Autowired
@@ -34,31 +36,51 @@ public class BookingRestController {
         return bookingService.findAll();
     }
 
-    @GetMapping("/rooms")
-    public List<RoomBooking> getRoomBooking(){
-        List<RoomBooking> roomBookings = new ArrayList<>();
-        List<RoomType> roomTypes = roomTypeService.findAll();
-        List<Room> rooms = roomService.getRoomBookings("standard");
-        List<BedRoom> bedRooms = bedRoomService.getBedRoomsByRoomId(44);
+    @GetMapping("/info")
+    public List<RoomBooking> getInfoRoomBooking(
+            @RequestParam("checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkinDate,
+            @RequestParam("checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkoutDate,
+            @RequestParam("roomType") String roomType
+    ){
 
-        String rbName = "";
-        Double rbPrice = 0.0;
-        RoomBooking roomBooking = new RoomBooking();
-        for (Room room : rooms) {
+        if(roomType == "") roomType = null;
 
-            rbName = "Phòng " + room.getRoomType().getName()
-                    + " | ";
-            for (BedRoom bedRoom : bedRooms) {
-                rbName = rbName + bedRoom.getQuantityBed() + " " + bedRoom.getBedType().getName() + " ";
-                rbPrice = room.getPrice();
+        List<RoomBooking> roomTypeBookingList = new ArrayList<>();
+        List<Object[]> infoRoomBooking = bookingService.getInfoRoomBooking(roomType,checkinDate,checkoutDate);
+
+        for (Object[] bookingInfo : infoRoomBooking) {
+            RoomBooking roomBooking = new RoomBooking();
+            roomBooking.setRoomType(roomTypeService.getRoomTypeByCode((String)bookingInfo[2]));
+            roomBooking.setName((String)bookingInfo[0]);
+            roomBooking.setQuantity((Long)bookingInfo[1]);
+
+            List<Integer> roomIds = bookingService.getRoomsByTimeBooking((String)bookingInfo[0], checkinDate, checkoutDate);
+            List<Room> roomList = new ArrayList<>();
+            for (Integer roomId : roomIds) {
+                Room room = roomService.findById(roomId);
+                if (room != null) {
+                    roomList.add(room);
+                }
             }
+            roomBooking.setListRooms(roomList);
 
+            List<Double> roomPrices = new ArrayList<>();
+            for (Room room : roomList) {
+                Double price = room.getPrice();
+                if (price != null) {
+                    roomPrices.add(price);
+                }
+            }
+            Double minPrice = roomPrices.isEmpty() ? 0.0 : Collections.min(roomPrices);
+            Double maxPrice = roomPrices.isEmpty() ? 0.0 : Collections.max(roomPrices);
+            roomBooking.setMinPrice(minPrice);
+            roomBooking.setMaxPrice(maxPrice);
+            roomBooking.setMaxAdults((BigDecimal)bookingInfo[3]);
+            roomBooking.setMaxChilds((BigDecimal)bookingInfo[4]);
+            roomTypeBookingList.add(roomBooking);
         }
-        roomBooking.setName(rbName);
-        roomBooking.setQuantity(rooms.size());
-        roomBooking.setPrice(rbPrice);
-        roomBookings.add(roomBooking);
-        return roomBookings;
+
+        return roomTypeBookingList;
     }
 
     @PostMapping

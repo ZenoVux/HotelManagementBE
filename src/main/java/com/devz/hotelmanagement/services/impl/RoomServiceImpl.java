@@ -48,10 +48,6 @@ public class RoomServiceImpl implements RoomService {
         return roomRepo.save(room);
     }
 
-    public List<Room> getRoomBookings(String roomTypeCode){
-        return roomRepo.getRoomBookings(roomTypeCode);
-    }
-
     @Override
     public List<RoomStatusCount> getStatusCount() {
         return roomRepo.getStatusCount();
