@@ -1,6 +1,7 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.Room;
+import com.devz.hotelmanagement.models.HotelRoom;
 import com.devz.hotelmanagement.models.RoomStatusCount;
 import com.devz.hotelmanagement.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,11 @@ public class RoomRestController {
     @GetMapping("/status-count")
     public List<RoomStatusCount> getStatusCount() {
         return roomService.getStatusCount();
+    }
+
+    @GetMapping("/hotel-room")
+    public List<HotelRoom> getHotelRoom() {
+        return roomService.getHotelRoom();
     }
 
     @GetMapping("/floor/{id}")

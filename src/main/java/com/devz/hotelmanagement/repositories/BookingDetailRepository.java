@@ -14,8 +14,7 @@ import java.util.Optional;
 public interface BookingDetailRepository extends JpaRepository<BookingDetail, Integer> {
 
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.room.code = :code " +
-            "AND bd.booking.checkinExpected <= CURRENT_DATE " +
-            "AND bd.booking.checkoutExpected >= CURRENT_DATE " +
+            "AND bd.booking.checkinExpected = CURRENT_DATE " +
             "AND bd.room.status = 0")
     Optional<BookingDetail> findByCheckinRoomCode(@Param("code") String code);
 
