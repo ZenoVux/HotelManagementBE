@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Object[]> getInfoRoomBooking() {
-        return null;
+    public List<Object[]> getInfoRoomBooking(String roomType, Date checkinDate, Date checkoutDate) {
+        return bookingRepo.getInfoRoomBooking(roomType, checkinDate, checkoutDate);
+    }
+
+    @Override
+    public List<Integer> getRoomsByTimeBooking(String categoryName, Date checkinDate, Date checkoutDate) {
+        return bookingRepo.getRoomsByTimeBooking(categoryName, checkinDate, checkoutDate);
     }
 }

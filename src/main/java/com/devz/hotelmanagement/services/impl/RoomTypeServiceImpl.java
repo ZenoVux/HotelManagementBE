@@ -45,4 +45,9 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     public RoomType update(RoomType roomType) {
         return roomTypeRepo.save(roomType);
     }
+
+    @Override
+    public RoomType getRoomTypeByCode(String code) {
+        return roomTypeRepo.findByCode(code);
+    }
 }
