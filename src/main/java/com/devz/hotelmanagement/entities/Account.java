@@ -18,7 +18,7 @@ public class Account extends EntityBase {
     @Column(name = "full_name")
     private String fullName;
 
-    @Column()
+    @Column(unique = true)
     private String username;
 
     @JsonIgnore
