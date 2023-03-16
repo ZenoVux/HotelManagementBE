@@ -43,7 +43,7 @@ public class StorageRestController {
         return file.getOriginalFilename();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{fileName}")
     public void delete(@PathVariable("fileName") String fileName) {
         storageService.deleteFile(fileName);
     }

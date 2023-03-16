@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -29,6 +30,12 @@ public class Promotion extends EntityBase {
 
     @Column(name = "min_amount")
     private Double minAmount;
+
+    @Column(name = "stated_date")
+    private Date startedDate;
+
+    @Column(name = "ended_date")
+    private Date endedDate;
 
     @Column()
     private String description;
