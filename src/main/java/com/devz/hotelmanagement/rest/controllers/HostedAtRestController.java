@@ -31,6 +31,11 @@ public class HostedAtRestController {
         return hostedAtService.update(hostedAt);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Integer id) {
+        hostedAtService.delete(id);
+    }
+
     @GetMapping("/booking-detail/{id}")
     public List<HostedAt> findAllByBookingDetailId(@PathVariable("id") Integer id) {
         return hostedAtService.findAllByBookingDetailId(id);
