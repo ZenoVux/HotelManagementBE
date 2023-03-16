@@ -19,7 +19,11 @@ public class RoomImageRestController {
     public List<RoomImage> getAll() {
         return roomImageService.findAll();
     }
-
+    
+    @GetMapping("/{codeRoom}")
+    public List<RoomImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+        return roomImageService.getListByCodeRoom(codeRoom);
+    }
     @PostMapping
     public RoomImage create(@RequestBody RoomImage roomImage) {
         return roomImageService.create(roomImage);
@@ -28,5 +32,10 @@ public class RoomImageRestController {
     @PutMapping
     public RoomImage update(@RequestBody RoomImage roomImage) {
         return roomImageService.update(roomImage);
+    }
+    
+    @DeleteMapping("/{id}")
+    public void deleteByID(@PathVariable("id") Integer id) {
+        roomImageService.deleteById(id);
     }
 }
