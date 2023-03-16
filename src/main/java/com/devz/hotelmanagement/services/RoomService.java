@@ -12,4 +12,5 @@ public interface RoomService extends ServiceBase<Room> {
     List<RoomStatusCount> getStatusCount();
 
     List<Room> getByFloorId(int id);
+  
 }

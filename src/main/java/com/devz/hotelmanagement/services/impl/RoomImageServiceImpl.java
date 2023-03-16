@@ -33,7 +33,7 @@ public class RoomImageServiceImpl implements RoomImageService {
     @Override
     public RoomImage findByCode(String code) {
         return null;
-    }
+    }	
 
     @Override
     public RoomImage create(RoomImage roomImage) {
@@ -45,4 +45,14 @@ public class RoomImageServiceImpl implements RoomImageService {
     public RoomImage update(RoomImage roomImage) {
         return roomImageRepo.save(roomImage);
     }
+
+	@Override
+	public List<RoomImage> getListByCodeRoom(String codeRoom) {
+		return roomImageRepo.getListByCodeRoom(codeRoom);
+	}
+
+	@Override
+	public void deleteById(Integer id) {
+		roomImageRepo.deleteById(id);;
+	}
 }
