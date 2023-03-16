@@ -15,7 +15,7 @@ public class EntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column()
+    @Column(unique = true)
     private String code;
 
 }
