@@ -50,4 +50,9 @@ public class HostedAtServiceImpl implements HostedAtService {
     public List<HostedAt> findAllByBookingDetailId(Integer id) {
         return hostedAtRepo.findAllByBookingDetailId(id);
     }
+
+    @Override
+    public void delete(Integer id) {
+        hostedAtRepo.deleteById(id);
+    }
 }

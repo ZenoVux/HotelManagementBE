@@ -31,6 +31,11 @@ public class UsedServiceRestController {
         return usedServiceService.update(usedService);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Integer id) {
+        usedServiceService.delete(id);
+    }
+
     @GetMapping("/booking-detail/{id}")
     public List<UsedService> findAllByBookingDetailId(@PathVariable("id") Integer id) {
         return usedServiceService.findAllByBookingDetailId(id);
