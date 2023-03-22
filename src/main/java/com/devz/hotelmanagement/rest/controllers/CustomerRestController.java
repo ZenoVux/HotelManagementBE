@@ -2,7 +2,10 @@ package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.services.CustomerService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +39,17 @@ public class CustomerRestController {
     @PutMapping
     public Customer update(@RequestBody Customer customer) {
         return customerService.update(customer);
+    }
+
+
+    @GetMapping("/search-by-people-id/{id}")
+    public ResponseEntity<Customer> searchByPeopleId(@PathVariable("id") String id) {
+        Customer customer = customerService.searchByPeopleId(id);
+        System.out.println(id);
+        if (customer != null) {
+            return ResponseEntity.ok(customer);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

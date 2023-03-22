@@ -17,7 +17,7 @@ import java.util.List;
 public class Invoice extends EntityBase {
 
     @Column()
-    private Double amount;
+    private Double total;
 
     @Column(name = "created_date")
     private Date createdDate;

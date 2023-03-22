@@ -48,6 +48,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Customer searchByPeopleId(String peopleId) {
+        Optional<Customer> optional = customerRepo.searchByPeopleId(peopleId);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
+    @Override
     public Customer findByPhoneNumber(String phoneNumber) {
         return customerRepo.findByPhoneNumber(phoneNumber);
     }

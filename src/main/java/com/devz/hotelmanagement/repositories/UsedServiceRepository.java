@@ -13,6 +13,9 @@ import java.util.List;
 @Repository
 public interface UsedServiceRepository extends JpaRepository<UsedService, Integer> {
 
-    @Query("SELECT u FROM UsedService u WHERE u.bookingDetail.id = :id")
-    List<UsedService> findAllByBookingDetailId(@Param("id") Integer id);
+    @Query("SELECT u FROM UsedService u WHERE u.bookingDetail.code = :code")
+    List<UsedService> findAllByBookingDetailCode(@Param("code") String code);
+
+    @Query("SELECT u FROM UsedService u WHERE u.invoiceDetail.id = :id")
+    List<UsedService> findAllByInvoiceDetailId(Integer id);
 }

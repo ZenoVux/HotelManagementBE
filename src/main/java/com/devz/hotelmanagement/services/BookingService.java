@@ -12,6 +12,7 @@ public interface BookingService extends ServiceBase<Booking> {
 
     List<Integer> getRoomsByTimeBooking(String categoryName, Date checkinDate, Date checkoutDate);
 
+    Booking findByInvoiceCode(String code);
     List<Object[]> getBooking();
 
 }

@@ -133,4 +133,13 @@ public class BookingRestController {
     public Booking update(@RequestBody Booking booking) {
         return bookingService.update(booking);
     }
+
+    @GetMapping("/invoice-code/{code}")
+    public ResponseEntity<Booking> findByInvoiceCode(@PathVariable("code") String code){
+        Booking booking = bookingService.findByInvoiceCode(code);
+        if (booking != null) {
+            return ResponseEntity.ok(booking);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 }

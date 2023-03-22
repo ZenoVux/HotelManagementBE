@@ -1,6 +1,5 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import com.devz.hotelmanagement.entities.HostedAt;
 import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.services.UsedServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,13 @@ public class UsedServiceRestController {
         usedServiceService.delete(id);
     }
 
-    @GetMapping("/booking-detail/{id}")
-    public List<UsedService> findAllByBookingDetailId(@PathVariable("id") Integer id) {
-        return usedServiceService.findAllByBookingDetailId(id);
+    @GetMapping("/booking-detail-code/{code}")
+    public List<UsedService> findAllByBookingDetailCode(@PathVariable("code") String code) {
+        return usedServiceService.findAllByBookingDetailCode(code);
+    }
+
+    @GetMapping("/invoice-detail/{id}")
+    public List<UsedService> findAllByInvoiceDetailId(@PathVariable("id") Integer id) {
+        return usedServiceService.findByInvoiceDetailId(id);
     }
 }

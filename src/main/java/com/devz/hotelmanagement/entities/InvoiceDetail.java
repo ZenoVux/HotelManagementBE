@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,6 +20,11 @@ public class InvoiceDetail extends EntityBase {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "booking_detail_id")
+    private BookingDetail bookingDetail;
+
     @ManyToOne
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
@@ -28,6 +34,27 @@ public class InvoiceDetail extends EntityBase {
 
     @Column(name = "num_children")
     private Integer numChildren;
+
+    @Column
+    private Date checkin;
+
+    @Column
+    private Date checkout;
+
+    @Column
+    private Double total;
+
+    @Column(name = "total_room_fee")
+    private Double totalRoomFee;
+
+    @Column(name = "total_service_fee")
+    private Double totalServiceFee;
+
+    @Column(name = "late_checkout_fee")
+    private Double lateCheckoutFee;
+
+    @Column(name = "early_checkin_fee")
+    private Double earlyCheckinFee;
 
     @Column
     private String note;

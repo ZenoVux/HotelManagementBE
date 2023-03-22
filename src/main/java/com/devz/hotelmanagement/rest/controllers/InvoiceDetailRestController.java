@@ -33,13 +33,10 @@ public class InvoiceDetailRestController {
         return invoiceDetailService.update(invoiceDetail);
     }
 
-    @GetMapping("/checkout-room/{code}")
-    public ResponseEntity<InvoiceDetail> getByCheckoutRoomCode(@PathVariable("code") String code) {
-        InvoiceDetail invoiceDetail = invoiceDetailService.findByCheckoutRoomCode(code);
-        if (invoiceDetail != null) {
-            return ResponseEntity.ok(invoiceDetail);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    @GetMapping("/invoice-code/{code}")
+    public List<InvoiceDetail> findByInvoiceCode(@PathVariable("code") String code) {
+        return invoiceDetailService.findByInvoiceCode(code);
     }
 
 }

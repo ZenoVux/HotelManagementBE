@@ -38,6 +38,6 @@ public class HostedAtRestController {
 
     @GetMapping("/booking-detail/{id}")
     public List<HostedAt> findAllByBookingDetailId(@PathVariable("id") Integer id) {
-        return hostedAtService.findAllByBookingDetailId(id);
+        return hostedAtService.findByBookingDetailId(id);
     }
 }

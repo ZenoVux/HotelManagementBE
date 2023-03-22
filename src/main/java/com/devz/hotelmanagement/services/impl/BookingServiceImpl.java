@@ -59,6 +59,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public Booking findByInvoiceCode(String code) {
+        Optional<Booking> optional = bookingRepo.findByInvoiceCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
+    @Override
     public List<Object[]> getBooking() {
         return bookingRepo.getBooking();
     }

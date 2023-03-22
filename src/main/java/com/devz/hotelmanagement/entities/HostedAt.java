@@ -29,6 +29,4 @@ public class HostedAt extends EntityBase {
     @Column
     private Date checkin;
 
-    @Column(name = "checkout")
-    private Date checkout;
 }

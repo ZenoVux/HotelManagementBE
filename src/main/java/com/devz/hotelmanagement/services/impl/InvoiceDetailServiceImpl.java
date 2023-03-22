@@ -1,6 +1,5 @@
 package com.devz.hotelmanagement.services.impl;
 
-import com.devz.hotelmanagement.entities.BookingDetail;
 import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.repositories.InvoiceDetailRepository;
 import com.devz.hotelmanagement.services.InvoiceDetailService;
@@ -38,6 +37,17 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
     @Override
     public InvoiceDetail create(InvoiceDetail invoiceDetail) {
         invoiceDetail.setId(null);
+        try {
+            String maxCode = invoiceDetailRepo.getMaxCode();
+            Integer index = 1;
+            if (maxCode != null) {
+                index = Integer.parseInt(maxCode.replace("IVD", ""));
+            }
+            String code = String.format("IVD%05d", index + 1);
+            invoiceDetail.setCode(code);
+        } catch (Exception ex) {
+
+        }
         return invoiceDetailRepo.save(invoiceDetail);
     }
 
@@ -53,5 +63,15 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
             return optional.get();
         }
         return null;
+    }
+
+    @Override
+    public List<InvoiceDetail> findByInvoiceCode(String code) {
+        return invoiceDetailRepo.findByInvoiceCode(code);
+    }
+
+    @Override
+    public void updateAll(List<InvoiceDetail> invoiceDetails) {
+        invoiceDetailRepo.saveAll(invoiceDetails);
     }
 }
