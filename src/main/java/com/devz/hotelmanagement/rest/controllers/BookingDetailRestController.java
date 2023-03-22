@@ -41,4 +41,13 @@ public class BookingDetailRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/checkout-room/{code}")
+    public ResponseEntity<BookingDetail> getByCheckoutRoomCode(@PathVariable("code") String code) {
+        BookingDetail bookingDetail = bookingDetailService.findByCheckedinRoomCode(code);
+        if (bookingDetail != null) {
+            return ResponseEntity.ok(bookingDetail);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

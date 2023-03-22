@@ -38,6 +38,17 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     @Override
     public BookingDetail create(BookingDetail bookingDetail) {
         bookingDetail.setId(null);
+        try {
+            String maxCode = bookingDetailRepo.getMaxCode();
+            Integer index = 1;
+            if (maxCode != null) {
+                index = Integer.parseInt(maxCode.replace("BKD", ""));
+            }
+            String code = String.format("BKD%05d", index + 1);
+            bookingDetail.setCode(code);
+        } catch (Exception ex) {
+
+        }
         return bookingDetailRepo.save(bookingDetail);
     }
 
@@ -54,4 +65,23 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         }
         return null;
     }
+
+    @Override
+    public BookingDetail findByCheckedinRoomCode(String code) {
+        Optional<BookingDetail> optional = bookingDetailRepo.findByCheckedinRoomCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
+    @Override
+    public BookingDetail findByInvoiceDetailId(Integer id) {
+        Optional<BookingDetail> optional = bookingDetailRepo.findByInvoiceDetailId(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
 }

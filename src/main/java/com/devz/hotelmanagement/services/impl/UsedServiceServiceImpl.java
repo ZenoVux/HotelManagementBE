@@ -48,12 +48,22 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     }
 
     @Override
-    public List<UsedService> findAllByBookingDetailId(Integer id) {
-        return usedServiceRepository.findAllByBookingDetailId(id);
+    public List<UsedService> findAllByBookingDetailCode(String code) {
+        return usedServiceRepository.findAllByBookingDetailCode(code);
+    }
+
+    @Override
+    public List<UsedService> findByInvoiceDetailId(Integer id) {
+        return usedServiceRepository.findAllByInvoiceDetailId(id);
     }
 
     @Override
     public void delete(Integer id) {
         usedServiceRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateAll(List<UsedService> usedServices) {
+        usedServiceRepository.saveAll(usedServices);
     }
 }

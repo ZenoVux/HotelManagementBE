@@ -11,6 +11,7 @@ import com.devz.hotelmanagement.entities.Booking;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
@@ -29,4 +30,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             @Param("checkoutDate") Date checkoutDate
     );
 
+    @Query("SELECT b FROM Booking b JO")
+    Optional<Booking> findByInvoiceCode(String code);
 }

@@ -56,4 +56,13 @@ public class BookingServiceImpl implements BookingService {
     public List<Integer> getRoomsByTimeBooking(String categoryName, Date checkinDate, Date checkoutDate) {
         return bookingRepo.getRoomsByTimeBooking(categoryName, checkinDate, checkoutDate);
     }
+
+    @Override
+    public Booking findByInvoiceCode(String code) {
+        Optional<Booking> optional = bookingRepo.findByInvoiceCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
 }

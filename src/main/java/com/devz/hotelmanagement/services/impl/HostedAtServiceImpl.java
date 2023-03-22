@@ -47,12 +47,22 @@ public class HostedAtServiceImpl implements HostedAtService {
     }
 
     @Override
-    public List<HostedAt> findAllByBookingDetailId(Integer id) {
-        return hostedAtRepo.findAllByBookingDetailId(id);
+    public List<HostedAt> findByBookingDetailId(Integer id) {
+        return hostedAtRepo.findByBookingDetailId(id);
     }
 
     @Override
     public void delete(Integer id) {
         hostedAtRepo.deleteById(id);
+    }
+
+    @Override
+    public void updateAll(List<HostedAt> hostedAts) {
+        hostedAtRepo.saveAll(hostedAts);
+    }
+
+    @Override
+    public List<HostedAt> findByInvoiceDetailId(Integer id) {
+        return hostedAtRepo.findByInvoiceDetailId(id);
     }
 }

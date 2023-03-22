@@ -47,4 +47,12 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepo.save(customer);
     }
 
+    @Override
+    public Customer searchByPeopleId(String peopleId) {
+        Optional<Customer> optional = customerRepo.searchByPeopleId(peopleId);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomStatusCount {
+public class StatusCount {
 
     private Integer status;
     private Long count;

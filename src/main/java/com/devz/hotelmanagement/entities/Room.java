@@ -16,9 +16,6 @@ import java.util.List;
 public class Room extends EntityBase {
 
     @Column()
-    private Integer number;
-
-    @Column()
     private Double price;
 
     @Column(name = "max_adults_add")

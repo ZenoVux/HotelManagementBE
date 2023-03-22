@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface HostedAtService extends ServiceBase<HostedAt> {
 
-    List<HostedAt> findAllByBookingDetailId(Integer id);
+    List<HostedAt> findByBookingDetailId(Integer id);
 
     void delete(Integer id);
+
+    void updateAll(List<HostedAt> hostedAts);
+
+    List<HostedAt> findByInvoiceDetailId(Integer id);
 }

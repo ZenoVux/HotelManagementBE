@@ -6,6 +6,8 @@ import com.devz.hotelmanagement.services.*;
 import com.devz.hotelmanagement.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,5 +94,14 @@ public class BookingRestController {
     @PutMapping
     public Booking update(@RequestBody Booking booking) {
         return bookingService.update(booking);
+    }
+
+    @GetMapping("/invoice-code/{code}")
+    public ResponseEntity<Booking> findByInvoiceCode(@PathVariable("code") String code){
+        Booking booking = bookingService.findByInvoiceCode(code);
+        if (booking != null) {
+            return ResponseEntity.ok(booking);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
