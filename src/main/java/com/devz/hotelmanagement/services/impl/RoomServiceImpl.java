@@ -2,6 +2,7 @@ package com.devz.hotelmanagement.services.impl;
 
 import com.devz.hotelmanagement.entities.*;
 import com.devz.hotelmanagement.models.HotelRoom;
+import com.devz.hotelmanagement.models.RoomStatus;
 import com.devz.hotelmanagement.models.StatusCount;
 import com.devz.hotelmanagement.repositories.RoomRepository;
 import com.devz.hotelmanagement.services.*;
@@ -72,6 +73,8 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void updateStatus(String code, Integer status) {
         roomRepo.updateRoomStatusByCode(code, status);
+    }
+
     public List<Room> findByIds(List<Integer> roomIds) {
         return roomRepo.findAllById(roomIds);
     }

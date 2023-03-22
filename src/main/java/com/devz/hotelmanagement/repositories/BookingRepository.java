@@ -31,8 +31,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             @Param("checkoutDate") Date checkoutDate
     );
 
-    @Query("SELECT b FROM Booking b JO")
-    Optional<Booking> findByInvoiceCode(String code);
+    @Query("SELECT b FROM Booking b WHERE b.code = :code")
+    Optional<Booking> findByInvoiceCode(@Param("code") String code);
 
     @Query(value= "CALL GET_INFO_BOOKING", nativeQuery = true)
     List<Object[]> getBooking();
