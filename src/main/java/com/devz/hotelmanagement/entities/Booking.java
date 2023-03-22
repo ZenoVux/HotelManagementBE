@@ -33,6 +33,10 @@ public class Booking extends EntityBase {
     @Column(name = "checkout_expected")
     private Date checkoutExpected;
 
+    @ManyToOne
+    @JoinColumn(name = "payment_id")
+    private PaymentMethod paymentMethod;
+
     @Column
     private String note;
 
