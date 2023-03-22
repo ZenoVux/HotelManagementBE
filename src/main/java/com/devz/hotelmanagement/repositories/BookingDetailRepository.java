@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.devz.hotelmanagement.entities.BookingDetail;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,5 +18,8 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
             "AND bd.booking.checkinExpected = CURRENT_DATE " +
             "AND bd.room.status = 0")
     Optional<BookingDetail> findByCheckinRoomCode(@Param("code") String code);
+
+    @Query("SELECT bd FROM BookingDetail bd WHERE bd.booking.id = :id")
+    List<BookingDetail> findByBookingId(@Param("id") Integer id);
 
 }

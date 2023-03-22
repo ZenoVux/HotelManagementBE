@@ -47,4 +47,8 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepo.save(customer);
     }
 
+    @Override
+    public Customer findByPhoneNumber(String phoneNumber) {
+        return customerRepo.findByPhoneNumber(phoneNumber);
+    }
 }

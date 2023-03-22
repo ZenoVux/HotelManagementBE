@@ -45,4 +45,9 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     public PaymentMethod update(PaymentMethod paymentMethod) {
         return paymentMethodRepo.save(paymentMethod);
     }
+
+    @Override
+    public List<PaymentMethod> findPaymentInUse() {
+        return paymentMethodRepo.findPaymentInUse();
+    }
 }

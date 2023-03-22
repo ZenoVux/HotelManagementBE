@@ -1,6 +1,7 @@
 package com.devz.hotelmanagement.repositories;
 
 import com.devz.hotelmanagement.entities.Room;
+import com.devz.hotelmanagement.models.BookingInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -28,5 +29,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             @Param("checkinDate") Date checkinDate,
             @Param("checkoutDate") Date checkoutDate
     );
+
+    @Query(value= "CALL GET_INFO_BOOKING", nativeQuery = true)
+    List<Object[]> getBooking();
+
+    @Query(value = "SELECT b FROM Booking b WHERE b.code = :code")
+    Booking findByCode(@Param("code") String code);
 
 }

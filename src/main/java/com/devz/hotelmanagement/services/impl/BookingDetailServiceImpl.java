@@ -54,4 +54,15 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         }
         return null;
     }
+
+    @Override
+    public List<BookingDetail> createAll(List bookingDetails) {
+        return bookingDetailRepo.saveAll(bookingDetails);
+    }
+
+    @Override
+    public List<BookingDetail> findByBookingId(Integer id) {
+        return bookingDetailRepo.findByBookingId(id);
+    }
+
 }

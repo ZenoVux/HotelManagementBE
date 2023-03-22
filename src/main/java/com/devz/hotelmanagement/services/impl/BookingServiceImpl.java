@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.devz.hotelmanagement.models.BookingInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking findByCode(String code) {
-        return null;
+        return bookingRepo.findByCode(code);
     }
 
     @Override
@@ -55,5 +56,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Integer> getRoomsByTimeBooking(String categoryName, Date checkinDate, Date checkoutDate) {
         return bookingRepo.getRoomsByTimeBooking(categoryName, checkinDate, checkoutDate);
+    }
+
+    @Override
+    public List<Object[]> getBooking() {
+        return bookingRepo.getBooking();
     }
 }

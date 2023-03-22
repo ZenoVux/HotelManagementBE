@@ -18,7 +18,7 @@ public class PaymentMethodRestController {
 
     @GetMapping
     public List<PaymentMethod> getAll() {
-        return paymentMethodService.findAll();
+        return paymentMethodService.findPaymentInUse();
     }
     @GetMapping("/{id}")
     public PaymentMethod getCustomerById(@PathVariable int id) {

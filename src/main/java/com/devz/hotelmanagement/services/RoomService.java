@@ -15,5 +15,7 @@ public interface RoomService extends ServiceBase<Room> {
 
     List<HotelRoom> getHotelRoom();
 
+    List<Room> findByIds(List<Integer> roomIds);
+
     void updateStatus(RoomStatus roomStatus);
 }

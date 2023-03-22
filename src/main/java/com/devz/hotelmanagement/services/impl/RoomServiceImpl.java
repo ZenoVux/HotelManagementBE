@@ -72,6 +72,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public List<Room> findByIds(List<Integer> roomIds) {
+        return roomRepo.findAllById(roomIds);
+    }
+
+    @Override
     public void updateStatus(RoomStatus roomStatus) {
         roomRepo.updateRoomStatusByCode(roomStatus.getCode(), roomStatus.getStatus());
     }

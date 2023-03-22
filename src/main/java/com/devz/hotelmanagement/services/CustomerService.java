@@ -4,4 +4,6 @@ import com.devz.hotelmanagement.entities.Customer;
 
 public interface CustomerService extends ServiceBase<Customer> {
 
+    Customer findByPhoneNumber(String phoneNumber);
+
 }
