@@ -36,6 +36,9 @@ public class Account extends EntityBase {
 
     @Column()
     private Boolean status;
+    
+    @Column()
+    private String rePasswordToken;
 
     @JsonIgnore
     @OneToMany(mappedBy = "account")
