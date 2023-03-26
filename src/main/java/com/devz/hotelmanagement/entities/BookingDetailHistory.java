@@ -15,14 +15,12 @@ import java.util.Date;
 public class BookingDetailHistory extends EntityBase {
 
     @ManyToOne
-    @JoinColumn(name = "booking_detail_id")
-    private BookingDetail bookingDetail;
+    @JoinColumn(name = "booking_history_id")
+    private BookingHistory bookingHistory;
 
-    @Column(name = "num_adults")
-    private Integer numAdults;
-
-    @Column(name = "num_children")
-    private Integer numChildren;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     @Column
     private String note;

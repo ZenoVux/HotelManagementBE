@@ -136,8 +136,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         InvoiceDetail invoiceDetail = new InvoiceDetail();
         invoiceDetail.setInvoice(invoice);
         invoiceDetail.setRoom(bookingDetail.getRoom());
-        invoiceDetail.setNumAdults(bookingDetail.getNumAdults());
-        invoiceDetail.setNumChildren(bookingDetail.getNumChildren());
+//        invoiceDetail.setNumAdults(bookingDetail.getNumAdults());
+//        invoiceDetail.setNumChildren(bookingDetail.getNumChildren());
         invoiceDetail.setTotalRoomFee(0.0);
         invoiceDetail.setTotalServiceFee(0.0);
         invoiceDetail.setEarlyCheckinFee(0.0);

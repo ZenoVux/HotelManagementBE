@@ -24,12 +24,6 @@ public class BookingDetail extends EntityBase {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @Column(name = "num_adults")
-    private Integer numAdults;
-
-    @Column(name = "num_children")
-    private Integer numChildren;
-
     @Column
     private String note;
 
@@ -39,9 +33,5 @@ public class BookingDetail extends EntityBase {
     @JsonIgnore
     @OneToMany(mappedBy = "bookingDetail")
     private List<HostedAt> hostedAts;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "bookingDetail")
-    private List<BookingDetailHistory> bookingDetailHistories;
 
 }

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -14,12 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bookings")
-public class Booking extends EntityBase {
+@Table(name = "booking_histories")
+public class BookingHistory extends EntityBase {
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 
     @Column(name = "created_date")
     private Date craetedDate;
@@ -39,10 +38,6 @@ public class Booking extends EntityBase {
     @Column(name = "checkout_expected")
     private Date checkoutExpected;
 
-    @ManyToOne
-    @JoinColumn(name = "payment_id")
-    private PaymentMethod paymentMethod;
-
     @Column
     private String note;
 
@@ -50,11 +45,7 @@ public class Booking extends EntityBase {
     private Integer status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "booking")
-    private List<BookingDetail> bookingDetails;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "booking")
-    private List<BookingHistory> bookingHistories;
+    @OneToMany(mappedBy = "bookingHistory")
+    private List<BookingDetailHistory> bookingDetailHistories;
 
 }

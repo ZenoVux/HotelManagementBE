@@ -123,7 +123,7 @@ public class BookingRestController {
 
         List<Room> rooms = List.of(bookingReq.getRooms());
         List<BookingDetail> bookingDetails = rooms.stream()
-                .map(room -> new BookingDetail(room, booking, 0, 0, "", 0, null, null))
+                .map(room -> new BookingDetail(room, booking, "", 0, null))
                 .collect(Collectors.toList());
 
         bookingDetailService.createAll(bookingDetails);
