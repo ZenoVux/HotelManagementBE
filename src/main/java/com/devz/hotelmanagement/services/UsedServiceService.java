@@ -13,4 +13,6 @@ public interface UsedServiceService extends ServiceBase<UsedService> {
     void delete(Integer id);
 
     void updateAll(List<UsedService> usedServices);
+
+    List<UsedService> findAllByBookingDetailId(Integer id);
 }

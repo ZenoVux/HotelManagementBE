@@ -21,6 +21,9 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     @Query("SELECT iv FROM Invoice iv WHERE iv.code = :code")
     Optional<Invoice> findByRoomCode(@Param("code") String code);
 
+    @Query(value = "SELECT * FROM invoices WHERE invoices.booking_id = :id ORDER BY invoices.created_date ASC LIMIT 1", nativeQuery = true)
+    Optional<Invoice>  findFirstByBookingId(@Param("id") Integer id);
+
     @Query(value = "SELECT invoices.code FROM invoices ORDER BY invoices.code DESC LIMIT 1", nativeQuery = true)
     String getMaxCode();
 }

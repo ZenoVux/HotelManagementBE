@@ -18,4 +18,7 @@ public interface UsedServiceRepository extends JpaRepository<UsedService, Intege
 
     @Query("SELECT u FROM UsedService u WHERE u.invoiceDetail.id = :id")
     List<UsedService> findAllByInvoiceDetailId(Integer id);
+
+    @Query("SELECT u FROM UsedService u WHERE u.bookingDetail.id = :id")
+    List<UsedService> findAllByBookingDetailId(Integer id);
 }

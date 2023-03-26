@@ -1,6 +1,5 @@
 package com.devz.hotelmanagement.models;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,10 +11,12 @@ import java.util.Date;
 @AllArgsConstructor
 public class HotelRoom {
 
-    private String roomCode;
-    private String floorName;
-    private String customerName;
+    private String code;
+    private String customer;
+    private Integer bookingDetailId;
+    private Integer invoiceDetailId;
     private Date checkinExpected;
     private Date checkoutExpected;
-    private Integer roomStatus;
+    private Integer status;
+
 }

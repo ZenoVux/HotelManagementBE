@@ -8,6 +8,6 @@ import java.util.List;
 public class Hotel {
 
     private List<StatusCount> statusCounts;
-    private List<HotelRoom2> hotelRooms;
+    private List<HotelRoom> hotelRooms;
 
 }

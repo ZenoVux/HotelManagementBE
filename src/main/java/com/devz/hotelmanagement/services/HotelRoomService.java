@@ -1,17 +1,18 @@
 package com.devz.hotelmanagement.services;
 
-import com.devz.hotelmanagement.entities.Invoice;
 import com.devz.hotelmanagement.entities.InvoiceDetail;
+import com.devz.hotelmanagement.models.CheckinRoomReq;
+import com.devz.hotelmanagement.models.CheckoutRoom;
 import com.devz.hotelmanagement.models.Hotel;
 
 public interface HotelRoomService {
 
     Hotel getHotel();
 
-    InvoiceDetail checkin(String code);
+    InvoiceDetail checkin(CheckinRoomReq checkinRoomReq);
 
     void cancel(String code, String note);
 
-    Invoice checkout(String[] codes);
+    InvoiceDetail checkout(CheckoutRoom checkoutRoom);
 
 }

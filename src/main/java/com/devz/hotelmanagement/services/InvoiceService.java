@@ -6,4 +6,5 @@ public interface InvoiceService extends ServiceBase<Invoice> {
 
     Invoice findCurrByRoomCode(String code);
 
+    Invoice findFirstByBookingId(Integer id);
 }

@@ -47,8 +47,9 @@ public class InvoiceServiceImpl implements InvoiceService {
             Integer index = 1;
             if (maxCode != null) {
                 index = Integer.parseInt(maxCode.replace("IV", ""));
+                index++;
             }
-            String code = String.format("IV%05d", index + 1);
+            String code = String.format("IV%05d", index);
             invoice.setCode(code);
         } catch (Exception ex) {
 
@@ -64,6 +65,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice findCurrByRoomCode(String code) {
         Optional<Invoice> optional = invoiceRepo.findCurrByRoomCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
+    @Override
+    public Invoice findFirstByBookingId(Integer id) {
+        Optional<Invoice> optional = invoiceRepo.findFirstByBookingId(id);
         if (optional.isPresent()) {
             return optional.get();
         }

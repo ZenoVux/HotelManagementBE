@@ -1,7 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
 import com.devz.hotelmanagement.entities.*;
-import com.devz.hotelmanagement.models.HotelRoom;
 import com.devz.hotelmanagement.models.RoomStatus;
 import com.devz.hotelmanagement.models.StatusCount;
 import com.devz.hotelmanagement.repositories.RoomRepository;
@@ -9,7 +8,6 @@ import com.devz.hotelmanagement.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,13 +59,6 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<Room> getByFloorId(int id) {
         return roomRepo.getByFloorId(id);
-    }
-
-    @Override
-    public List<HotelRoom> getHotelRoom() {
-        return roomRepo.getHotelRoom().stream()
-                .map(item -> new HotelRoom(item[0].toString(), item[1].toString(), (String) item[2], (Date) item[3], (Date) item[4], ((Long) item[5]).intValue()))
-                .collect(Collectors.toList());
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface InvoiceDetailService extends ServiceBase<InvoiceDetail> {
 
-    InvoiceDetail findByCheckoutRoomCode(String code);
+    InvoiceDetail findUsingByRoomCode(String code);
 
     List<InvoiceDetail> findByInvoiceCode(String code);
 

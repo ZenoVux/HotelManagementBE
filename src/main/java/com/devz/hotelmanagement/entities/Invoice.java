@@ -16,6 +16,10 @@ import java.util.List;
 @Table(name = "invoices")
 public class Invoice extends EntityBase {
 
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
+
     @Column()
     private Double total;
 

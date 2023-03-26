@@ -33,6 +33,9 @@ public class UsedService extends EntityBase {
     @Column(name = "ended_time")
     private Date endedTime;
 
+    @Column(name = "service_price")
+    private Double servicePrice;
+
     @Column
     private Integer quantity;
 

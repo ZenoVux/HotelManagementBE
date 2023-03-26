@@ -40,6 +40,11 @@ public class UsedServiceRestController {
         return usedServiceService.findAllByBookingDetailCode(code);
     }
 
+    @GetMapping("/booking-detail/{id}")
+    public List<UsedService> findAllByBookingDetailId(@PathVariable("id") Integer id) {
+        return usedServiceService.findAllByBookingDetailId(id);
+    }
+
     @GetMapping("/invoice-detail/{id}")
     public List<UsedService> findAllByInvoiceDetailId(@PathVariable("id") Integer id) {
         return usedServiceService.findByInvoiceDetailId(id);

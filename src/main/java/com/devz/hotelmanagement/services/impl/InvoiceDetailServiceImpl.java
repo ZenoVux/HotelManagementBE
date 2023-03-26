@@ -31,6 +31,10 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
 
     @Override
     public InvoiceDetail findByCode(String code) {
+        Optional<InvoiceDetail> optional = invoiceDetailRepo.findByCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
         return null;
     }
 
@@ -42,8 +46,9 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
             Integer index = 1;
             if (maxCode != null) {
                 index = Integer.parseInt(maxCode.replace("IVD", ""));
+                index++;
             }
-            String code = String.format("IVD%05d", index + 1);
+            String code = String.format("IVD%05d", index);
             invoiceDetail.setCode(code);
         } catch (Exception ex) {
 
@@ -57,8 +62,8 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
     }
 
     @Override
-    public InvoiceDetail findByCheckoutRoomCode(String code) {
-        Optional<InvoiceDetail> optional = invoiceDetailRepo.findByCheckoutRoomCode(code);
+    public InvoiceDetail findUsingByRoomCode(String code) {
+        Optional<InvoiceDetail> optional = invoiceDetailRepo.findUsingByRoomCode(code);
         if (optional.isPresent()) {
             return optional.get();
         }

@@ -20,11 +20,6 @@ public class InvoiceDetail extends EntityBase {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "booking_detail_id")
-    private BookingDetail bookingDetail;
-
     @ManyToOne
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
@@ -35,11 +30,20 @@ public class InvoiceDetail extends EntityBase {
     @Column(name = "num_children")
     private Integer numChildren;
 
+    @Column(name = "checkin_expected")
+    private Date checkinExpected;
+
+    @Column(name = "checkout_expected")
+    private Date checkoutExpected;
+
     @Column
     private Date checkin;
 
     @Column
     private Date checkout;
+
+    @Column(name = "room_price")
+    private Double roomPrice;
 
     @Column
     private Double total;

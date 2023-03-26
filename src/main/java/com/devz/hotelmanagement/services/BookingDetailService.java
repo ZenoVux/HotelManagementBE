@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BookingDetailService extends ServiceBase<BookingDetail> {
 
-    BookingDetail findByCheckinRoomCode(String code);
+    BookingDetail findWaitingCheckinByRoomCode(String code);
 
     BookingDetail findByCheckedinRoomCode(String code);
 

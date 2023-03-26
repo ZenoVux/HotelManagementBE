@@ -23,6 +23,16 @@ public class InvoiceDetailRestController {
         return invoiceDetailService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<InvoiceDetail> findByCode(@PathVariable("id") Integer id) {
+        try {
+            InvoiceDetail invoiceDetail = invoiceDetailService.findById(id);
+            return ResponseEntity.ok(invoiceDetail);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping
     public InvoiceDetail create(@RequestBody InvoiceDetail invoiceDetail) {
         return invoiceDetailService.create(invoiceDetail);
@@ -37,6 +47,16 @@ public class InvoiceDetailRestController {
     @GetMapping("/invoice-code/{code}")
     public List<InvoiceDetail> findByInvoiceCode(@PathVariable("code") String code) {
         return invoiceDetailService.findByInvoiceCode(code);
+    }
+
+
+    @GetMapping("/using-room/{code}")
+    public ResponseEntity<InvoiceDetail> findUsingByRoomCode(@PathVariable("code") String code) {
+        InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(code);
+        if (invoiceDetail != null) {
+            return ResponseEntity.ok(invoiceDetail);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

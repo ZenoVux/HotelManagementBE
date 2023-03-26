@@ -43,8 +43,9 @@ public class BookingDetailServiceImpl implements BookingDetailService {
             Integer index = 1;
             if (maxCode != null) {
                 index = Integer.parseInt(maxCode.replace("BKD", ""));
+                index++;
             }
-            String code = String.format("BKD%05d", index + 1);
+            String code = String.format("BKD%05d", index);
             bookingDetail.setCode(code);
         } catch (Exception ex) {
 
@@ -58,8 +59,8 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     }
 
     @Override
-    public BookingDetail findByCheckinRoomCode(String code) {
-        Optional<BookingDetail> optional = bookingDetailRepo.findByCheckinRoomCode(code);
+    public BookingDetail findWaitingCheckinByRoomCode(String code) {
+        Optional<BookingDetail> optional = bookingDetailRepo.findWaitingCheckinByRoomCode(code);
         if (optional.isPresent()) {
             return optional.get();
         }

@@ -66,4 +66,9 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     public void updateAll(List<UsedService> usedServices) {
         usedServiceRepository.saveAll(usedServices);
     }
+
+    @Override
+    public List<UsedService> findAllByBookingDetailId(Integer id) {
+        return usedServiceRepository.findAllByBookingDetailId(id);
+    }
 }

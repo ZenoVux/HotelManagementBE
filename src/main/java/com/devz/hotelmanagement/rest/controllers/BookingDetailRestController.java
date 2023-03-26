@@ -32,9 +32,9 @@ public class BookingDetailRestController {
         return bookingDetailService.update(bookingDetail);
     }
 
-    @GetMapping("/checkin-room/{code}")
-    public ResponseEntity<BookingDetail> getByCheckinRoomCode(@PathVariable("code") String code) {
-        BookingDetail bookingDetail = bookingDetailService.findByCheckinRoomCode(code);
+    @GetMapping("/waiting-checkin/{code}")
+    public ResponseEntity<BookingDetail> findWaitingCheckinByRoomCode(@PathVariable("code") String code) {
+        BookingDetail bookingDetail = bookingDetailService.findWaitingCheckinByRoomCode(code);
         if (bookingDetail != null) {
             return ResponseEntity.ok(bookingDetail);
         }

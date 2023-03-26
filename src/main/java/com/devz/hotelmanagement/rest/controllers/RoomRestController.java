@@ -1,13 +1,8 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import com.devz.hotelmanagement.entities.Invoice;
-import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.entities.Room;
-import com.devz.hotelmanagement.models.CancelRoom;
-import com.devz.hotelmanagement.models.HotelRoom;
 import com.devz.hotelmanagement.models.RoomStatus;
 import com.devz.hotelmanagement.models.StatusCount;
-import com.devz.hotelmanagement.services.HotelRoomService;
 import com.devz.hotelmanagement.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,9 +19,6 @@ public class RoomRestController {
 
     @Autowired
     private RoomService roomService;
-
-    @Autowired
-    private HotelRoomService hotelRoomService;
 
     @GetMapping
     public List<Room> getAll() {
@@ -67,11 +59,6 @@ public class RoomRestController {
         return roomService.getStatusCount();
     }
 
-    @GetMapping("/hotel-room")
-    public List<HotelRoom> getHotelRoom() {
-        return roomService.getHotelRoom();
-    }
-
     @GetMapping("/floor/{id}")
     public ResponseEntity<List<Room>> getByFlooId(@PathVariable("id") Optional<Integer> id) {
         if (id.isPresent()) {
@@ -80,33 +67,4 @@ public class RoomRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/checkin/{code}")
-    public ResponseEntity<InvoiceDetail> checkin(@PathVariable("code") String code) {
-        try {
-            InvoiceDetail invoiceDetail = hotelRoomService.checkin(code);
-            return ResponseEntity.ok(invoiceDetail);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/cancel-room")
-    public ResponseEntity<Void> cancel(@RequestBody CancelRoom cancelRoom) {
-        try {
-            hotelRoomService.cancel(cancelRoom.getCode(), cancelRoom.getNote());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/checkout")
-    public ResponseEntity<Invoice> checkout(@RequestBody String[] codes) {
-        try {
-            Invoice invoice = hotelRoomService.checkout(codes);
-            return ResponseEntity.ok(invoice);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 }
