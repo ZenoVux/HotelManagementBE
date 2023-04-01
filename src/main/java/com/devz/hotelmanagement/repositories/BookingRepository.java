@@ -40,4 +40,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query(value = "SELECT b FROM Booking b WHERE b.code = :code")
     Booking findByCode(@Param("code") String code);
 
+    @Query(value = "SELECT bookings.code FROM bookings ORDER BY bookings.code DESC LIMIT 1", nativeQuery = true)
+    String getMaxCode();
+
 }

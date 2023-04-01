@@ -88,7 +88,21 @@ public class BookingDetailServiceImpl implements BookingDetailService {
 
 
     @Override
-    public List<BookingDetail> createAll(List bookingDetails) {
+    public List<BookingDetail> createAll(List<BookingDetail> bookingDetails) {
+        try {
+            String maxCode = bookingDetailRepo.getMaxCode();
+            Integer index = 1;
+            if (maxCode != null) {
+                index = Integer.parseInt(maxCode.replace("BKD", ""));
+                index++;
+            }
+            for (BookingDetail detail : bookingDetails) {
+                String code = String.format("BKD%05d", index++);
+                detail.setCode(code);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return bookingDetailRepo.saveAll(bookingDetails);
     }
 

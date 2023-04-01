@@ -40,6 +40,18 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking create(Booking booking) {
         booking.setId(null);
+        try {
+            String maxCode = bookingRepo.getMaxCode();
+            Integer index = 1;
+            if (maxCode != null) {
+                index = Integer.parseInt(maxCode.replace("BK", ""));
+                index++;
+            }
+            String code = String.format("BK%05d", index);
+            booking.setCode(code);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return bookingRepo.save(booking);
     }
 

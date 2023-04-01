@@ -23,6 +23,12 @@ public class CustomerRestController {
         return customerService.findAll();
     }
 
+    @GetMapping("/in-use")
+    public List<Customer> getCustomerInUse() {
+        List<Customer> customers = customerService.getCustomerInUse();
+        return customers;
+    }
+
     @GetMapping("/{id}")
     public Customer getCustomerById(@PathVariable int id) {
         Customer customer = customerService.findById(id);

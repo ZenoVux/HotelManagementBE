@@ -19,4 +19,7 @@ public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, In
     @Query("SELECT pm FROM PaymentMethod pm WHERE pm.status = 1")
     List<PaymentMethod> findPaymentInUse();
 
+    @Query("SELECT pm FROM PaymentMethod pm WHERE code = :code")
+    PaymentMethod findByCode(@Param("code") String code);
+
 }
