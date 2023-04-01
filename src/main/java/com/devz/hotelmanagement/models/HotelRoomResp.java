@@ -9,9 +9,10 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HotelRoom {
+public class HotelRoomResp {
 
     private String code;
+    private String roomType;
     private String customer;
     private Integer bookingDetailId;
     private Integer invoiceDetailId;

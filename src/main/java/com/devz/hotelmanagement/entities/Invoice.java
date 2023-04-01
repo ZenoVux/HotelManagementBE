@@ -23,6 +23,12 @@ public class Invoice extends EntityBase {
     @Column()
     private Double total;
 
+    @Column(name = "discount_money")
+    private Double discountMoney;
+
+    @Column(name = "total_payment")
+    private Double totalPayment;
+
     @Column(name = "created_date")
     private Date createdDate;
 

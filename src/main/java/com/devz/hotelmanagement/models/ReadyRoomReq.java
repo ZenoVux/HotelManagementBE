@@ -3,7 +3,7 @@ package com.devz.hotelmanagement.models;
 import lombok.Data;
 
 @Data
-public class CheckoutRoom {
+public class ReadyRoomReq {
 
     private String code;
 

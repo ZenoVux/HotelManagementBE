@@ -2,6 +2,7 @@ package com.devz.hotelmanagement.services;
 
 import com.devz.hotelmanagement.entities.BookingDetail;
 
+import java.util.Date;
 import java.util.List;
 
 public interface BookingDetailService extends ServiceBase<BookingDetail> {
@@ -15,5 +16,7 @@ public interface BookingDetailService extends ServiceBase<BookingDetail> {
     List<BookingDetail> createAll(List bookingDetails);
 
     List<BookingDetail>  findByBookingId(Integer id);
+
+    List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(String code, Date checkin, Date checkout);
 
 }

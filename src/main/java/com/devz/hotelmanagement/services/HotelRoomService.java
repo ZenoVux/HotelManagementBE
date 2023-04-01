@@ -1,18 +1,29 @@
 package com.devz.hotelmanagement.services;
 
 import com.devz.hotelmanagement.entities.InvoiceDetail;
-import com.devz.hotelmanagement.models.CheckinRoomReq;
-import com.devz.hotelmanagement.models.CheckoutRoom;
-import com.devz.hotelmanagement.models.Hotel;
+import com.devz.hotelmanagement.entities.UsedService;
+import com.devz.hotelmanagement.models.*;
+
+import java.util.Date;
 
 public interface HotelRoomService {
 
-    Hotel getHotel();
+    HotelResp getHotel();
 
-    InvoiceDetail checkin(CheckinRoomReq checkinRoomReq);
+    void checkin(CheckinRoomReq checkinRoomReq);
 
     void cancel(String code, String note);
 
-    InvoiceDetail checkout(CheckoutRoom checkoutRoom);
+    void checkout(CheckoutRoomReq checkoutRoomReq);
+
+    InvoiceDetail extendCheckoutDate(String code, Date extendDate, String note);
+
+    UsedService usedService(UsedServiceReq usedServiceReq);
+
+    void ready(String code);
+
+    void change(String fromRoomCode, String toRoomCode, String note);
+
+    void payment(String invoiceCode, String promotionCode, String paymentMethodCode);
 
 }

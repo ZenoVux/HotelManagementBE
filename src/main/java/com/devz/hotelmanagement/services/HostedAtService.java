@@ -10,7 +10,7 @@ public interface HostedAtService extends ServiceBase<HostedAt> {
 
     void delete(Integer id);
 
-    void updateAll(List<HostedAt> hostedAts);
+    List<HostedAt> updateAll(List<HostedAt> hostedAts);
 
     List<HostedAt> findByInvoiceDetailId(Integer id);
 }

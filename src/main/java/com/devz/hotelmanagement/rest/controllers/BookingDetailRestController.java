@@ -22,6 +22,16 @@ public class BookingDetailRestController {
         return bookingDetailService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<BookingDetail> findByCode(@PathVariable("id") Integer id) {
+        try {
+            BookingDetail bookingDetail = bookingDetailService.findById(id);
+            return ResponseEntity.ok(bookingDetail);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping
     public BookingDetail create(@RequestBody BookingDetail bookingDetail) {
         return bookingDetailService.create(bookingDetail);

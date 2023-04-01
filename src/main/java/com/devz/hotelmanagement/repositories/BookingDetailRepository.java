@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.devz.hotelmanagement.entities.BookingDetail;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.room.code = :code " +
             "AND bd.booking.checkinExpected <= CURRENT_DATE " +
             "AND bd.booking.checkoutExpected >= CURRENT_DATE " +
-            "AND bd.room.status = 0 AND bd.status = 1")
+            "AND bd.booking.status = 2 AND bd.status = 1 AND bd.room.status = 0")
     Optional<BookingDetail> findWaitingCheckinByRoomCode(@Param("code") String code);
 
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.room.code = :code " +
@@ -33,5 +34,15 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
 
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.booking.id = :id")
     List<BookingDetail> findByBookingId(@Param("id") Integer id);
+
+    @Query(value = "SELECT booking_details.* " +
+            "FROM bookings " +
+            "   JOIN booking_details ON bookings.id = booking_details.booking_id " +
+            "   JOIN rooms ON booking_details.room_id = rooms.id " +
+            "WHERE " +
+            "   (DATE(bookings.checkin_expected) < DATE(:checkout)) AND " +
+            "   (DATE(bookings.checkout_expected) > DATE(:checkin)) AND " +
+            "   rooms.`code` = :code", nativeQuery = true)
+    List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(@Param("code") String code, @Param("checkin") Date checkin, @Param("checkout") Date checkout);
 
 }

@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,6 +95,11 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     @Override
     public List<BookingDetail> findByBookingId(Integer id) {
         return bookingDetailRepo.findByBookingId(id);
+    }
+
+    @Override
+    public List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(String code, Date checkin, Date checkout) {
+        return bookingDetailRepo.findByRoomCodeAndCheckinAndCheckout(code, checkin, checkout);
     }
 
 }

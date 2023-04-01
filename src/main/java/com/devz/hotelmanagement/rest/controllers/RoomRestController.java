@@ -1,14 +1,16 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.Room;
-import com.devz.hotelmanagement.models.RoomStatus;
-import com.devz.hotelmanagement.models.StatusCount;
+import com.devz.hotelmanagement.models.RangeDateReq;
+import com.devz.hotelmanagement.models.StatusCountResp;
 import com.devz.hotelmanagement.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +36,7 @@ public class RoomRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("code-room/{code}")
+    @GetMapping("/code-room/{code}")
     public Room getByCode(@PathVariable("code") String code) {
         return roomService.findByCode(code);
     }
@@ -49,13 +51,8 @@ public class RoomRestController {
         return roomService.update(room);
     }
 
-    @PutMapping("/status")
-    public void updateStatus(@RequestBody RoomStatus roomStatus) {
-        roomService.updateStatus(roomStatus.getCode(), roomStatus.getStatus());
-    }
-
     @GetMapping("/status-count")
-    public List<StatusCount> getStatusCount() {
+    public List<StatusCountResp> getStatusCount() {
         return roomService.getStatusCount();
     }
 
@@ -65,6 +62,14 @@ public class RoomRestController {
             return ResponseEntity.ok(roomService.getByFloorId(id.get()));
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/unbooked")
+    public List<Room> findUnbookedRoomByCheckinAndCheckout(
+            @RequestParam("start-date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam("end-date")  @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate
+    ) {
+        return roomService.findUnbookedRoomsByCheckinAndCheckout(startDate, endDate);
     }
 
 }

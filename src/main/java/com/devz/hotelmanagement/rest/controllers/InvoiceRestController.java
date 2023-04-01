@@ -42,4 +42,5 @@ public class InvoiceRestController {
     public Invoice update(@RequestBody Invoice invoice) {
         return invoiceService.update(invoice);
     }
+
 }

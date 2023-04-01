@@ -57,8 +57,8 @@ public class HostedAtServiceImpl implements HostedAtService {
     }
 
     @Override
-    public void updateAll(List<HostedAt> hostedAts) {
-        hostedAtRepo.saveAll(hostedAts);
+    public List<HostedAt> updateAll(List<HostedAt> hostedAts) {
+        return hostedAtRepo.saveAll(hostedAts);
     }
 
     @Override

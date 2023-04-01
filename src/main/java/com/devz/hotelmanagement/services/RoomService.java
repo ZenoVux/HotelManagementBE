@@ -1,15 +1,15 @@
 package com.devz.hotelmanagement.services;
 
 import com.devz.hotelmanagement.entities.Room;
-import com.devz.hotelmanagement.models.RoomStatus;
-import com.devz.hotelmanagement.models.StatusCount;
+import com.devz.hotelmanagement.models.StatusCountResp;
 
+import java.util.Date;
 import java.util.List;
 
 public interface RoomService extends ServiceBase<Room> {
 
 
-    List<StatusCount> getStatusCount();
+    List<StatusCountResp> getStatusCount();
 
     List<Room> getByFloorId(int id);
 
@@ -17,5 +17,8 @@ public interface RoomService extends ServiceBase<Room> {
 
     List<Room> findByIds(List<Integer> roomIds);
 
-    void updateStatus(RoomStatus roomStatus);
+    List<Room> findAllByCodeASC();
+
+    List<Room> findUnbookedRoomsByCheckinAndCheckout(Date checkin, Date checkout);
+
 }

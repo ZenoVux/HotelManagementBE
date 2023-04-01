@@ -24,6 +24,27 @@ public class InvoiceDetailHistory extends EntityBase {
     @Column(name = "num_children")
     private Integer numChildren;
 
+    @Column(name = "checkin_expected")
+    private Date checkinExpected;
+
+    @Column(name = "checkout_expected")
+    private Date checkoutExpected;
+
+    @Column
+    private Double total;
+
+    @Column(name = "total_room_fee")
+    private Double totalRoomFee;
+
+    @Column(name = "total_service_fee")
+    private Double totalServiceFee;
+
+    @Column(name = "late_checkout_fee")
+    private Double lateCheckoutFee;
+
+    @Column(name = "early_checkin_fee")
+    private Double earlyCheckinFee;
+
     @Column
     private String note;
 

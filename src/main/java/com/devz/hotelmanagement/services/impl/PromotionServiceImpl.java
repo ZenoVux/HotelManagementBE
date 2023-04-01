@@ -32,7 +32,16 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public Promotion findByCode(String code) {
+        Optional<Promotion> optional = promotionRepo.findByCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
         return null;
+    }
+
+    @Override
+    public List<Promotion> findByAmount(Double amount) {
+        return promotionRepo.findByAmount(amount);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package com.devz.hotelmanagement.services.impl;
 
 import com.devz.hotelmanagement.entities.*;
-import com.devz.hotelmanagement.models.RoomStatus;
-import com.devz.hotelmanagement.models.StatusCount;
+import com.devz.hotelmanagement.models.StatusCountResp;
 import com.devz.hotelmanagement.repositories.RoomRepository;
 import com.devz.hotelmanagement.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,9 +50,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<StatusCount> getStatusCount() {
+    public List<StatusCountResp> getStatusCount() {
         return roomRepo.getStatusCount().stream()
-                .map(item -> new StatusCount(((Long) item[0]).intValue(), (Long) item[1]))
+                .map(item -> new StatusCountResp(((Long) item[0]).intValue(), (Long) item[1]))
                 .collect(Collectors.toList());
     }
 
@@ -71,8 +71,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void updateStatus(RoomStatus roomStatus) {
-        roomRepo.updateRoomStatusByCode(roomStatus.getCode(), roomStatus.getStatus());
+    public List<Room> findAllByCodeASC() {
+        return roomRepo.findAllByCodeASC();
+    }
+
+    @Override
+    public List<Room> findUnbookedRoomsByCheckinAndCheckout(Date checkin, Date checkout) {
+        return roomRepo.findUnbookedRoomsByCheckinAndCheckout(checkin, checkout);
     }
 
 }
