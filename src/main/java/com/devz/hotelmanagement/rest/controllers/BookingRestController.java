@@ -6,7 +6,6 @@ import com.devz.hotelmanagement.models.BookingInfo;
 import com.devz.hotelmanagement.models.BookingReq;
 import com.devz.hotelmanagement.models.RoomBooking;
 import com.devz.hotelmanagement.services.*;
-import com.devz.hotelmanagement.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +36,12 @@ public class BookingRestController {
     @Autowired
     private RoomTypeService roomTypeService;
 
+    @Autowired
+    private PaymentMethodService paymentMethodService;
+
+    @Autowired
+    private CustomerTypeService customerTypeService;
+
     @GetMapping
     public List<BookingInfo> getBooking() {
         List<BookingInfo> bookingList = new ArrayList<>();
@@ -51,9 +55,9 @@ public class BookingRestController {
             bookingInfo.setNumOfRoom((Long) i[3]);
             bookingInfo.setAdults((BigDecimal) i[4]);
             bookingInfo.setChilds((BigDecimal) i[5]);
-            bookingInfo.setStatus((Integer) i[6]);
+            bookingInfo.setNote((String) i[6]);
+            bookingInfo.setStatus((Integer) i[7]);
             bookingList.add(bookingInfo);
-
         }
 
         return bookingList;
@@ -67,7 +71,7 @@ public class BookingRestController {
                 .stream()
                 .map(BookingDetail::getRoom)
                 .collect(Collectors.toList());
-        return new BookingDetailInfo(customer, roomList);
+        return new BookingDetailInfo(code, customer, roomList);
     }
 
     @GetMapping("/info")
@@ -105,25 +109,33 @@ public class BookingRestController {
     @PostMapping
     public void createBooking(@RequestBody BookingReq bookingReq) {
         Booking booking = new Booking();
-
+        List<Room> rooms = List.of(bookingReq.getRooms());
         String phoneNumber = bookingReq.getCustomer().getPhoneNumber();
         Customer customer = customerService.findByPhoneNumber(phoneNumber);
 
         if (customer == null) {
+            bookingReq.getCustomer().setCustomerType(customerTypeService.findById(1));
             customer = customerService.create(bookingReq.getCustomer());
         }
 
         booking.setCraetedDate(new Date());
         booking.setCustomer(customer);
+        booking.setNumAdults(bookingReq.getNumAdults());
+        booking.setNumChildren(bookingReq.getNumChildren());
         booking.setCheckinExpected(bookingReq.getCheckinExpected());
         booking.setCheckoutExpected(bookingReq.getCheckoutExpected());
-        booking.setStatus(1);
+        booking.setPaymentMethod(paymentMethodService.findByCode(bookingReq.getPaymentCode()));
+        double deposit = rooms.stream()
+                .mapToDouble(room -> room.getPrice() * 0.1)
+                .sum();
+        booking.setDeposit(deposit);
+        booking.setNote(bookingReq.getNote());
+        booking.setStatus(2);
 
         bookingService.create(booking);
 
-        List<Room> rooms = List.of(bookingReq.getRooms());
         List<BookingDetail> bookingDetails = rooms.stream()
-                .map(room -> new BookingDetail(room, booking, "", 0, null))
+                .map(room -> new BookingDetail(room, booking, "", 1, null))
                 .collect(Collectors.toList());
 
         bookingDetailService.createAll(bookingDetails);

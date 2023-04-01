@@ -60,4 +60,9 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findByPhoneNumber(String phoneNumber) {
         return customerRepo.findByPhoneNumber(phoneNumber);
     }
+
+    @Override
+    public List<Customer> getCustomerInUse() {
+        return customerRepo.getCustomerInUse();
+    }
 }

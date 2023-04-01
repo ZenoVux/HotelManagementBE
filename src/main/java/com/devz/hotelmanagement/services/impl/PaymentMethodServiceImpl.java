@@ -32,7 +32,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
     @Override
     public PaymentMethod findByCode(String code) {
-        return null;
+        return paymentMethodRepo.findByCode(code);
     }
 
     @Override

@@ -13,6 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class BookingDetailInfo {
 
+    private String code;
+
     private Customer customer;
 
     private List<Room> roomList;

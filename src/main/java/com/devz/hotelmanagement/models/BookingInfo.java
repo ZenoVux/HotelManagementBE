@@ -27,6 +27,8 @@ public class BookingInfo {
 
     private BigDecimal childs;
 
+    private String note;
+
     private Integer status;
 
 }

@@ -4,6 +4,7 @@ import com.devz.hotelmanagement.entities.PaymentMethod;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,5 +14,8 @@ public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, In
 
     @Query("SELECT pm FROM PaymentMethod pm WHERE status = 1")
     List<PaymentMethod> findPaymentInUse();
+
+    @Query("SELECT pm FROM PaymentMethod pm WHERE code = :code")
+    PaymentMethod findByCode(@Param("code") String code);
 
 }

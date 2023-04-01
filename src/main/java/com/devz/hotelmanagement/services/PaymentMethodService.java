@@ -8,4 +8,6 @@ public interface PaymentMethodService extends ServiceBase<PaymentMethod> {
 
     List<PaymentMethod> findPaymentInUse();
 
+    PaymentMethod findByCode(String code);
+
 }
