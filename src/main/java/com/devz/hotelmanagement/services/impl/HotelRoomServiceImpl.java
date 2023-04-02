@@ -561,14 +561,16 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoice.setTotalPayment(invoice.getTotal() - discount);
             invoice.setPromotion(promotion);
         } else {
+            invoice.setDiscountMoney(0.0);
             invoice.setTotalPayment(invoice.getTotal());
         }
-//        switch (paymentMethod.getCode()) {
-//            case "PM001":
+        switch (paymentMethod.getCode()) {
+            case "PM001":
 //            case "PM002":
-//                invoice.setStatus(4);
-//                break;
-//        }
+                invoice.setPaidDate(new Date());
+                invoice.setStatus(4);
+                break;
+        }
         if (invoiceService.update(invoice) == null) {
             throw new RuntimeException("Cập nhật Invoice " + invoiceCode + " không thành công");
         }

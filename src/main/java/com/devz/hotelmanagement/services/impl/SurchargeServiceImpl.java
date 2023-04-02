@@ -1,10 +1,7 @@
 package com.devz.hotelmanagement.services.impl;
 
-import com.devz.hotelmanagement.entities.Customer;
-import com.devz.hotelmanagement.entities.Setting;
 import com.devz.hotelmanagement.entities.Surcharge;
 import com.devz.hotelmanagement.repositories.SurchargeRepository;
-import com.devz.hotelmanagement.services.SettingService;
 import com.devz.hotelmanagement.services.SurchargeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SurchargeServiceImpl implements SurchargeService {
