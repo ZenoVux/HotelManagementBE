@@ -539,6 +539,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         newInvoiceDetail.setCheckin(new Date());
         newInvoiceDetail.setCheckinExpected(new Date());
         newInvoiceDetail.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
+        newInvoiceDetail.setDeposit(0.0);
         newInvoiceDetail.setTotalRoomFee(0.0);
         newInvoiceDetail.setTotalServiceFee(0.0);
         newInvoiceDetail.setEarlyCheckinFee(0.0);
