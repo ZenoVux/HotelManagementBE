@@ -4,7 +4,7 @@ import com.devz.hotelmanagement.entities.Surcharge;
 
 import java.util.List;
 
-public interface SurchargeService {
+public interface SurchargeService extends ServiceBase<Surcharge> {
 
     List<Surcharge> findEarlyCheckinSurcharges();
 

@@ -46,6 +46,9 @@ public class InvoiceDetail extends EntityBase {
     private Double roomPrice;
 
     @Column
+    private Double deposit;
+
+    @Column
     private Double total;
 
     @Column(name = "total_room_fee")
