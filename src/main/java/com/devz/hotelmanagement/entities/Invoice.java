@@ -53,10 +53,6 @@ public class Invoice extends EntityBase {
     private Promotion promotion;
 
     @ManyToOne
-    @JoinColumn(name = "invoice_type_id")
-    private InvoiceType invoiceType;
-
-    @ManyToOne
     @JoinColumn(name = "payment_id")
     private PaymentMethod paymentMethod;
 

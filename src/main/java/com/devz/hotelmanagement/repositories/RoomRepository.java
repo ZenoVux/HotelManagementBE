@@ -38,8 +38,8 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             "FROM Room r " +
             "WHERE r.code NOT IN (SELECT bkd.room.code " +
             "                       FROM BookingDetail bkd " +
-            "                       WHERE bkd.booking.checkinExpected < :checkout AND " +
-            "                           bkd.booking.checkoutExpected > :checkin AND " +
+            "                       WHERE bkd.checkinExpected < :checkout AND " +
+            "                           bkd.checkoutExpected > :checkin AND " +
             "                           bkd.status = 1 AND " + // trạng thái chờ nhận
             "                           bkd.booking.status = 1 AND " + // trạng thái chờ xác nhận
             "                           bkd.booking.status = 2)" + // trạng thái đã xác nhận

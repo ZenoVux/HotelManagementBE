@@ -33,12 +33,6 @@ public class Booking extends EntityBase {
     @Column
     private Double deposit;
 
-    @Column(name = "checkin_expected")
-    private Date checkinExpected;
-
-    @Column(name = "checkout_expected")
-    private Date checkoutExpected;
-
     @ManyToOne
     @JoinColumn(name = "payment_id")
     private PaymentMethod paymentMethod;

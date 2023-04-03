@@ -41,6 +41,9 @@ public class Promotion extends EntityBase {
     private String description;
 
     @Column()
+    private Boolean type;
+
+    @Column()
     private Boolean status;
 
     @JsonIgnore

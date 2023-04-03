@@ -122,8 +122,8 @@ public class BookingRestController {
         booking.setCustomer(customer);
         booking.setNumAdults(bookingReq.getNumAdults());
         booking.setNumChildren(bookingReq.getNumChildren());
-        booking.setCheckinExpected(bookingReq.getCheckinExpected());
-        booking.setCheckoutExpected(bookingReq.getCheckoutExpected());
+//        booking.setCheckinExpected(bookingReq.getCheckinExpected());
+//        booking.setCheckoutExpected(bookingReq.getCheckoutExpected());
         booking.setPaymentMethod(paymentMethodService.findByCode(bookingReq.getPaymentCode()));
         double deposit = rooms.stream()
                 .mapToDouble(room -> room.getPrice() * 0.1)
@@ -134,11 +134,11 @@ public class BookingRestController {
 
         bookingService.create(booking);
 
-        List<BookingDetail> bookingDetails = rooms.stream()
-                .map(room -> new BookingDetail(room, booking, "", 1, null))
-                .collect(Collectors.toList());
+//        List<BookingDetail> bookingDetails = rooms.stream()
+//                .map(room -> new BookingDetail(room, booking, "", 1, null))
+//                .collect(Collectors.toList());
 
-        bookingDetailService.createAll(bookingDetails);
+//        bookingDetailService.createAll(bookingDetails);
     }
 
     @PutMapping

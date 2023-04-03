@@ -71,8 +71,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 if (bookingDetail != null) {
                     hotelRoomResp.setBookingDetailId(bookingDetail.getId());
                     hotelRoomResp.setCustomer(bookingDetail.getBooking().getCustomer().getFullName());
-                    Date checkinExpected = bookingDetail.getBooking().getCheckinExpected();
-                    Date checkoutExpected = bookingDetail.getBooking().getCheckoutExpected();
+                    Date checkinExpected = bookingDetail.getCheckinExpected();
+                    Date checkoutExpected = bookingDetail.getCheckoutExpected();
                     hotelRoomResp.setCheckinExpected(checkinExpected);
                     hotelRoomResp.setCheckoutExpected(checkoutExpected);
                     // ngày
@@ -193,14 +193,14 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setEarlyCheckinFee(0.0);
         invoiceDetail.setLateCheckoutFee(0.0);
 
-        LocalDate checkinExpectedDate = LocalDate.ofInstant(bookingDetail.getBooking().getCheckinExpected().toInstant(), ZoneId.systemDefault());
-        LocalDate checkoutExpectedDate = LocalDate.ofInstant(bookingDetail.getBooking().getCheckoutExpected().toInstant(), ZoneId.systemDefault());
+        LocalDate checkinExpectedDate = LocalDate.ofInstant(bookingDetail.getCheckinExpected().toInstant(), ZoneId.systemDefault());
+        LocalDate checkoutExpectedDate = LocalDate.ofInstant(bookingDetail.getCheckoutExpected().toInstant(), ZoneId.systemDefault());
 
         long days = ChronoUnit.DAYS.between(checkinExpectedDate, checkoutExpectedDate);
         invoiceDetail.setDeposit(bookingDetail.getRoom().getPrice() * days * 0.1);
         invoiceDetail.setTotal(0.0);
-        invoiceDetail.setCheckinExpected(bookingDetail.getBooking().getCheckinExpected());
-        invoiceDetail.setCheckoutExpected(bookingDetail.getBooking().getCheckoutExpected());
+        invoiceDetail.setCheckinExpected(bookingDetail.getCheckinExpected());
+        invoiceDetail.setCheckoutExpected(bookingDetail.getCheckoutExpected());
         invoiceDetail.setCheckin(new Date());
         invoiceDetail.setStatus(1); // trạng thái đang sử dụng
         if (invoiceDetailService.create(invoiceDetail) == null) {
