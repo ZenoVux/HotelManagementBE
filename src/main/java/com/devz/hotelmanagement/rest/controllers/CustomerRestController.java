@@ -1,6 +1,7 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.Customer;
+import com.devz.hotelmanagement.entities.CustomerType;
 import com.devz.hotelmanagement.services.CustomerService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,14 @@ public class CustomerRestController {
 
     @PostMapping
     public Customer create(@RequestBody Customer customer) {
+        return customerService.create(customer);
+    }
+
+    @PostMapping("/create-member")
+    public Customer createMember(@RequestBody Customer customer) {
+        CustomerType customerType = new CustomerType();
+        customerType.setId(1);
+        customer.setCustomerType(customerType);
         return customerService.create(customer);
     }
 

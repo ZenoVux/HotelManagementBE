@@ -1,6 +1,5 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import com.devz.hotelmanagement.entities.Account;
 import com.devz.hotelmanagement.entities.Surcharge;
 import com.devz.hotelmanagement.services.SurchargeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,11 @@ public class SurchargeRestController {
 
     @Autowired
     private SurchargeService surchargeService;
+
+    @GetMapping
+    public List<Surcharge> findAll() {
+        return surchargeService.findAll();
+    }
 
     @GetMapping("/early-checkin")
     public List<Surcharge> findEarlyCheckinSurcharges() {

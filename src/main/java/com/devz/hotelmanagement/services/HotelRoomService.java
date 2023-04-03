@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.services;
 
+import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.models.*;
@@ -18,7 +19,7 @@ public interface HotelRoomService {
 
     InvoiceDetail extendCheckoutDate(String code, Date extendDate, String note);
 
-    UsedService usedService(UsedServiceReq usedServiceReq);
+    UsedService usedService(Integer invoiceDetailId, Integer serviceId, Integer quantity);
 
     void ready(String code);
 
