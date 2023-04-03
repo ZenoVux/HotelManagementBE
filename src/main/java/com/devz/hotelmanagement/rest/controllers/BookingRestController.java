@@ -146,6 +146,14 @@ public class BookingRestController {
         return bookingService.update(booking);
     }
 
+    @PutMapping("/cancel")
+    public Booking cancelBooking(@RequestBody Booking booking){
+        Booking cancelBooking = bookingService.findByCode(booking.getCode());
+        cancelBooking.setNote(booking.getNote());
+        cancelBooking.setStatus(0);
+        return bookingService.update(cancelBooking);
+    }
+
     @GetMapping("/invoice-code/{code}")
     public ResponseEntity<Booking> findByInvoiceCode(@PathVariable("code") String code){
         Booking booking = bookingService.findByInvoiceCode(code);
