@@ -27,4 +27,6 @@ public interface HotelRoomService {
 
     void payment(String invoiceCode, String promotionCode, String paymentMethodCode);
 
+    void confirmPayment(String invoiceCode);
+
 }

@@ -405,13 +405,21 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (invoiceDetail == null) {
             throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + code);
         }
-        Date checkin = invoiceDetail.getCheckinExpected();
-        Date checkout = invoiceDetail.getCheckoutExpected();
+        Date checkinExpected = invoiceDetail.getCheckinExpected();
+        Date checkoutExpected = invoiceDetail.getCheckoutExpected();
+        LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
+        LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
+
         Date newCheckout = extendDate; // checkout gia hạn
-        if (checkout.getDate() == newCheckout.getDate() && checkout.getMonth() == newCheckout.getMonth()) {
+        LocalDate newCheckoutDate = LocalDate.ofInstant(newCheckout.toInstant(), ZoneId.systemDefault());
+
+        if (!checkoutExpectedDate.isAfter(newCheckoutDate) && !checkoutExpectedDate.isBefore(newCheckoutDate)) {
             throw new RuntimeException("Ngày checkout hiện tại " + code);
         }
-        List<BookingDetail> bookingDetails = bookingDetailService.findByRoomCodeAndCheckinAndCheckout(code, checkin, newCheckout);
+        List<BookingDetail> bookingDetails = bookingDetailService.findByRoomCodeAndCheckinAndCheckout(code, checkinExpected, newCheckout);
+        for (BookingDetail bookingDetail : bookingDetails) {
+            System.out.println(bookingDetail.getRoom().getCode());
+        }
         if (bookingDetails.size() > 0) {
             throw new RuntimeException("Ngày checkout không hợp lệ " + code);
         }
@@ -606,6 +614,25 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 invoice.setStatus(3);
                 break;
         }
+        if (invoiceService.update(invoice) == null) {
+            throw new RuntimeException("Cập nhật Invoice " + invoiceCode + " không thành công");
+        }
+    }
+
+    @Override
+    public void confirmPayment(String invoiceCode) {
+        if (invoiceCode == null) {
+            throw new RuntimeException("Dữ liệu không hợp lệ");
+        }
+        Invoice invoice = invoiceService.findByCode(invoiceCode);
+        if (invoice == null) {
+            throw new RuntimeException("Không tìm thấy Invoice " + invoiceCode);
+        }
+        if (invoice.getStatus() != 3) {
+            throw new RuntimeException("Trạng thái Invoice " + invoiceCode + " không hợp lệ");
+        }
+        invoice.setPaidDate(new Date());
+        invoice.setStatus(4);
         if (invoiceService.update(invoice) == null) {
             throw new RuntimeException("Cập nhật Invoice " + invoiceCode + " không thành công");
         }

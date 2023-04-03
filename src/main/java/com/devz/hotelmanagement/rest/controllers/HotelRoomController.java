@@ -112,4 +112,16 @@ public class HotelRoomController {
         }
     }
 
+    @PostMapping("/confirm-payment")
+    public ResponseEntity<Void> confirmPayment(@RequestBody PaymentInvoiceReq paymentInvoiceReq) {
+        try {
+            System.out.println(paymentInvoiceReq);
+            hotelRoomService.confirmPayment(paymentInvoiceReq.getInvoiceCode());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
