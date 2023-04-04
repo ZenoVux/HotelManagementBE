@@ -15,10 +15,6 @@ import java.util.Date;
 public class HostedAt extends EntityBase {
 
     @ManyToOne
-    @JoinColumn(name = "booking_detail_id")
-    private BookingDetail bookingDetail;
-
-    @ManyToOne
     @JoinColumn(name = "invoice_detail_id")
     private InvoiceDetail invoiceDetail;
 
