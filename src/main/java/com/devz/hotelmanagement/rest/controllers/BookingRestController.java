@@ -42,26 +42,26 @@ public class BookingRestController {
     @Autowired
     private CustomerTypeService customerTypeService;
 
-    @GetMapping
-    public List<BookingInfo> getBooking() {
-        List<BookingInfo> bookingList = new ArrayList<>();
-        List<Object[]> info = bookingService.getBooking();
-
-        for (Object[] i : info) {
-            BookingInfo bookingInfo = new BookingInfo();
-            bookingInfo.setCode((String) i[0]);
-            bookingInfo.setCheckin((Date) i[1]);
-            bookingInfo.setCheckout((Date) i[2]);
-            bookingInfo.setNumOfRoom((Long) i[3]);
-            bookingInfo.setAdults((BigDecimal) i[4]);
-            bookingInfo.setChilds((BigDecimal) i[5]);
-            bookingInfo.setNote((String) i[6]);
-            bookingInfo.setStatus((Integer) i[7]);
-            bookingList.add(bookingInfo);
-        }
-
-        return bookingList;
-    }
+//    @GetMapping
+//    public List<BookingInfo> getBooking() {
+//        List<BookingInfo> bookingList = new ArrayList<>();
+//        List<Object[]> info = bookingService.getBooking();
+//
+//        for (Object[] i : info) {
+//            BookingInfo bookingInfo = new BookingInfo();
+//            bookingInfo.setCode((String) i[0]);
+//            bookingInfo.setCheckin((Date) i[1]);
+//            bookingInfo.setCheckout((Date) i[2]);
+//            bookingInfo.setNumOfRoom((Long) i[3]);
+//            bookingInfo.setAdults((BigDecimal) i[4]);
+//            bookingInfo.setChilds((BigDecimal) i[5]);
+//            bookingInfo.setNote((String) i[6]);
+//            bookingInfo.setStatus((Integer) i[7]);
+//            bookingList.add(bookingInfo);
+//        }
+//
+//        return bookingList;
+//    }
 
     @GetMapping("/{code}")
     public BookingDetailInfo getById(@PathVariable("code") String code) {
