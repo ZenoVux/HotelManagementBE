@@ -12,9 +12,6 @@ import java.util.List;
 @Repository
 public interface HostedAtRepository extends JpaRepository<HostedAt, Integer> {
 
-    @Query("SELECT h FROM HostedAt h WHERE h.bookingDetail.id = :id")
-    List<HostedAt> findByBookingDetailId(@Param("id") Integer id);
-
     @Query("SELECT h FROM HostedAt h WHERE h.invoiceDetail.id = :id")
     List<HostedAt> findByInvoiceDetailId(Integer id);
 }

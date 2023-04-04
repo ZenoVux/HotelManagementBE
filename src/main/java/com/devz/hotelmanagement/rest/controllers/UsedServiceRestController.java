@@ -35,16 +35,6 @@ public class UsedServiceRestController {
         usedServiceService.delete(id);
     }
 
-    @GetMapping("/booking-detail-code/{code}")
-    public List<UsedService> findAllByBookingDetailCode(@PathVariable("code") String code) {
-        return usedServiceService.findAllByBookingDetailCode(code);
-    }
-
-    @GetMapping("/booking-detail/{id}")
-    public List<UsedService> findAllByBookingDetailId(@PathVariable("id") Integer id) {
-        return usedServiceService.findAllByBookingDetailId(id);
-    }
-
     @GetMapping("/invoice-detail/{id}")
     public List<UsedService> findAllByInvoiceDetailId(@PathVariable("id") Integer id) {
         return usedServiceService.findByInvoiceDetailId(id);

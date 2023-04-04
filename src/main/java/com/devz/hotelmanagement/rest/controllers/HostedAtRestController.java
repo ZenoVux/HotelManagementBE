@@ -36,11 +36,6 @@ public class HostedAtRestController {
         hostedAtService.delete(id);
     }
 
-    @GetMapping("/booking-detail/{id}")
-    public List<HostedAt> findByBookingDetailId(@PathVariable("id") Integer id) {
-        return hostedAtService.findByBookingDetailId(id);
-    }
-
     @GetMapping("/invoice-detail/{id}")
     public List<HostedAt> findByInvoiceDetailId(@PathVariable("id") Integer id) {
         return hostedAtService.findByInvoiceDetailId(id);

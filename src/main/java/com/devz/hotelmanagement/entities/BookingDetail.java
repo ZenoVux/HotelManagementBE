@@ -39,8 +39,4 @@ public class BookingDetail extends EntityBase {
     @Column
     private Integer status;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "bookingDetail")
-    private List<HostedAt> hostedAts;
-
 }

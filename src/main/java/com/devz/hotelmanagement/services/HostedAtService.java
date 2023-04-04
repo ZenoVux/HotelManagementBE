@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface HostedAtService extends ServiceBase<HostedAt> {
 
-    List<HostedAt> findByBookingDetailId(Integer id);
-
     void delete(Integer id);
 
     List<HostedAt> updateAll(List<HostedAt> hostedAts);

@@ -47,11 +47,6 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     }
 
     @Override
-    public List<UsedService> findAllByBookingDetailCode(String code) {
-        return usedServiceRepository.findAllByBookingDetailCode(code);
-    }
-
-    @Override
     public List<UsedService> findByInvoiceDetailId(Integer id) {
         return usedServiceRepository.findAllByInvoiceDetailId(id);
     }
@@ -64,11 +59,6 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     @Override
     public List<UsedService> updateAll(List<UsedService> usedServices) {
         return usedServiceRepository.saveAll(usedServices);
-    }
-
-    @Override
-    public List<UsedService> findAllByBookingDetailId(Integer id) {
-        return usedServiceRepository.findAllByBookingDetailId(id);
     }
 
     @Override
