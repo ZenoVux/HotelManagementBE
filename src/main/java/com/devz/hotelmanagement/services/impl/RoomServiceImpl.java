@@ -50,20 +50,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<StatusCountResp> getStatusCount() {
-        return roomRepo.getStatusCount().stream()
-                .map(item -> new StatusCountResp(((Long) item[0]).intValue(), (Long) item[1]))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<Room> getByFloorId(int id) {
         return roomRepo.getByFloorId(id);
-    }
-
-    @Override
-    public void updateStatus(String code, Integer status) {
-        roomRepo.updateRoomStatusByCode(code, status);
     }
 
     public List<Room> findByIds(List<Integer> roomIds) {

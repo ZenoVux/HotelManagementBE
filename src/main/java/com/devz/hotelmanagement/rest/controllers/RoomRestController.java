@@ -51,11 +51,6 @@ public class RoomRestController {
         return roomService.update(room);
     }
 
-    @GetMapping("/status-count")
-    public List<StatusCountResp> getStatusCount() {
-        return roomService.getStatusCount();
-    }
-
     @GetMapping("/floor/{id}")
     public ResponseEntity<List<Room>> getByFlooId(@PathVariable("id") Optional<Integer> id) {
         if (id.isPresent()) {
