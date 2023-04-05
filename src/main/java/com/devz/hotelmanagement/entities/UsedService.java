@@ -37,4 +37,8 @@ public class UsedService extends EntityBase {
 
     @Column
     private Double amount;
+
+    @Column(name = "is_used")
+    private Boolean isUsed;
+
 }

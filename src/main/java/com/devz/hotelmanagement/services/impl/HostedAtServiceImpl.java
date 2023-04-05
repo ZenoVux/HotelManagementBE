@@ -38,6 +38,18 @@ public class HostedAtServiceImpl implements HostedAtService {
     @Override
     public HostedAt create(HostedAt hostedAt) {
         hostedAt.setId(null);
+        try {
+            String maxCode = hostedAtRepo.getMaxCode();
+            Integer index = 1;
+            if (maxCode != null) {
+                index = Integer.parseInt(maxCode.replace("HA", ""));
+                index++;
+            }
+            String code = String.format("HA%05d", index);
+            hostedAt.setCode(code);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return hostedAtRepo.save(hostedAt);
     }
 

@@ -6,11 +6,13 @@ import java.util.List;
 
 public interface UsedServiceService extends ServiceBase<UsedService> {
 
-    List<UsedService> findByInvoiceDetailId(Integer id);
+    List<UsedService> findByInvoiceDetailId(Integer invoiceDetailId);
+
+    List<UsedService> findAllByInvoiceDetailIdAndIsUsed(Integer invoiceDetailId, Boolean isUsed);
 
     void delete(Integer id);
 
     List<UsedService> updateAll(List<UsedService> usedServices);
 
-    UsedService findByServiceRoomIdAndInvoiceDetailId(Integer serviceRoomId, Integer invoiceDetailId);
+    UsedService findByServiceRoomIdAndInvoiceDetailIdAndIsUsed(Integer serviceRoomId, Integer invoiceDetailId, Boolean isUsed);
 }

@@ -19,8 +19,6 @@ public interface HotelRoomService {
 
     InvoiceDetail extendCheckoutDate(String code, Date extendDate, String note);
 
-    UsedService usedService(Integer invoiceDetailId, Integer serviceId, Integer quantity);
-
     void ready(String code);
 
     void change(String fromRoomCode, String toRoomCode, String note);

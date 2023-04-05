@@ -218,6 +218,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
                 usedService.setServicePrice(serviceRoom.getPrice());
                 usedService.setQuantity(serviceCheckinReq.getQuantity());
+                usedService.setIsUsed(false);
                 usedService.setInvoiceDetail(invoiceDetail);
                 usedServices.add(usedService);
             }
@@ -280,6 +281,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 // tính tổng tiền dịch vụ
                 List<UsedService> usedServices = usedServiceService.findByInvoiceDetailId(invoiceDetail.getId());
                 Double totalServiceFee = usedServices.stream()
+                        .filter(usedService -> usedService.getIsUsed())
                         .map(usedService -> usedService.getServiceRoom().getPrice() * usedService.getQuantity())
                         .reduce(0.0, Double::sum);
 
@@ -335,6 +337,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         // Tính tổng tiền dịch vụ
         List<UsedService> usedServices = usedServiceService.findByInvoiceDetailId(invoiceDetail.getId());
         Double totalServiceFee = usedServices.stream()
+                .filter(usedService -> usedService.getIsUsed())
                 .map(usedService -> usedService.getServiceRoom().getPrice() * usedService.getQuantity())
                 .reduce(0.0, Double::sum);
 
@@ -444,33 +447,6 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + code);
         }
         return invoiceDetail;
-    }
-
-    @Override
-    public UsedService usedService(Integer invoiceDetailId, Integer serviceId, Integer quantity) {
-        if (invoiceDetailId == null || serviceId == null || quantity == null) {
-            throw new RuntimeException("Dữ liệu không hợp lệ");
-        }
-        UsedService usedService = usedServiceService.findByServiceRoomIdAndInvoiceDetailId(serviceId, invoiceDetailId);
-        if (usedService == null) {
-            usedService = new UsedService();
-            ServiceRoom serviceRoom = serviceRoomService.findById(serviceId);
-            if (serviceRoom == null) {
-                return null;
-            }
-            usedService.setServiceRoom(serviceRoom);
-            usedService.setServicePrice(serviceRoom.getPrice());
-            usedService.setQuantity(quantity);
-            InvoiceDetail invoiceDetail = invoiceDetailService.findById(invoiceDetailId);
-            if (invoiceDetail == null) {
-                return null;
-            }
-            usedService.setInvoiceDetail(invoiceDetail);
-            return usedServiceService.create(usedService);
-        } else {
-            usedService.setQuantity(quantity);
-            return usedServiceService.update(usedService);
-        }
     }
 
     @Override

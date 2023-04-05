@@ -14,16 +14,16 @@ import java.util.Optional;
 public class UsedServiceServiceImpl implements UsedServiceService {
 
     @Autowired
-    UsedServiceRepository usedServiceRepository;
+    UsedServiceRepository usedServiceRepo;
 
     @Override
     public List<UsedService> findAll() {
-        return usedServiceRepository.findAll();
+        return usedServiceRepo.findAll();
     }
 
     @Override
     public UsedService findById(int id) {
-        Optional<UsedService> optional = usedServiceRepository.findById(id);
+        Optional<UsedService> optional = usedServiceRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
@@ -32,38 +32,64 @@ public class UsedServiceServiceImpl implements UsedServiceService {
 
     @Override
     public UsedService findByCode(String code) {
+        Optional<UsedService> optional = usedServiceRepo.findByCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
         return null;
     }
 
     @Override
     public UsedService create(UsedService usedService) {
         usedService.setId(null);
-        return usedServiceRepository.save(usedService);
+        usedService.setIsUsed(false);
+        try {
+            String maxCode = usedServiceRepo.getMaxCode();
+            Integer index = 1;
+            if (maxCode != null) {
+                index = Integer.parseInt(maxCode.replace("US", ""));
+                index++;
+            }
+            String code = String.format("US%05d", index);
+            usedService.setCode(code);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return usedServiceRepo.save(usedService);
     }
 
     @Override
     public UsedService update(UsedService usedService) {
-        return usedServiceRepository.save(usedService);
+        return usedServiceRepo.save(usedService);
     }
 
     @Override
     public List<UsedService> findByInvoiceDetailId(Integer id) {
-        return usedServiceRepository.findAllByInvoiceDetailId(id);
+        return usedServiceRepo.findAllByInvoiceDetailId(id);
+    }
+
+    @Override
+    public List<UsedService> findAllByInvoiceDetailIdAndIsUsed(Integer invoiceDetailId, Boolean isUsed) {
+        return usedServiceRepo.findAllByInvoiceDetailIdAndIsUsed(invoiceDetailId, isUsed);
     }
 
     @Override
     public void delete(Integer id) {
-        usedServiceRepository.deleteById(id);
+        try {
+            usedServiceRepo.deleteById(id);
+        } catch (Exception ex) {
+            throw new RuntimeException("Xoá UsedService " + id + " thất bại");
+        }
     }
 
     @Override
     public List<UsedService> updateAll(List<UsedService> usedServices) {
-        return usedServiceRepository.saveAll(usedServices);
+        return usedServiceRepo.saveAll(usedServices);
     }
 
     @Override
-    public UsedService findByServiceRoomIdAndInvoiceDetailId(Integer serviceRoomId, Integer invoiceDetailId) {
-        Optional<UsedService> optional = usedServiceRepository.findByServiceRoomIdAndInvoiceDetailId(serviceRoomId, invoiceDetailId);
+    public UsedService findByServiceRoomIdAndInvoiceDetailIdAndIsUsed(Integer serviceRoomId, Integer invoiceDetailId, Boolean isUsed) {
+        Optional<UsedService> optional = usedServiceRepo.findByServiceRoomIdAndInvoiceDetailIdAndIsUsed(serviceRoomId, invoiceDetailId, isUsed);
         if (optional.isPresent()) {
             return optional.get();
         }

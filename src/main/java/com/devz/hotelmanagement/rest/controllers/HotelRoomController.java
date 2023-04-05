@@ -67,17 +67,6 @@ public class HotelRoomController {
         }
     }
 
-    @PostMapping("/used-service")
-    public ResponseEntity<UsedService> usedService(@RequestBody UsedServiceReq usedServiceReq) {
-        try {
-            UsedService usedService = hotelRoomService.usedService(usedServiceReq.getInvoiceDetailId(), usedServiceReq.getServiceId(), usedServiceReq.getQuantity());
-            return ResponseEntity.ok(usedService);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PostMapping("/ready")
     public ResponseEntity<Void> ready(@RequestBody ReadyRoomReq readyRoomReq) {
         try {
