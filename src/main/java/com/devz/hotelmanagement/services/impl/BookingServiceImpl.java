@@ -81,8 +81,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Object[]> getBooking() {
-        
-        return null;
-//        return bookingRepo.getBooking();
+        return bookingRepo.getBooking();
     }
 }
