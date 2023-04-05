@@ -34,7 +34,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("SELECT b FROM Booking b WHERE b.code = :code")
     Optional<Booking> findByInvoiceCode(@Param("code") String code);
 
-    @Query(value= "CALL GET_INFO_BOOKING", nativeQuery = true)
+    @Query(value= "CALL GET_INFO_BOOKING()", nativeQuery = true)
     List<Object[]> getBooking();
 
     @Query(value = "SELECT b FROM Booking b WHERE b.code = :code")

@@ -17,15 +17,13 @@ public class BookingInfo {
 
     private String code;
 
-    private Date checkin;
-
-    private Date checkout;
-
     private Long numOfRoom;
 
-    private BigDecimal adults;
+    private Integer adults;
 
-    private BigDecimal childs;
+    private Integer childs;
+
+    private Date createdDate;
 
     private String note;
 

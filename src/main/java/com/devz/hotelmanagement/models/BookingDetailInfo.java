@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.models;
 
+import com.devz.hotelmanagement.entities.BookingDetail;
 import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.Room;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,6 @@ public class BookingDetailInfo {
 
     private Customer customer;
 
-    private List<Room> roomList;
+    private List<BookingDetail> bkList;
 
 }
