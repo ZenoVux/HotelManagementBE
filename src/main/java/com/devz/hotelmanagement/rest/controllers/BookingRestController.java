@@ -122,7 +122,7 @@ public class BookingRestController {
 
         bookingService.create(booking);
 
-        List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", 1, null)).collect(Collectors.toList());
+        List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", 1)).collect(Collectors.toList());
 
         bookingDetailService.createAll(bookingDetails);
     }

@@ -30,6 +30,12 @@ public class Room extends EntityBase {
     @Column(name = "is_smoking")
     private Boolean isSmoking;
 
+    @Column(name = "num_adults")
+    private Integer numAdults;
+
+    @Column(name = "num_childs")
+    private Integer numChilds;
+
     @Column()
     private String description;
 
