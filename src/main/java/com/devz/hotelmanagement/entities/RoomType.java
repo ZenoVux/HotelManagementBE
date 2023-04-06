@@ -19,10 +19,10 @@ public class RoomType extends EntityBase {
     private String name;
 
     @Column(name = "adult_surcharge")
-    private Integer adultSurcharge;
+    private Double adultSurcharge;
 
     @Column(name = "child_surcharge")
-    private Integer childSurcharge;
+    private Double childSurcharge;
 
     @Column(name = "cancellation_policy")
     private String cancellationPolicy;

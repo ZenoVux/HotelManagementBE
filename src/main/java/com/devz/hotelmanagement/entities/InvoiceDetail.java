@@ -24,12 +24,6 @@ public class InvoiceDetail extends EntityBase {
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 
-    @Column(name = "num_adults")
-    private Integer numAdults;
-
-    @Column(name = "num_children")
-    private Integer numChildren;
-
     @Column(name = "checkin_expected")
     private Date checkinExpected;
 
