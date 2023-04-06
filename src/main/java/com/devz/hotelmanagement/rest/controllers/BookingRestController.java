@@ -46,9 +46,6 @@ public class BookingRestController {
     @Autowired
     private ImageService imageService;
 
-    @Autowired
-    private CustomerImageService customerImageService;
-
     @GetMapping
     public List<BookingInfo> getBooking() {
         List<BookingInfo> bookingList = new ArrayList<>();

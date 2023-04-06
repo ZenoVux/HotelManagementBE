@@ -45,9 +45,11 @@ public class Customer extends EntityBase {
     @Column
     private String email;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "customer")
-    private List<CustomerImage> customerImages;
+    @Column(name = "front_id_card", length = 10000)
+    private String frontIdCard;
+
+    @Column(name = "back_id_card", length = 10000)
+    private String backIdCard;
 
     @JsonIgnore
     @OneToMany(mappedBy = "customer")
