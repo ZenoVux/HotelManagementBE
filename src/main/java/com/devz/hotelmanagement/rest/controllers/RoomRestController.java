@@ -61,10 +61,10 @@ public class RoomRestController {
 
     @GetMapping("/unbooked")
     public List<Room> findUnbookedRoomByCheckinAndCheckout(
-            @RequestParam("start-date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-            @RequestParam("end-date")  @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate
+            @RequestParam("checkin-date") @DateTimeFormat(pattern = "dd/MM/yyyy") Date checkinDate,
+            @RequestParam("checkout-date")  @DateTimeFormat(pattern = "dd/MM/yyyy") Date checkoutDate
     ) {
-        return roomService.findUnbookedRoomsByCheckinAndCheckout(startDate, endDate);
+        return roomService.findUnbookedRoomsByCheckinAndCheckout(checkinDate, checkoutDate);
     }
 
 }

@@ -1,12 +1,15 @@
 package com.devz.hotelmanagement.services.impl;
 
+import com.devz.hotelmanagement.entities.ServiceRoom;
 import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.repositories.UsedServiceRepository;
+import com.devz.hotelmanagement.services.ServiceRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.devz.hotelmanagement.services.UsedServiceService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +18,9 @@ public class UsedServiceServiceImpl implements UsedServiceService {
 
     @Autowired
     UsedServiceRepository usedServiceRepo;
+
+    @Autowired
+    private ServiceRoomService serviceRoomService;
 
     @Override
     public List<UsedService> findAll() {
@@ -42,7 +48,13 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     @Override
     public UsedService create(UsedService usedService) {
         usedService.setId(null);
+        usedService.setStartedTime(new Date());
         usedService.setIsUsed(false);
+        ServiceRoom serviceRoom = serviceRoomService.findById(usedService.getServiceRoom().getId());
+        if (serviceRoom == null) {
+            return null;
+        }
+        usedService.setServicePrice(serviceRoom.getPrice());
         try {
             String maxCode = usedServiceRepo.getMaxCode();
             Integer index = 1;
