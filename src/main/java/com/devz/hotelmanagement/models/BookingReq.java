@@ -16,6 +16,10 @@ public class BookingReq {
 
     private Customer customer;
 
+    private String frontIdCard;
+
+    private String backIdCard;
+
     private Room[] rooms;
 
     private Integer numAdults;

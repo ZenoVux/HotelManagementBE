@@ -1,16 +1,17 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.*;
-import com.devz.hotelmanagement.models.BookingDetailInfo;
-import com.devz.hotelmanagement.models.BookingInfo;
-import com.devz.hotelmanagement.models.BookingReq;
-import com.devz.hotelmanagement.models.RoomBooking;
+import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -41,6 +42,12 @@ public class BookingRestController {
 
     @Autowired
     private CustomerTypeService customerTypeService;
+
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private CustomerImageService customerImageService;
 
     @GetMapping
     public List<BookingInfo> getBooking() {
@@ -108,6 +115,15 @@ public class BookingRestController {
         if (customer == null) {
             bookingReq.getCustomer().setCustomerType(customerTypeService.findById(1));
             customer = customerService.create(bookingReq.getCustomer());
+
+//            Image frontIdCardImage = new Image(bookingReq.getFrontIdCard());
+//            imageService.create(frontIdCardImage);
+//
+//            Image backIdCardImage = new Image(bookingReq.getBackIdCard());
+//            imageService.create(backIdCardImage);
+//
+//            CustomerImage customerImage = new CustomerImage();
+//            customerImage.setCustomer(customer);
         }
 
         booking.setCraetedDate(new Date());
@@ -137,6 +153,8 @@ public class BookingRestController {
         Booking cancelBooking = bookingService.findByCode(booking.getCode());
         cancelBooking.setNote(booking.getNote());
         cancelBooking.setStatus(0);
+        List<BookingDetail> bookingDetails = bookingDetailService.findByBookingId(cancelBooking.getId());
+        bookingDetails.stream().forEach(detail -> detail.setStatus(0));
         return bookingService.update(cancelBooking);
     }
 
@@ -148,4 +166,57 @@ public class BookingRestController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/read-front-id-card")
+    public ApiFrontIdCardResponse readFrontIdCard(@RequestParam("image") MultipartFile image) {
+        ApiFrontIdCardResponse apiFrontIdCardResponse = null;
+        try {
+            String url = "https://api.fpt.ai/vision/idr/vnm";
+            String apiKey = "7p3xRiGSJxqquCyNuk7BQynmGAKsUu2e";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            headers.set("api-key", apiKey);
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("image", new ByteArrayResource(image.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return image.getOriginalFilename();
+                }
+            });
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<ApiFrontIdCardResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, ApiFrontIdCardResponse.class);
+            apiFrontIdCardResponse = responseEntity.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return apiFrontIdCardResponse;
+    }
+
+    @PostMapping("/read-back-id-card")
+    public ApiBackIdCardResponse readBackIdCard(@RequestParam("image") MultipartFile image) {
+        try {
+            String url = "https://api.fpt.ai/vision/idr/vnm";
+            String apiKey = "7p3xRiGSJxqquCyNuk7BQynmGAKsUu2e";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            headers.set("api-key", apiKey);
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("image", new ByteArrayResource(image.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return image.getOriginalFilename();
+                }
+            });
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<ApiBackIdCardResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, ApiBackIdCardResponse.class);
+            ApiBackIdCardResponse apiBackIdCardResponse = responseEntity.getBody();
+            return apiBackIdCardResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
