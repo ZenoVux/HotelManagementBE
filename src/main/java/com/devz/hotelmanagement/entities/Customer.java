@@ -45,10 +45,10 @@ public class Customer extends EntityBase {
     @Column
     private String email;
 
-    @Column(name = "front_id_card", length = 10000)
+    @Column(name = "front_id_card")
     private String frontIdCard;
 
-    @Column(name = "back_id_card", length = 10000)
+    @Column(name = "back_id_card")
     private String backIdCard;
 
     @JsonIgnore

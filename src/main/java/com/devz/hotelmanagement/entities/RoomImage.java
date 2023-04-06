@@ -1,9 +1,6 @@
 package com.devz.hotelmanagement.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,13 +12,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "room_images")
 public class RoomImage extends EntityBase {
 
-
-    @ManyToOne
-    @JoinColumn(name = "image_id")
-    private Image image;
-
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
+
+    @Column(name = "file_name")
+    private String fileName;
 
 }
