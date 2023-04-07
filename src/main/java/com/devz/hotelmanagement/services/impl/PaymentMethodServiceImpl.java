@@ -32,7 +32,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
     @Override
     public PaymentMethod findByCode(String code) {
-        Optional<PaymentMethod> optional = paymentMethodRepo.findByCode(code);
+        Optional<PaymentMethod> optional = paymentMethodRepo.findByCode2(code);
         if (optional.isPresent()) {
             return optional.get();
         }
