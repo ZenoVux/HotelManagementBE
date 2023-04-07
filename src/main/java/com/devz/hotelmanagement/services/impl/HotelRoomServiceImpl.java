@@ -5,6 +5,7 @@ import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +16,9 @@ import java.util.*;
 
 @Service
 public class HotelRoomServiceImpl implements HotelRoomService {
+
+    @Autowired
+    private BookingService bookingService;
 
     @Autowired
     private BookingDetailService bookingDetailService;
@@ -70,22 +74,23 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             if (room.getStatus() == 0) {
                 BookingDetail bookingDetail = bookingDetailService.findWaitingCheckinByRoomCode(room.getCode());
                 if (bookingDetail != null) {
-                    hotelRoomResp.setBookingDetailId(bookingDetail.getId());
-                    hotelRoomResp.setCustomer(bookingDetail.getBooking().getCustomer().getFullName() + " - " + bookingDetail.getBooking().getCustomer().getPhoneNumber());
                     Date checkinExpected = bookingDetail.getCheckinExpected();
                     Date checkoutExpected = bookingDetail.getCheckoutExpected();
-                    hotelRoomResp.setCheckinExpected(checkinExpected);
-                    hotelRoomResp.setCheckoutExpected(checkoutExpected);
                     // ngày
                     LocalDate nowDate = LocalDate.now();
                     LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
+                    LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
                     // giờ
                     LocalTime nowTime = LocalTime.now();
                     LocalTime checkinTime = LocalTime.ofInstant(setting.getCheckinTime().toInstant(), ZoneId.systemDefault());
                     checkinTime.minusMinutes(30); // trừ 30p
 
-                    // nowDate là sau checkinExpectedDate || (nowDate ko là sau và trc checkinExpectedDate (nowDate == checkinExpectedDate) && nowTime là sau checkinTime)
-                    if (nowDate.isAfter(checkinExpectedDate) || (!nowDate.isBefore(checkinExpectedDate) && !nowDate.isAfter(checkinExpectedDate) && nowTime.isAfter(checkinTime))) {
+                    //(nowDate > checkinExpectedDate && nowDate < checkoutExpectedDate) || (nowDate == checkinExpectedDate && nowTime > checkinTime)
+                    if ((nowDate.isAfter(checkinExpectedDate) && nowDate.isBefore(checkoutExpectedDate)) || (!nowDate.isBefore(checkinExpectedDate) && !nowDate.isAfter(checkinExpectedDate) && nowTime.isAfter(checkinTime))) {
+                        hotelRoomResp.setBookingDetailId(bookingDetail.getId());
+                        hotelRoomResp.setCustomer(bookingDetail.getBooking().getCustomer().getFullName() + " - " + bookingDetail.getBooking().getCustomer().getPhoneNumber());
+                        hotelRoomResp.setCheckinExpected(checkinExpected);
+                        hotelRoomResp.setCheckoutExpected(checkoutExpected);
                         // chờ checkin
                         status4++;
                         hotelRoomResp.setStatus(4);
@@ -113,7 +118,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                     LocalTime nowTime = LocalTime.now();
                     LocalTime checkoutTime = LocalTime.ofInstant(setting.getCheckoutTime().toInstant(), ZoneId.systemDefault());
 
-                    // nowDate là sau checkoutExpectedDate || (nowDate ko là sau và trc checkoutExpectedDate && nowTime là sau checkoutTime)
+                    // nowDate > checkoutExpectedDate || (nowDate == checkoutExpectedDate && nowTime > checkoutTime)
                     if (nowDate.isAfter(checkoutExpectedDate) || (!nowDate.isBefore(checkoutExpectedDate) && !nowDate.isAfter(checkoutExpectedDate) && nowTime.isAfter(checkoutTime))) {
                         // quá hạn
                         status5++;
@@ -153,12 +158,17 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public void checkin(CheckinRoomReq checkinRoomReq) {
         BookingDetail bookingDetail = bookingDetailService.findWaitingCheckinByRoomCode(checkinRoomReq.getCode());
         if (bookingDetail == null) {
             throw new RuntimeException("Không tìm thấy BookingDetail của room " + checkinRoomReq.getCode());
         }
         Booking booking = bookingDetail.getBooking();
+        booking.setStatus(3); // trạng thái đã xử lý
+        if (bookingService.update(booking) == null) {
+            throw new RuntimeException("Cập nhật Booking thất bại " + booking.getCode());
+        }
         List<CustomerCheckinReq> customerCheckinReqs = checkinRoomReq.getCustomers();
         List<ServiceCheckinReq> serviceCheckinReqs = checkinRoomReq.getServices();
 
@@ -193,7 +203,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setEarlyCheckinFee(0.0);
         invoiceDetail.setLateCheckoutFee(0.0);
 
-        if (booking.getDeposit() > 0) {
+        if (booking.getDeposit() != null && booking.getDeposit() > 0) {
             LocalDate checkinExpectedDate = LocalDate.ofInstant(bookingDetail.getCheckinExpected().toInstant(), ZoneId.systemDefault());
             LocalDate checkoutExpectedDate = LocalDate.ofInstant(bookingDetail.getCheckoutExpected().toInstant(), ZoneId.systemDefault());
 
@@ -212,20 +222,26 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             throw new RuntimeException("check in thất bại " + checkinRoomReq.getCode());
         }
         // update InvoiceDetail for all UsedService in BookingDetail
+        List<UsedService> usedServices = new ArrayList<>();
         serviceCheckinReqs.forEach(serviceCheckinReq -> {
-            UsedService usedService = new UsedService();
+            ServiceRoom serviceRoom = serviceRoomService.findById(serviceCheckinReq.getServiceId());
+            if (serviceRoom != null) {
+                UsedService usedService = new UsedService();
+                usedService.setServiceRoom(serviceRoom);
+                usedService.setInvoiceDetail(invoiceDetail);
 
-            ServiceRoom serviceRoom = new ServiceRoom();
-            serviceRoom.setId(serviceCheckinReq.getServiceId());
-            usedService.setServiceRoom(serviceRoom);
+                Date startedTime = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-            usedService.setServicePrice(serviceRoom.getPrice());
-            usedService.setQuantity(serviceCheckinReq.getQuantity());
-            usedService.setStartedTime(new Date());
-            usedService.setIsUsed(false);
-            usedService.setInvoiceDetail(invoiceDetail);
-            usedServiceService.create(usedService);
+                usedService.setStartedTime(startedTime);
+                usedService.setEndedTime(invoiceDetail.getCheckoutExpected());
+                usedService.setQuantity(serviceCheckinReq.getQuantity());
+                usedService.setServicePrice(serviceRoom.getPrice());
+                usedService.setStatus(true);
+                usedService.setNote("");
+                usedServices.add(usedService);
+            }
         });
+        usedServiceService.updateAll(usedServices);
 
         // update InvoiceDetail for all HostedAt in BookingDetail
         List<HostedAt> hostedAts = new ArrayList<>();
@@ -259,6 +275,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public void cancel(String code, String note) {
         Room room = roomService.findByCode(code);
         if (room.getStatus() == 0) {
@@ -281,10 +298,14 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 // update status for invoiceDetail
 
                 // tính tổng tiền dịch vụ
-                List<UsedService> usedServices = usedServiceService.findByInvoiceDetailId(invoiceDetail.getId());
+                List<UsedService> usedServices = usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetail.getId(), true);
                 Double totalServiceFee = usedServices.stream()
-                        .filter(usedService -> usedService.getIsUsed())
-                        .map(usedService -> usedService.getServiceRoom().getPrice() * usedService.getQuantity())
+                        .filter(usedService -> usedService.getStatus())
+                        .map(usedService -> {
+                            LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
+                            LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
+                            return usedService.getServicePrice() * ChronoUnit.DAYS.between(startedDate, endedDate);
+                        })
                         .reduce(0.0, Double::sum);
 
                 invoiceDetail.setTotalServiceFee(totalServiceFee);
@@ -293,7 +314,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 Date checkinExpected = invoiceDetail.getCheckinExpected();
                 Date checkoutExpected = invoiceDetail.getCheckoutExpected();
 
-                LocalDate now = LocalDate.now();
+                LocalDate now = LocalDate.now(ZoneId.systemDefault());
                 LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
                 LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
 
@@ -328,6 +349,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public void checkout(CheckoutRoomReq checkoutRoomReq) {
         InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(checkoutRoomReq.getCode());
         if (invoiceDetail == null) {
@@ -338,10 +360,14 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         RoomType roomType = room.getRoomType();
 
         // Tính tổng tiền dịch vụ
-        List<UsedService> usedServices = usedServiceService.findByInvoiceDetailId(invoiceDetail.getId());
+        List<UsedService> usedServices = usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetail.getId(), true);
         Double totalServiceFee = usedServices.stream()
-                .filter(usedService -> usedService.getIsUsed())
-                .map(usedService -> usedService.getServiceRoom().getPrice() * usedService.getQuantity())
+                .filter(usedService -> usedService.getStatus())
+                .map(usedService -> {
+                    LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
+                    LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
+                    return usedService.getServicePrice() * ChronoUnit.DAYS.between(startedDate, endedDate);
+                })
                 .reduce(0.0, Double::sum);
 
         invoiceDetail.setTotalServiceFee(totalServiceFee);
@@ -424,6 +450,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public InvoiceDetail extendCheckoutDate(String code, Date extendDate, String note) {
         if (code == null || extendDate == null || note == null) {
             throw new RuntimeException("Dữ liệu không hợp lệ");
@@ -472,6 +499,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public void ready(String code) {
         Room room = roomService.findByCode(code);
         if (room == null) {
@@ -487,6 +515,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public void change(String fromRoomCode, String toRoomCode, String note) {
         if (fromRoomCode == null || toRoomCode == null || note == null) {
             throw new RuntimeException("Dữ liệu không hợp lệ");
@@ -566,6 +595,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public void payment(String invoiceCode, String promotionCode, String paymentMethodCode) {
         if (invoiceCode == null || paymentMethodCode == null) {
             throw new RuntimeException("Dữ liệu không hợp lệ");
@@ -618,6 +648,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
     public void confirmPayment(String invoiceCode) {
         if (invoiceCode == null) {
             throw new RuntimeException("Dữ liệu không hợp lệ");

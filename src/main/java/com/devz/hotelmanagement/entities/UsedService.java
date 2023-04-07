@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -38,7 +39,10 @@ public class UsedService extends EntityBase {
     @Column
     private Double amount;
 
-    @Column(name = "is_used")
-    private Boolean isUsed;
+    @Column
+    private String note;
+
+    @Column
+    private Boolean status;
 
 }

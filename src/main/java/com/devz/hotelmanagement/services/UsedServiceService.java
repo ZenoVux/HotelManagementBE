@@ -8,11 +8,13 @@ public interface UsedServiceService extends ServiceBase<UsedService> {
 
     List<UsedService> findByInvoiceDetailId(Integer invoiceDetailId);
 
-    List<UsedService> findAllByInvoiceDetailIdAndIsUsed(Integer invoiceDetailId, Boolean isUsed);
+    List<UsedService> findAllByInvoiceDetailIdAndStatus(Integer invoiceDetailId, Boolean status);
 
     void delete(Integer id);
 
+    void stop(Integer id);
+
     List<UsedService> updateAll(List<UsedService> usedServices);
 
-    UsedService findByServiceRoomIdAndInvoiceDetailIdAndIsUsed(Integer serviceRoomId, Integer invoiceDetailId, Boolean isUsed);
+    UsedService findByServiceRoomIdAndInvoiceDetailIdAndStatus(Integer serviceRoomId, Integer invoiceDetailId, Boolean status);
 }
