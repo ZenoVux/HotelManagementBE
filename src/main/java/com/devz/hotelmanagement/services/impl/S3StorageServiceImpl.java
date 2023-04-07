@@ -41,7 +41,7 @@ public class S3StorageServiceImpl implements StorageService {
         String originalFilename = file.getOriginalFilename();
         try {
             File file1 = converMultiPartToFile(file);
-            PutObjectResult putObjectResult = s3.putObject(bucketName, originalFilename, file1);
+            PutObjectResult putObjectResult = s3.putObject(bucketName, originalFilename + "-" + System.currentTimeMillis(), file1);
             return putObjectResult.getContentMd5();
         } catch (Exception e) {
             throw new RuntimeException(e);

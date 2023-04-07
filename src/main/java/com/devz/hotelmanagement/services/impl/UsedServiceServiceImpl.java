@@ -1,14 +1,19 @@
 package com.devz.hotelmanagement.services.impl;
 
+import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.entities.ServiceRoom;
 import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.repositories.UsedServiceRepository;
+import com.devz.hotelmanagement.services.InvoiceDetailService;
 import com.devz.hotelmanagement.services.ServiceRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.devz.hotelmanagement.services.UsedServiceService;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +26,9 @@ public class UsedServiceServiceImpl implements UsedServiceService {
 
     @Autowired
     private ServiceRoomService serviceRoomService;
+
+    @Autowired
+    private InvoiceDetailService invoiceDetailService;
 
     @Override
     public List<UsedService> findAll() {
@@ -47,26 +55,55 @@ public class UsedServiceServiceImpl implements UsedServiceService {
 
     @Override
     public UsedService create(UsedService usedService) {
-        usedService.setId(null);
-        usedService.setStartedTime(new Date());
-        usedService.setIsUsed(false);
         ServiceRoom serviceRoom = serviceRoomService.findById(usedService.getServiceRoom().getId());
         if (serviceRoom == null) {
+            System.out.println(1);
             return null;
         }
-        usedService.setServicePrice(serviceRoom.getPrice());
-        try {
-            String maxCode = usedServiceRepo.getMaxCode();
-            Integer index = 1;
-            if (maxCode != null) {
-                index = Integer.parseInt(maxCode.replace("US", ""));
-                index++;
-            }
-            String code = String.format("US%05d", index);
-            usedService.setCode(code);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        InvoiceDetail invoiceDetail = invoiceDetailService.findById(usedService.getInvoiceDetail().getId());
+        if (invoiceDetail == null) {
+            System.out.println(2);
+            return null;
         }
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        LocalDate checkoutExpectedDate = LocalDate.ofInstant(invoiceDetail.getCheckoutExpected().toInstant(), ZoneId.systemDefault());
+        LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
+        LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
+        if (startedDate.isBefore(today)) {
+            // startedDate < today
+            System.out.println(3);
+            return null;
+        }
+        if (endedDate.isAfter(checkoutExpectedDate)) {
+            // endedDate > checkoutExpectedDate
+            System.out.println(4);
+            return null;
+        }
+        if (startedDate.isAfter(endedDate)) {
+            // startedDate > endedDate
+            System.out.println(5);
+            return null;
+        }
+        if (!startedDate.isAfter(endedDate) && !startedDate.isBefore(endedDate)) {
+            // startedDate == startedDate
+            System.out.println(6);
+            return null;
+        }
+        Boolean isUseInRange = usedServiceRepo.existsByServiceRoomIdAndInRangeStartedTimeToEndedTime(
+                usedService.getInvoiceDetail().getId(),
+                usedService.getServiceRoom().getId(),
+                usedService.getStartedTime(),
+                usedService.getEndedTime(),
+                true
+        );
+        if (isUseInRange) {
+            System.out.println(7);
+            return null;
+        }
+        usedService.setId(null);
+        usedService.setStatus(true);
+        usedService.setNote("");
+        usedService.setServicePrice(serviceRoom.getPrice());
         return usedServiceRepo.save(usedService);
     }
 
@@ -81,8 +118,8 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     }
 
     @Override
-    public List<UsedService> findAllByInvoiceDetailIdAndIsUsed(Integer invoiceDetailId, Boolean isUsed) {
-        return usedServiceRepo.findAllByInvoiceDetailIdAndIsUsed(invoiceDetailId, isUsed);
+    public List<UsedService> findAllByInvoiceDetailIdAndStatus(Integer invoiceDetailId, Boolean status) {
+        return usedServiceRepo.findAllByInvoiceDetailIdAndStatus(invoiceDetailId, status);
     }
 
     @Override
@@ -95,16 +132,39 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     }
 
     @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
+    public void stop(Integer id) {
+        UsedService usedService = this.findById(id);
+        if (usedService == null) {
+            throw new RuntimeException("Sử dụng dịch vụ không tồn tại!");
+        }
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
+        LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
+        if (!today.isAfter(endedDate) && !today.isBefore(endedDate)) {
+            throw new RuntimeException("Sử dụng dịch vụ đã hoàn tất!");
+        } else if (!today.isAfter(startedDate) && !today.isBefore(startedDate)) {
+            usedService.setStatus(false);
+        } else {
+            usedService.setEndedTime(new Date());
+        }
+        if (this.update(usedService) == null) {
+            throw new RuntimeException("Cập nhật sử dụng dịch vụ không tồn tại!");
+        }
+    }
+
+    @Override
     public List<UsedService> updateAll(List<UsedService> usedServices) {
         return usedServiceRepo.saveAll(usedServices);
     }
 
     @Override
-    public UsedService findByServiceRoomIdAndInvoiceDetailIdAndIsUsed(Integer serviceRoomId, Integer invoiceDetailId, Boolean isUsed) {
-        Optional<UsedService> optional = usedServiceRepo.findByServiceRoomIdAndInvoiceDetailIdAndIsUsed(serviceRoomId, invoiceDetailId, isUsed);
+    public UsedService findByServiceRoomIdAndInvoiceDetailIdAndStatus(Integer serviceRoomId, Integer invoiceDetailId, Boolean status) {
+        Optional<UsedService> optional = usedServiceRepo.findByServiceRoomIdAndInvoiceDetailIdAndStatus(serviceRoomId, invoiceDetailId, status);
         if (optional.isPresent()) {
             return optional.get();
         }
         return null;
     }
+
 }

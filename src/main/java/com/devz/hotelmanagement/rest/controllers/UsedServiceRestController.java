@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -19,8 +20,17 @@ public class UsedServiceRestController {
     private UsedServiceService usedServiceService;
 
     @GetMapping
-    public List<UsedService> getAll() {
-        return usedServiceService.findAll();
+    public List<UsedService> getAll(
+            @RequestParam("invoiceDetailId") Optional<Integer> invoiceDetailId,
+            @RequestParam("status") Optional<Boolean> status
+    ) {
+        if (invoiceDetailId.isPresent() && status.isPresent()) {
+            return usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetailId.get(), status.get());
+        } else if (invoiceDetailId.isPresent()) {
+            return usedServiceService.findByInvoiceDetailId(invoiceDetailId.get());
+        } else {
+            return usedServiceService.findAll();
+        }
     }
 
     @PostMapping
@@ -55,5 +65,16 @@ public class UsedServiceRestController {
     @GetMapping("/invoice-detail/{id}")
     public List<UsedService> findAllByInvoiceDetailId(@PathVariable("id") Integer id) {
         return usedServiceService.findByInvoiceDetailId(id);
+    }
+
+    @PostMapping("/stop-service/{id}")
+    public ResponseEntity<Void> stopService(@PathVariable("id") Integer id) {
+        try {
+            usedServiceService.stop(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.devz.hotelmanagement.rest.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.devz.hotelmanagement.entities.HostedAt;
@@ -22,18 +24,32 @@ public class HostedAtRestController {
     }
 
     @PostMapping
-    public HostedAt create(@RequestBody HostedAt hostedAt) {
-        return hostedAtService.create(hostedAt);
+    public ResponseEntity<HostedAt> create(@RequestBody HostedAt hostedAt) {
+        hostedAt = hostedAtService.create(hostedAt);
+        if (hostedAt != null) {
+            return ResponseEntity.ok(hostedAt);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping
-    public HostedAt update(@RequestBody HostedAt hostedAt) {
-        return hostedAtService.update(hostedAt);
+    public ResponseEntity<HostedAt> update(@RequestBody HostedAt hostedAt) {
+        hostedAt = hostedAtService.update(hostedAt);
+        if (hostedAt != null) {
+            return ResponseEntity.ok(hostedAt);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Integer id) {
-        hostedAtService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+        try {
+            hostedAtService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/invoice-detail/{id}")
