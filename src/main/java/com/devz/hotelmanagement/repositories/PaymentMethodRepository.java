@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Integer> {
 
     @Query("SELECT pm FROM PaymentMethod pm WHERE pm.code = :code")
-    Optional<PaymentMethod> findByCode(@Param("code") String code);
+    Optional<PaymentMethod> findByCode2(@Param("code") String code);
 
     @Query("SELECT pm FROM PaymentMethod pm WHERE pm.status = 1")
     List<PaymentMethod> findPaymentInUse();

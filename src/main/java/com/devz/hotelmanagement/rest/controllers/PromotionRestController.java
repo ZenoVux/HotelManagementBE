@@ -24,6 +24,7 @@ public class PromotionRestController {
 
     @PostMapping
     public Promotion create(@RequestBody Promotion promotion) {
+    	promotion.setStatus(true);
         return promotionService.create(promotion);
     }
 

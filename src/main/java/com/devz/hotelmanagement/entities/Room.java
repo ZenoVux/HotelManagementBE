@@ -63,5 +63,9 @@ public class Room extends EntityBase {
     @JsonIgnore
     @OneToMany(mappedBy = "room")
     private List<InvoiceDetail> invoiceDetails;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "room")
+    private List<PromotionRoom> promotionRooms;
 
 }

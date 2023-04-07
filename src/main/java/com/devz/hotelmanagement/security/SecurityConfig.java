@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
 	private static final String[] SECURED_URLs = { "/api/accounts/**", "/api/service-types/**", "/api/services/**",
-			"/api/rooms/types/**", "/api/rooms", "/api/invoices/**", "/api/settings/**" }; // Url cần bảo vệ theo quyền ADMIN
+			"/api/rooms/types/**", "/api/invoices/**", "/api/settings/**" }; // Url cần bảo vệ theo quyền ADMIN
 
 	private static final String[] UN_SECURED_URLs = { // URL cho phep
 			"/auth/login/**","/reset-password/**" };
@@ -52,8 +52,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers(UN_SECURED_URLs).permitAll()
-				.requestMatchers(HttpMethod.POST, "/api/rooms/**").hasAuthority("ADMIN")
-				.requestMatchers(HttpMethod.PUT, "/api/rooms/**").hasAuthority("ADMIN").requestMatchers(SECURED_URLs)
+				.requestMatchers(SECURED_URLs)
 				.hasAuthority("ADMIN").anyRequest().authenticated().and().exceptionHandling()
 				.authenticationEntryPoint((request, response, authException) -> {
 					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid role");

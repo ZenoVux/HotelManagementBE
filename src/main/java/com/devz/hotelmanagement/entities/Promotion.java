@@ -49,5 +49,16 @@ public class Promotion extends EntityBase {
     @JsonIgnore
     @OneToMany(mappedBy = "promotion")
     private List<Invoice> invoices;
+    
+    public void updateStatus() {
+        Date now = new Date();
+        if (now.before(startedDate)) {
+            status = false;
+        } else if (endedDate != null && endedDate.before(now)) {
+            status = false;
+        } else {
+            status = true;
+        }
+    }
 
 }

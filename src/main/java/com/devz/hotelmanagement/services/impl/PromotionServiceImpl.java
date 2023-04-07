@@ -3,9 +3,12 @@ package com.devz.hotelmanagement.services.impl;
 import com.devz.hotelmanagement.entities.Promotion;
 import com.devz.hotelmanagement.repositories.PromotionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.devz.hotelmanagement.services.PromotionService;
+
+import jakarta.annotation.PostConstruct;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,5 +56,15 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public Promotion update(Promotion promotion) {
         return promotionRepo.save(promotion);
+    }
+    
+    @PostConstruct // chạy khi app khởi động
+    @Scheduled(cron = "0 */5 * * * ?")// chạy vào mỗi 5
+    public void updatePromotionStatus() {
+        List<Promotion> promotions = promotionRepo.findAll();
+        for (Promotion promotion : promotions) {
+            promotion.updateStatus();
+            promotionRepo.save(promotion);
+        }
     }
 }
