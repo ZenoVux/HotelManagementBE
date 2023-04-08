@@ -21,7 +21,7 @@ public interface HotelRoomService {
 
     void ready(String code);
 
-    void change(String fromRoomCode, String toRoomCode, String note);
+    void change(String fromRoomCode, String toRoomCode, Date checkoutDate, String note);
 
     void payment(String invoiceCode, String promotionCode, String paymentMethodCode);
 
