@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.devz.hotelmanagement.services.StorageService;
+import jakarta.activation.MimetypesFileTypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,21 +29,33 @@ public class S3StorageServiceImpl implements StorageService {
     @Autowired
     private AmazonS3 s3;
 
-    /*
-     * Đẩy file lên s3
-     * - Lấy tên của file truyền vào
-     * - Convert file từ multiPart qua file
-     * - Dùng PutObjectResult để đẩy file lên S3
-     * getContentMd5() Trả về băm MD5 được mã hóa Base64 của nội dung đối tượng đã được tính toán ở phía máy khách.
-     */
+    public boolean validateFileImage(File file) {
+        String mimetype = new MimetypesFileTypeMap().getContentType(file);
+        System.out.println(mimetype);
+        if (!mimetype.startsWith("image/")) {
+            return false;
+        }
+
+        long fileSizeInBytes = file.length();
+        long fileSizeInKB = fileSizeInBytes / 1024;
+        long fileSizeInMB = fileSizeInKB / 1024;
+        if (fileSizeInMB > 20) {
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
-    public String saveFile(MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
+    public String saveFile(MultipartFile multipartFile) {
+        String originalFilename = System.currentTimeMillis() + "-" + multipartFile.getOriginalFilename();
         try {
-            File file1 = converMultiPartToFile(file);
-            PutObjectResult putObjectResult = s3.putObject(bucketName, originalFilename + "-" + System.currentTimeMillis(), file1);
-            return putObjectResult.getContentMd5();
+            File fileConvert = converMultiPartToFile(multipartFile);
+            if (!validateFileImage(fileConvert)) {
+                return null;
+            }
+            s3.putObject(bucketName, originalFilename, fileConvert);
+            return originalFilename;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +92,7 @@ public class S3StorageServiceImpl implements StorageService {
 
     // Creating an AWS S3 Presigned URL
     @Override
-    public String getPresignedURL(String fileName){
+    public String getPresignedURL(String fileName) {
 //		// Đặt URL được chỉ định trước để hết hạn sau một giờ
         java.util.Date expiration = new java.util.Date();
         long expTimeMillis = expiration.getTime();
@@ -87,7 +100,6 @@ public class S3StorageServiceImpl implements StorageService {
         expiration.setTime(expTimeMillis);
 
         // Tạo link
-        System.out.println("Generating pre-signed URL: ");
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucketName, fileName)
                         .withMethod(HttpMethod.GET)

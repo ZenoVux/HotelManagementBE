@@ -32,17 +32,8 @@ public class BookingHistory extends EntityBase {
     @Column
     private Double deposit;
 
-    @Column(name = "checkin_expected")
-    private Date checkinExpected;
-
-    @Column(name = "checkout_expected")
-    private Date checkoutExpected;
-
     @Column
     private String note;
-
-    @Column
-    private Integer status;
 
     @JsonIgnore
     @OneToMany(mappedBy = "bookingHistory")
