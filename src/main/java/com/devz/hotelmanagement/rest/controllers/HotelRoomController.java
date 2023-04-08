@@ -81,7 +81,7 @@ public class HotelRoomController {
     @PostMapping("/change")
     public ResponseEntity<Void> change(@RequestBody ChangeRoomReq changeRoomReq) {
         try {
-            hotelRoomService.change(changeRoomReq.getFromRoomCode(), changeRoomReq.getToRoomCode(), changeRoomReq.getNote());
+            hotelRoomService.change(changeRoomReq.getFromRoomCode(), changeRoomReq.getToRoomCode(), changeRoomReq.getCheckoutDate(), changeRoomReq.getNote());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             ex.printStackTrace();

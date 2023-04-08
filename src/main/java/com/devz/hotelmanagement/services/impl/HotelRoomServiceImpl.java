@@ -464,13 +464,12 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
         LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
 
-        Date newCheckout = extendDate; // checkout gia hạn
-        LocalDate newCheckoutDate = LocalDate.ofInstant(newCheckout.toInstant(), ZoneId.systemDefault());
+        LocalDate newCheckoutDate = LocalDate.ofInstant(extendDate.toInstant(), ZoneId.systemDefault());
 
         if (!checkoutExpectedDate.isAfter(newCheckoutDate) && !checkoutExpectedDate.isBefore(newCheckoutDate)) {
             throw new RuntimeException("Ngày checkout hiện tại " + code);
         }
-        List<BookingDetail> bookingDetails = bookingDetailService.findByRoomCodeAndCheckinAndCheckout(code, checkinExpected, newCheckout);
+        List<BookingDetail> bookingDetails = bookingDetailService.findByRoomCodeAndCheckinAndCheckout(code, checkinExpected, Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         for (BookingDetail bookingDetail : bookingDetails) {
             System.out.println(bookingDetail.getRoom().getCode());
         }
@@ -491,7 +490,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (invoiceDetailHistoryService.create(invoiceDetailHistory) == null) {
             throw new RuntimeException("Tạo InvoiceDetailHistory thất bại của room " + code);
         }
-        invoiceDetail.setCheckoutExpected(newCheckout);
+        invoiceDetail.setCheckoutExpected(Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         if (invoiceDetailService.update(invoiceDetail) == null) {
             throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + code);
         }
@@ -516,16 +515,28 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
     @Override
     @Transactional(rollbackFor = { RuntimeException.class })
-    public void change(String fromRoomCode, String toRoomCode, String note) {
-        if (fromRoomCode == null || toRoomCode == null || note == null) {
+    public void change(String fromRoomCode, String toRoomCode, Date checkoutDate, String note) {
+        if (fromRoomCode == null || toRoomCode == null || checkoutDate == null || note == null) {
             throw new RuntimeException("Dữ liệu không hợp lệ");
         }
         InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(fromRoomCode);
         if (invoiceDetail == null) {
             throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + fromRoomCode);
         }
+        Date checkoutExpected = invoiceDetail.getCheckoutExpected();
+        Date checkinExpected = invoiceDetail.getCheckinExpected();
+
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
+        LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
+        LocalDate newCheckoutDate = LocalDate.ofInstant(checkoutDate.toInstant(), ZoneId.systemDefault());
+
+        if (newCheckoutDate.isBefore(checkoutExpectedDate)) {
+            throw new RuntimeException("Ngày trả phòng phải sau ngày trả phòng hiện tại!");
+        }
+
         Room oldRoom = invoiceDetail.getRoom();
-        List<Room> rooms = roomService.findUnbookedRoomsByCheckinAndCheckout(invoiceDetail.getCheckinExpected(), invoiceDetail.getCheckoutExpected());
+        List<Room> rooms = roomService.findUnbookedRoomsByCheckinAndCheckout(invoiceDetail.getCheckinExpected(), Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         if (rooms.size() <= 0) {
             throw new RuntimeException("Không tìm thấy phòng hợp lệ");
         }
@@ -534,12 +545,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             throw new RuntimeException("Không tìm thấy room " + toRoomCode);
         }
         // Checkout phòng cũ - Tính tổng tiền phòng
-        Date checkinExpected = invoiceDetail.getCheckinExpected();
 
-        LocalDate now = LocalDate.now();
-        LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
-
-        long days = ChronoUnit.DAYS.between(checkinExpectedDate, now);
+        long days = ChronoUnit.DAYS.between(checkinExpectedDate, today);
 
         Double totalRoomFee = oldRoom.getPrice() * days;
 
@@ -562,8 +569,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         newInvoiceDetail.setRoomPrice(newRoom.getPrice());
         newInvoiceDetail.setInvoice(invoiceDetail.getInvoice());
         newInvoiceDetail.setCheckin(new Date());
-        newInvoiceDetail.setCheckinExpected(new Date());
-        newInvoiceDetail.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
+        newInvoiceDetail.setCheckinExpected(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        newInvoiceDetail.setCheckoutExpected(Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         newInvoiceDetail.setDeposit(0.0);
         newInvoiceDetail.setTotalRoomFee(0.0);
         newInvoiceDetail.setTotalServiceFee(0.0);

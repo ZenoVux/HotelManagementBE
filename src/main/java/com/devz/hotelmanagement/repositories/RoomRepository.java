@@ -32,12 +32,14 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             "                           bkd.checkoutExpected > :checkin AND " +
             "                           bkd.status = 1 AND " + // trạng thái chờ nhận
             "                           (bkd.booking.status = 1 OR " + // trạng thái chờ xác nhận
-            "                           bkd.booking.status = 2))" + // trạng thái đã xác nhận
+            "                           bkd.booking.status = 2 OR " +
+            "                           bkd.booking.status = 3))" + // trạng thái đã xác nhận
             "   AND r.code NOT IN (SELECT ivd.room.code " +
             "                       FROM InvoiceDetail ivd " +
             "                       WHERE ivd.checkinExpected < :checkout AND " +
             "                           ivd.checkoutExpected > :checkin AND " +
             "                           ivd.status = 1)" + // trạng thái đang sử dụng
+            "   AND r.status = 0 " +
             "ORDER BY r.code ASC")
     List<Room> findUnbookedRoomsByCheckinAndCheckout(@Param("checkin") Date checkin, @Param("checkout") Date checkout);
 
