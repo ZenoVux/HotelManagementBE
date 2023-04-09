@@ -23,6 +23,9 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     @Query("SELECT room FROM Room room ORDER BY room.code ASC")
     List<Room> findAllByCodeASC();
 
+    @Query(value = "SELECT code FROM rooms WHERE floor_id = :id ORDER BY code DESC LIMIT 1", nativeQuery = true)
+    String getMaxCode(int id);
+
     // tìm các phòng không đặt trước
     @Query("SELECT r " +
             "FROM Room r " +
@@ -42,5 +45,4 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             "   AND r.status = 0 " +
             "ORDER BY r.code ASC")
     List<Room> findUnbookedRoomsByCheckinAndCheckout(@Param("checkin") Date checkin, @Param("checkout") Date checkout);
-
 }

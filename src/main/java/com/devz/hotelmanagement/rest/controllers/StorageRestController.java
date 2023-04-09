@@ -22,8 +22,8 @@ public class StorageRestController {
 
     @PostMapping
     public String upload(@RequestParam("file") MultipartFile file) {
-        storageService.saveFile(file);
-        return file.getOriginalFilename();
+        return storageService.saveFile(file);
+//        return file.getOriginalFilename();
     }
 
     @DeleteMapping("/{fileName}")
