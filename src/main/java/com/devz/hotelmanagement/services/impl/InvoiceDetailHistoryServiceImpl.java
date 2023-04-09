@@ -45,4 +45,8 @@ public class InvoiceDetailHistoryServiceImpl implements InvoiceDetailHistoryServ
         return invoiceDetailHistoryRepo.save(invoiceDetailHistory);
     }
 
+    @Override
+    public List<InvoiceDetailHistory> findAllByInvoiceDetailId(Integer invoiceDetailId) {
+        return invoiceDetailHistoryRepo.findAllByInvoiceDetailId(invoiceDetailId);
+    }
 }

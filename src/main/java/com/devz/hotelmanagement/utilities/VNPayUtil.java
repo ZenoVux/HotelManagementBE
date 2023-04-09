@@ -13,9 +13,11 @@ import java.util.*;
 public class VNPayUtil {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "http://localhost:8087/vnpay_jsp/vnpay_return.jsp";
-    public static String vnp_TmnCode = "XWSIYU2B";
-    public static String vnp_HashSecret = "IUUVEFLBGLIRHVGOHVROSTGGUJJDIZBL";
+    public static String vnp_Returnurl = "http://localhost:8000/payment/vnpay/return";
+    // Mã Website
+    public static String vnp_TmnCode = "4W8I9IRW";
+    // Chuỗi bí mật tạo checksum
+    public static String vnp_HashSecret = "BYSKNXRTVGYPOQDRBOJGSPGQRIYILLUQ";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
 
     public static String md5(String message) {
@@ -23,7 +25,6 @@ public class VNPayUtil {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] hash = md.digest(message.getBytes("UTF-8"));
-            // converting byte array to Hexadecimal String
             StringBuilder sb = new StringBuilder(2 * hash.length);
             for (byte b : hash) {
                 sb.append(String.format("%02x", b & 0xff));
@@ -31,11 +32,7 @@ public class VNPayUtil {
             digest = sb.toString();
         } catch (UnsupportedEncodingException ex) {
             digest = "";
-            // Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE,
-            // null, ex);
         } catch (NoSuchAlgorithmException ex) {
-            // Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE,
-            // null, ex);
             digest = "";
         }
         return digest;
@@ -46,22 +43,14 @@ public class VNPayUtil {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(message.getBytes("UTF-8"));
-
-            // converting byte array to Hexadecimal String
             StringBuilder sb = new StringBuilder(2 * hash.length);
             for (byte b : hash) {
                 sb.append(String.format("%02x", b & 0xff));
             }
-
             digest = sb.toString();
-
         } catch (UnsupportedEncodingException ex) {
             digest = "";
-            // Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE,
-            // null, ex);
         } catch (NoSuchAlgorithmException ex) {
-            // Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE,
-            // null, ex);
             digest = "";
         }
         return digest;
@@ -69,12 +58,9 @@ public class VNPayUtil {
 
     //Util for VNPAY
     public static String hashAllFields(Map fields) {
-        // create a list and sort it
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
-        // create a buffer for the md5 input and add the secure secret first
         StringBuilder sb = new StringBuilder();
-        //sb.append(com.vnpay.common.Config.vnp_HashSecret);
         Iterator itr = fieldNames.iterator();
         while (itr.hasNext()) {
             String fieldName = (String) itr.next();
@@ -88,7 +74,6 @@ public class VNPayUtil {
                 sb.append("&");
             }
         }
-        //return Sha256(sb.toString());
         return hmacSHA512(vnp_HashSecret,sb.toString());
     }
 
@@ -120,7 +105,7 @@ public class VNPayUtil {
         try {
             ipAdress = request.getHeader("X-FORWARDED-FOR");
             if (ipAdress == null) {
-                ipAdress = request.getRemoteAddr();
+                ipAdress = request.getLocalAddr();
             }
         } catch (Exception e) {
             ipAdress = "Invalid IP:" + e.getMessage();

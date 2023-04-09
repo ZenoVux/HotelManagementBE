@@ -5,6 +5,7 @@ import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.HotelRoomService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class HotelRoomController {
     }
 
     @PostMapping("/checkin")
-    public ResponseEntity<Void> checkin(@RequestBody CheckinRoomReq checkinRoomReq) {
+    public ResponseEntity<Void> checkin(HttpServletRequest req, @RequestBody CheckinRoomReq checkinRoomReq) {
         try {
             hotelRoomService.checkin(checkinRoomReq);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -106,6 +107,17 @@ public class HotelRoomController {
         try {
             System.out.println(paymentInvoiceReq);
             hotelRoomService.confirmPayment(paymentInvoiceReq.getInvoiceCode());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/update-invoice-detail")
+    public ResponseEntity<Void> updateInvoiceDetail(@RequestBody InvoiceDetailUpdateReq invoiceDetailUpdateReq) {
+        try {
+            hotelRoomService.updateInvoiceDetail(invoiceDetailUpdateReq);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             ex.printStackTrace();

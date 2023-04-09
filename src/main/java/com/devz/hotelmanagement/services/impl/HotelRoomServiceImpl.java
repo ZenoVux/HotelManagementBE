@@ -3,6 +3,7 @@ package com.devz.hotelmanagement.services.impl;
 import com.devz.hotelmanagement.entities.*;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,9 @@ import java.util.*;
 
 @Service
 public class HotelRoomServiceImpl implements HotelRoomService {
+
+    @Autowired
+    private HttpServletRequest req;
 
     @Autowired
     private BookingService bookingService;
@@ -58,6 +62,9 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
     @Autowired
     private SettingService settingService;
+
+    @Autowired
+    private AccountService accountService;
 
     @Override
     public HotelResp getHotel() {
@@ -165,9 +172,12 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             throw new RuntimeException("Không tìm thấy BookingDetail của room " + checkinRoomReq.getCode());
         }
         Booking booking = bookingDetail.getBooking();
-        booking.setStatus(3); // trạng thái đã xử lý
-        if (bookingService.update(booking) == null) {
-            throw new RuntimeException("Cập nhật Booking thất bại " + booking.getCode());
+        // trạng thái đã xác nhận
+        if (booking.getStatus() == 2) {
+            booking.setStatus(3); // trạng thái đã xử lý
+            if (bookingService.update(booking) == null) {
+                throw new RuntimeException("Cập nhật Booking thất bại " + booking.getCode());
+            }
         }
         List<CustomerCheckinReq> customerCheckinReqs = checkinRoomReq.getCustomers();
         List<ServiceCheckinReq> serviceCheckinReqs = checkinRoomReq.getServices();
@@ -184,10 +194,14 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoice.setDiscountMoney(0.0);
             invoice.setTotal(0.0);
             invoice.setTotalPayment(0.0);
-            invoice.setStatus(1);
+            invoice.setStatus(1); // trạng thái chờ
 
-            Account account = new Account();
-            account.setId(5);
+            String username = req.getAttribute("username").toString();
+
+            Account account = accountService.findByUsername(username);
+            if (account == null) {
+                throw new RuntimeException("Chưa đăng nhập!");
+            }
             invoice.setAccount(account);
             if (invoiceService.create(invoice) == null) {
                 // lỗi tạo invoice
@@ -300,7 +314,6 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 // tính tổng tiền dịch vụ
                 List<UsedService> usedServices = usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetail.getId(), true);
                 Double totalServiceFee = usedServices.stream()
-                        .filter(usedService -> usedService.getStatus())
                         .map(usedService -> {
                             LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
                             LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
@@ -362,7 +375,6 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         // Tính tổng tiền dịch vụ
         List<UsedService> usedServices = usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetail.getId(), true);
         Double totalServiceFee = usedServices.stream()
-                .filter(usedService -> usedService.getStatus())
                 .map(usedService -> {
                     LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
                     LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
@@ -480,9 +492,6 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setInvoiceDetail(invoiceDetail);
         invoiceDetailHistory.setCheckinExpected(invoiceDetail.getCheckinExpected());
         invoiceDetailHistory.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
-        invoiceDetailHistory.setTotal(invoiceDetail.getTotal());
-        invoiceDetailHistory.setTotalRoomFee(invoiceDetail.getTotalRoomFee());
-        invoiceDetailHistory.setTotalServiceFee(invoiceDetail.getTotalServiceFee());
         invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
         invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
         invoiceDetailHistory.setNote("Gia hạn thêm ngày. " + note);
@@ -639,13 +648,13 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoice.setTotalPayment(invoice.getTotal());
         }
         switch (paymentMethod.getCode()) {
-            case "PM001":
+            case "CASH":
                 invoice.setPaidDate(new Date());
                 invoice.setStatus(4);
                 break;
-            case "PM002":
-            case "PM003":
-            case "PM004":
+            case "BANK":
+            case "VNPAY":
+            case "CREDIT":
                 invoice.setStatus(3);
                 break;
         }
@@ -671,6 +680,41 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoice.setStatus(4);
         if (invoiceService.update(invoice) == null) {
             throw new RuntimeException("Cập nhật Invoice " + invoiceCode + " không thành công");
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
+    public void updateInvoiceDetail(InvoiceDetailUpdateReq invoiceDetailUpdateReq) {
+        if (invoiceDetailUpdateReq.getInvoiceDetailId() == null || invoiceDetailUpdateReq.getRoomPrice() == null || invoiceDetailUpdateReq.getDeposit() == null) {
+            throw new RuntimeException("Dữ liệu không hợp lệ");
+        }
+        if (invoiceDetailUpdateReq.getEarlyCheckinFee() == null || invoiceDetailUpdateReq.getLateCheckoutFee() == null || invoiceDetailUpdateReq.getNote() == null) {
+            throw new RuntimeException("Dữ liệu không hợp lệ");
+        }
+        InvoiceDetail invoiceDetail = invoiceDetailService.findById(invoiceDetailUpdateReq.getInvoiceDetailId());
+        if (invoiceDetail == null) {
+            throw new RuntimeException("Không tìm thấy InvoiceDetail " + invoiceDetailUpdateReq.getInvoiceDetailId());
+        }
+        InvoiceDetailHistory invoiceDetailHistory = new InvoiceDetailHistory();
+        invoiceDetailHistory.setInvoiceDetail(invoiceDetail);
+        invoiceDetailHistory.setCheckinExpected(invoiceDetail.getCheckinExpected());
+        invoiceDetailHistory.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
+        invoiceDetailHistory.setRoomPrice(invoiceDetail.getRoomPrice());
+        invoiceDetailHistory.setDeposit(invoiceDetail.getDeposit());
+        invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
+        invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
+        invoiceDetailHistory.setNote(invoiceDetailUpdateReq.getNote());
+        invoiceDetailHistory.setUpdateDate(new Date());
+        if (invoiceDetailHistoryService.create(invoiceDetailHistory) == null) {
+            throw new RuntimeException("Tạo InvoiceDetailHistory thất bại");
+        }
+        invoiceDetail.setRoomPrice(invoiceDetailUpdateReq.getRoomPrice());
+        invoiceDetail.setDeposit(invoiceDetailUpdateReq.getDeposit());
+        invoiceDetail.setEarlyCheckinFee(invoiceDetailUpdateReq.getEarlyCheckinFee());
+        invoiceDetail.setLateCheckoutFee(invoiceDetailUpdateReq.getLateCheckoutFee());
+        if (invoiceDetailService.update(invoiceDetail) == null) {
+            throw new RuntimeException("Cập nhật InvoiceDetail thất bại");
         }
     }
 

@@ -79,9 +79,10 @@ public class BookingRestController {
     }
 
     @GetMapping("/info")
-    public List<RoomBooking> getInfoRoomBooking(@RequestParam("checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkinDate, @RequestParam("checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkoutDate, @RequestParam("roomType") String roomType) {
+    public List<RoomBooking> getInfoRoomBooking(@RequestParam("checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date checkinDate, @RequestParam("checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") Date checkoutDate, @RequestParam("roomType") String roomType) {
 
         if (roomType == "") roomType = null;
+        System.out.println(checkinDate + " - " + checkoutDate);
 
         List<Object[]> infoRoomBooking = bookingService.getInfoRoomBooking(roomType, checkinDate, checkoutDate);
 
