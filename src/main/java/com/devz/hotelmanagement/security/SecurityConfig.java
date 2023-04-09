@@ -24,50 +24,50 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private static final String[] SECURED_URLs = { "/api/accounts/**", "/api/service-types/**", "/api/services/**",
-			"/api/rooms/types/**", "/api/invoices/**", "/api/settings/**" }; // Url cần bảo vệ theo quyền ADMIN
+    private static final String[] SECURED_URLs = {"/api/accounts/**", "/api/service-types/**", "/api/services/**",
+            "/api/rooms/types/**", "/api/invoices/**", "/api/settings/**"}; // Url cần bảo vệ theo quyền ADMIN
 
-	private static final String[] UN_SECURED_URLs = { // URL cho phep
-			"/auth/login/**" ,"/reset-password/**" ,"/images/**"};
+    private static final String[] UN_SECURED_URLs = { // URL cho phep
+            "/auth/login/**", "/reset-password/**", "/images/**", "/payment/**"};
 
-	@Autowired
-	UserDetailService userDetailService;
+    @Autowired
+    UserDetailService userDetailService;
 
-	@Autowired
-	JwtFilter jwtFilter;
+    @Autowired
+    JwtFilter jwtFilter;
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public AuthenticationProvider authenticationProvider() {
-		var authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(userDetailService);
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
-		return authenticationProvider;
-	}
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        var authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers(UN_SECURED_URLs).permitAll()
-				.requestMatchers(SECURED_URLs)
-				.hasAuthority("ADMIN").anyRequest().authenticated().and().exceptionHandling()
-				.authenticationEntryPoint((request, response, authException) -> {
-					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid role");
-				}).accessDeniedHandler((request, response, accessDeniedException) -> {
-					response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
-				}).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authenticationProvider(authenticationProvider())
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers(UN_SECURED_URLs).permitAll()
+                .requestMatchers(SECURED_URLs)
+                .hasAuthority("ADMIN").anyRequest().authenticated().and().exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid role");
+                }).accessDeniedHandler((request, response, accessDeniedException) -> {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+        }).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return http.build();
-	}
+        return http.build();
+    }
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-		return authConfig.getAuthenticationManager();
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 
 }

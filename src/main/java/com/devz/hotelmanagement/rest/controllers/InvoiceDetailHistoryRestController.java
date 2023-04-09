@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -18,8 +19,12 @@ public class InvoiceDetailHistoryRestController {
     private InvoiceDetailHistoryService invoiceDetailHistoryService;
 
     @GetMapping
-    public List<InvoiceDetailHistory> getAll() {
-        return invoiceDetailHistoryService.findAll();
+    public List<InvoiceDetailHistory> getAll(@RequestParam("invoiceDetailId") Optional<Integer> invoiceDetailId) {
+        if (invoiceDetailId.isPresent()) {
+            return invoiceDetailHistoryService.findAllByInvoiceDetailId(invoiceDetailId.get());
+        } else {
+            return invoiceDetailHistoryService.findAll();
+        }
     }
 
     @PostMapping
