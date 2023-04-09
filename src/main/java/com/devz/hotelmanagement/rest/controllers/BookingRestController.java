@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,31 +79,45 @@ public class BookingRestController {
     }
 
     @GetMapping("/info")
-    public List<RoomBooking> getInfoRoomBooking(@RequestParam("checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkinDate, @RequestParam("checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkoutDate, @RequestParam("roomType") String roomType) {
+    public List<RoomBooking> getInfoRoomBooking(@RequestParam("checkinDate") String checkin, @RequestParam("checkoutDate") String checkout, @RequestParam("roomType") String roomType) {
 
-        if (roomType == "") roomType = null;
+        if (checkin.equals(checkout)) {
+            return null;
+        }
 
-        List<Object[]> infoRoomBooking = bookingService.getInfoRoomBooking(roomType, checkinDate, checkoutDate);
+        try {
 
-        return infoRoomBooking.stream().map(bookingInfo -> {
-            RoomBooking roomBooking = new RoomBooking();
-            roomBooking.setRoomType(roomTypeService.getRoomTypeByCode((String) bookingInfo[2]));
-            roomBooking.setName((String) bookingInfo[0]);
-            roomBooking.setQuantity((Long) bookingInfo[1]);
+            if (roomType == "") roomType = null;
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
-            List<Integer> roomIds = bookingService.getRoomsByTimeBooking((String) bookingInfo[0], checkinDate, checkoutDate);
-            List<Room> roomList = roomService.findByIds(roomIds);
-            roomBooking.setListRooms(roomList);
+            Date checkinDate = formatter.parse(checkin);
+            Date checkoutDate = formatter.parse(checkout);
 
-            DoubleSummaryStatistics priceStats = roomList.stream().map(Room::getPrice).filter(Objects::nonNull).mapToDouble(Double::doubleValue).summaryStatistics();
-            roomBooking.setMinPrice(priceStats.getMin());
-            roomBooking.setMaxPrice(priceStats.getMax());
 
-            roomBooking.setMaxAdults((BigDecimal) bookingInfo[3]);
-            roomBooking.setMaxChilds((BigDecimal) bookingInfo[4]);
+            List<Object[]> infoRoomBooking = bookingService.getInfoRoomBooking(roomType, checkinDate, checkoutDate);
 
-            return roomBooking;
-        }).collect(Collectors.toList());
+            return infoRoomBooking.stream().map(bookingInfo -> {
+                RoomBooking roomBooking = new RoomBooking();
+                roomBooking.setRoomType(roomTypeService.getRoomTypeByCode((String) bookingInfo[2]));
+                roomBooking.setName((String) bookingInfo[0]);
+                roomBooking.setQuantity((Long) bookingInfo[1]);
+
+                List<Integer> roomIds = bookingService.getRoomsByTimeBooking((String) bookingInfo[0], checkinDate, checkoutDate);
+                List<Room> roomList = roomService.findByIds(roomIds);
+                roomBooking.setListRooms(roomList);
+
+                DoubleSummaryStatistics priceStats = roomList.stream().map(Room::getPrice).filter(Objects::nonNull).mapToDouble(Double::doubleValue).summaryStatistics();
+                roomBooking.setMinPrice(priceStats.getMin());
+                roomBooking.setMaxPrice(priceStats.getMax());
+
+                roomBooking.setMaxAdults((BigDecimal) bookingInfo[3]);
+                roomBooking.setMaxChilds((BigDecimal) bookingInfo[4]);
+
+                return roomBooking;
+            }).collect(Collectors.toList());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping
@@ -123,15 +137,13 @@ public class BookingRestController {
             Customer customer = customerService.searchByPeopleId(peopelId);
 
             if (customer == null) {
-                storageService.saveFile(frontIdCard);
-                storageService.saveFile(backIdCard);
                 bookingReq.getCustomer().setCustomerType(customerTypeService.findById(1));
                 bookingReq.getCustomer().setFrontIdCard(storageService.saveFile(frontIdCard));
                 bookingReq.getCustomer().setBackIdCard(storageService.saveFile(backIdCard));
                 customer = customerService.create(bookingReq.getCustomer());
             }
 
-            booking.setCraetedDate(new Date());
+            booking.setCreatedDate(new Date());
             booking.setCustomer(customer);
             booking.setNumAdults(bookingReq.getNumAdults());
             booking.setNumChildren(bookingReq.getNumChildren());

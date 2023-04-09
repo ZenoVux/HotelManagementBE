@@ -44,4 +44,5 @@ public class BookingDetailHistoryServiceImpl implements BookingDetailHistoryServ
     public BookingDetailHistory update(BookingDetailHistory bookingDetailHistory) {
         return bookingDetailHistoryRepo.save(bookingDetailHistory);
     }
+
 }

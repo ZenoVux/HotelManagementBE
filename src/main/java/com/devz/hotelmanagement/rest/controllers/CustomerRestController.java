@@ -3,6 +3,7 @@ package com.devz.hotelmanagement.rest.controllers;
 import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.CustomerType;
 import com.devz.hotelmanagement.services.CustomerService;
+import com.devz.hotelmanagement.services.StorageService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

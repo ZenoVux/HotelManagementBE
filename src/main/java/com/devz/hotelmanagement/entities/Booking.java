@@ -22,7 +22,7 @@ public class Booking extends EntityBase {
     private Customer customer;
 
     @Column(name = "created_date")
-    private Date craetedDate;
+    private Date createdDate;
 
     @Column(name = "num_adults")
     private Integer numAdults;

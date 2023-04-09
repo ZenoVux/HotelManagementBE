@@ -21,7 +21,7 @@ public class BookingHistory extends EntityBase {
     private Booking booking;
 
     @Column(name = "created_date")
-    private Date craetedDate;
+    private Date createdDate;
 
     @Column(name = "num_adults")
     private Integer numAdults;
