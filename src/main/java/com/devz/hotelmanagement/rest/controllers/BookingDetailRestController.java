@@ -2,7 +2,6 @@ package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.*;
 import com.devz.hotelmanagement.models.BookingDetailReq;
-import com.devz.hotelmanagement.models.BookingReq;
 import com.devz.hotelmanagement.services.BookingDetailHistoryService;
 import com.devz.hotelmanagement.services.BookingDetailService;
 import com.devz.hotelmanagement.services.BookingHistoryService;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,9 +32,6 @@ public class BookingDetailRestController {
 
     @Autowired
     private BookingDetailService bookingDetailService;
-
-    @Autowired
-    private BookingDetailHistoryService bookingDetailHistoryService;
 
     @GetMapping
     public List<BookingDetail> getAll() {

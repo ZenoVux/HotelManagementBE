@@ -17,6 +17,10 @@ import java.util.List;
 public class BookingHistory extends EntityBase {
 
     @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    @ManyToOne
     @JoinColumn(name = "booking_id")
     private Booking booking;
 

@@ -24,9 +24,9 @@ public class RoomBooking {
 
     Long quantity;
 
-    BigDecimal maxAdults;
+    Long maxAdults;
 
-    BigDecimal maxChilds;
+    Long maxChilds;
 
     List<Room> listRooms;
 

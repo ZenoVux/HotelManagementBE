@@ -50,6 +50,14 @@ public class Account extends EntityBase {
 
     @JsonIgnore
     @OneToMany(mappedBy = "account")
+    private List<Booking> bookings;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "account")
+    private List<BookingHistory> bookingHistories;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "account")
     private List<Schedule> schedules;
 
 }
