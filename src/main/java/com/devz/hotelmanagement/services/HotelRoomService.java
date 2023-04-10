@@ -1,15 +1,13 @@
 package com.devz.hotelmanagement.services;
 
-import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.InvoiceDetail;
-import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.models.*;
 
 import java.util.Date;
 
 public interface HotelRoomService {
 
-    HotelResp getHotel();
+    HotelResp getHotel(Integer statusFilter, String bookingCode);
 
     void checkin(CheckinRoomReq checkinRoomReq);
 

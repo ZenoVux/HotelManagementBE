@@ -14,6 +14,8 @@ public class HotelRoomResp {
     private String code;
     private String roomType;
     private String customer;
+    private String phoneNumber;
+    private String bookingCode;
     private Integer bookingDetailId;
     private Integer invoiceDetailId;
     private Date checkinExpected;
