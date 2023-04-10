@@ -57,6 +57,10 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     public UsedService create(UsedService usedService) {
         ServiceRoom serviceRoom = serviceRoomService.findById(usedService.getServiceRoom().getId());
         if (serviceRoom == null) {
+            System.out.println(0);
+            return null;
+        }
+        if (!serviceRoom.getStatus()) {
             System.out.println(1);
             return null;
         }

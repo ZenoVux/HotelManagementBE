@@ -43,8 +43,8 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public List<Promotion> findByAmount(Double amount) {
-        return promotionRepo.findByAmount(amount);
+    public List<Promotion> findByInvoiceAmount(Double amount) {
+        return promotionRepo.findByInvoiceAmount(amount);
     }
 
     @Override

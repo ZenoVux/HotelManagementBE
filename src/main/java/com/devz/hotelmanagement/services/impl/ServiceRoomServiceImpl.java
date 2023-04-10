@@ -14,16 +14,16 @@ import java.util.Optional;
 public class ServiceRoomServiceImpl implements ServiceRoomService {
 
     @Autowired
-    ServiceRoomRepository serviceRoomRepository;
+    ServiceRoomRepository serviceRoomRepo;
 
     @Override
     public List<ServiceRoom> findAll() {
-        return serviceRoomRepository.findAll();
+        return serviceRoomRepo.findAll();
     }
 
     @Override
     public ServiceRoom findById(int id) {
-        Optional<ServiceRoom> optional = serviceRoomRepository.findById(id);
+        Optional<ServiceRoom> optional = serviceRoomRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
@@ -38,12 +38,17 @@ public class ServiceRoomServiceImpl implements ServiceRoomService {
     @Override
     public ServiceRoom create(ServiceRoom serviceRoom) {
         serviceRoom.setId(null);
-        serviceRoomRepository.save(serviceRoom);
+        serviceRoomRepo.save(serviceRoom);
         return null;
     }
 
     @Override
     public ServiceRoom update(ServiceRoom serviceRoom) {
-        return serviceRoomRepository.save(serviceRoom);
+        return serviceRoomRepo.save(serviceRoom);
+    }
+
+    @Override
+    public List<ServiceRoom> findByStatus(Boolean status) {
+        return serviceRoomRepo.findByStatus(status);
     }
 }

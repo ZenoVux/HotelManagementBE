@@ -193,7 +193,7 @@ public class BookingRestController {
     private <T> T getApiResponse(MultipartFile image, Class<T> responseType) {
         try {
             String url = "https://api.fpt.ai/vision/idr/vnm";
-            String apiKey = "5YF2UL2BJTymRZ1zpDVUnUwhnQbBhg5r";
+            String apiKey = "z9CI8rdlxk2vwReEPHk6w9WfI5HDBoox";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.set("api-key", apiKey);

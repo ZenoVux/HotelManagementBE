@@ -1,14 +1,22 @@
 package com.devz.hotelmanagement.rest.controllers;
 
+import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.models.*;
+import com.devz.hotelmanagement.services.CustomerService;
+import com.devz.hotelmanagement.services.CustomerTypeService;
 import com.devz.hotelmanagement.services.HotelRoomService;
+import com.devz.hotelmanagement.services.StorageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 @CrossOrigin("*")
@@ -18,6 +26,15 @@ public class HotelRoomController {
 
     @Autowired
     private HotelRoomService hotelRoomService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private CustomerTypeService customerTypeService;
+
+    @Autowired
+    private StorageService storageService;
 
     @GetMapping
     public HotelResp getHotel(
@@ -126,6 +143,38 @@ public class HotelRoomController {
     public ResponseEntity<Void> updateInvoiceDetail(@RequestBody InvoiceDetailUpdateReq invoiceDetailUpdateReq) {
         try {
             hotelRoomService.updateInvoiceDetail(invoiceDetailUpdateReq);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/create-customer")
+    public ResponseEntity<Void> updateInvoiceDetail(
+            @RequestParam("frontIdCard") MultipartFile frontIdCard,
+            @RequestParam("backIdCard") MultipartFile backIdCard,
+            @RequestParam("customer") String customerReqJson
+    ) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+            Customer customerReq = objectMapper.readValue(customerReqJson, Customer.class);
+
+            Customer customer = customerService.searchByPeopleId(customerReq.getPeopleId());
+
+            if (customer == null) {
+                customerReq.setCustomerType(customerTypeService.findById(1));
+                customerReq.setFrontIdCard(storageService.saveFile(frontIdCard));
+                customerReq.setBackIdCard(storageService.saveFile(backIdCard));
+                if (customerService.create(customerReq) == null) {
+                    throw new RuntimeException("Tạo mới khách hàng thất bại!");
+                }
+            } else {
+                if (customerService.update(customerReq) == null) {
+                    throw new RuntimeException("Cập nhật khách hàng thất bại!");
+                }
+            }
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -8,6 +8,6 @@ public interface PromotionService extends ServiceBase<Promotion> {
 
     Promotion findByCode(String code);
 
-    List<Promotion> findByAmount(Double amount);
+    List<Promotion> findByInvoiceAmount(Double amount);
 
 }

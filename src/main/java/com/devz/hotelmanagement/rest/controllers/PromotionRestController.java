@@ -42,8 +42,8 @@ public class PromotionRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/by-amount")
-    public List<Promotion> findByAmount(@RequestParam("amount") Double amount) {
-        return promotionService.findByAmount(amount);
+    @GetMapping("/by-invoice-amount")
+    public List<Promotion> findByInvoiceAmount(@RequestParam("amount") Double amount) {
+        return promotionService.findByInvoiceAmount(amount);
     }
 }

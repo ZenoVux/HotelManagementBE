@@ -21,7 +21,7 @@ public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
             "WHERE p.startedDate <= CURRENT_DATE AND " +
             "   p.endedDate >= CURRENT_DATE AND " +
             "   p.minAmount <= :amount AND " +
-            "   p.status = true ")
-    List<Promotion> findByAmount(@Param("amount") Double amount);
+            "   p.status = true AND p.type = true")
+    List<Promotion> findByInvoiceAmount(@Param("amount") Double amount);
 
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -15,8 +16,12 @@ public class ServiceRoomRestController {
     private ServiceRoomService serviceRoomService;
 
     @GetMapping
-    public List<ServiceRoom> getAll(){
-        return serviceRoomService.findAll();
+    public List<ServiceRoom> findAll(@RequestParam("status") Optional<Boolean> status){
+        if (status.isPresent()) {
+            return serviceRoomService.findByStatus(status.get());
+        } else {
+            return serviceRoomService.findAll();
+        }
     }
 
     @PostMapping
