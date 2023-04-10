@@ -3,11 +3,13 @@ package com.devz.hotelmanagement.rest.controllers;
 import com.devz.hotelmanagement.entities.*;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
+import com.devz.hotelmanagement.statuses.BookingDetailStatus;
+import com.devz.hotelmanagement.statuses.BookingStatus;
+import com.devz.hotelmanagement.utilities.CurrentAccount;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -15,12 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,20 +49,18 @@ public class BookingRestController {
     @Autowired
     private StorageService storageService;
 
+    @Autowired
+    private AccountService accountService;
+
+    private CurrentAccount currentAccount;
+
     @GetMapping
     public List<BookingInfo> getBooking() {
         List<BookingInfo> bookingList = new ArrayList<>();
         List<Object[]> info = bookingService.getBooking();
 
         for (Object[] i : info) {
-            BookingInfo bookingInfo = new BookingInfo();
-            bookingInfo.setCode((String) i[0]);
-            bookingInfo.setNumOfRoom((Long) i[1]);
-            bookingInfo.setAdults((Integer) i[2]);
-            bookingInfo.setChilds((Integer) i[3]);
-            bookingInfo.setNote((String) i[4]);
-            bookingInfo.setCreatedDate((Date) i[5]);
-            bookingInfo.setStatus((Integer) i[6]);
+            BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (Integer) i[2], (Integer) i[3], (String) i[4], (Date) i[5], (Integer) i[6]);
             bookingList.add(bookingInfo);
         }
 
@@ -89,10 +86,8 @@ public class BookingRestController {
 
             if (roomType == "") roomType = null;
             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-
             Date checkinDate = formatter.parse(checkin);
             Date checkoutDate = formatter.parse(checkout);
-
 
             List<Object[]> infoRoomBooking = bookingService.getInfoRoomBooking(roomType, checkinDate, checkoutDate);
 
@@ -110,28 +105,32 @@ public class BookingRestController {
                 roomBooking.setMinPrice(priceStats.getMin());
                 roomBooking.setMaxPrice(priceStats.getMax());
 
-                roomBooking.setMaxAdults((BigDecimal) bookingInfo[3]);
-                roomBooking.setMaxChilds((BigDecimal) bookingInfo[4]);
+                roomBooking.setMaxAdults((Long) bookingInfo[3]);
+                roomBooking.setMaxChilds((Long) bookingInfo[4]);
 
                 return roomBooking;
             }).collect(Collectors.toList());
+
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @PostMapping
-    public void createBooking(@RequestParam("frontIdCard") MultipartFile frontIdCard,
-                              @RequestParam("backIdCard") MultipartFile backIdCard,
-                              @RequestParam("bookingReq") String bookingReqJson
+    public void createBooking(
+            @RequestParam("frontIdCard") MultipartFile frontIdCard,
+            @RequestParam("backIdCard") MultipartFile backIdCard,
+            @RequestParam("bookingReq") String bookingReqJson
     ) {
+
         try {
+
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.setDateFormat(dateFormat);
             BookingReq bookingReq = objectMapper.readValue(bookingReqJson, BookingReq.class);
 
-            Booking booking = new Booking();
             List<Room> rooms = List.of(bookingReq.getRooms());
             String peopelId = bookingReq.getCustomer().getPeopleId();
             Customer customer = customerService.searchByPeopleId(peopelId);
@@ -143,22 +142,18 @@ public class BookingRestController {
                 customer = customerService.create(bookingReq.getCustomer());
             }
 
-            booking.setCreatedDate(new Date());
-            booking.setCustomer(customer);
-            booking.setNumAdults(bookingReq.getNumAdults());
-            booking.setNumChildren(bookingReq.getNumChildren());
-            booking.setNote(bookingReq.getNote());
-            booking.setDeposit(0.0);
-            booking.setStatus(2);
+            Account account = accountService.findByUsername(currentAccount.getUsername());
 
+            Booking booking = new Booking(account, customer, new Date(), bookingReq.getNumAdults(), bookingReq.getNumChildren(), 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
             bookingService.create(booking);
 
-            List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", 1)).collect(Collectors.toList());
-
+            List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", BookingDetailStatus.PENDING.getCode())).collect(Collectors.toList());
             bookingDetailService.createAll(bookingDetails);
+
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @PutMapping
@@ -169,10 +164,10 @@ public class BookingRestController {
     @PutMapping("/cancel")
     public Booking cancelBooking(@RequestBody Booking booking) {
         Booking cancelBooking = bookingService.findByCode(booking.getCode());
-        cancelBooking.setNote(booking.getNote());
-        cancelBooking.setStatus(0);
+        cancelBooking.setNote(booking.getNote() + "- (Người huỷ: " + currentAccount.getUsername() + ")");
+        cancelBooking.setStatus(BookingStatus.CANCELLED.getCode());
         List<BookingDetail> bookingDetails = bookingDetailService.findByBookingId(cancelBooking.getId());
-        bookingDetails.stream().forEach(detail -> detail.setStatus(0));
+        bookingDetails.stream().forEach(detail -> detail.setStatus(BookingDetailStatus.CANCELLED.getCode()));
         return bookingService.update(cancelBooking);
     }
 
@@ -186,37 +181,19 @@ public class BookingRestController {
     }
 
     @PostMapping("/read-front-id-card")
-    public ApiFrontIdCardResponse readFrontIdCard(@RequestParam("frontIdCard") MultipartFile image) {
-        System.out.println(image.getName());
-        ApiFrontIdCardResponse apiFrontIdCardResponse = null;
-        try {
-            String url = "https://api.fpt.ai/vision/idr/vnm";
-            String apiKey = "wPrJCvdFjPEHVCvqfnAeuNaT6eAS7pxY";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-            headers.set("api-key", apiKey);
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("image", new ByteArrayResource(image.getBytes()) {
-                @Override
-                public String getFilename() {
-                    return image.getOriginalFilename();
-                }
-            });
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<ApiFrontIdCardResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, ApiFrontIdCardResponse.class);
-            apiFrontIdCardResponse = responseEntity.getBody();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return apiFrontIdCardResponse;
+    public ApiFrontIdCardResponse readFrontIdCard(@RequestParam(name = "frontIdCard") MultipartFile image) {
+        return getApiResponse(image, ApiFrontIdCardResponse.class);
     }
 
     @PostMapping("/read-back-id-card")
-    public ApiBackIdCardResponse readBackIdCard(@RequestParam("backIdCard") MultipartFile image) {
+    public ApiBackIdCardResponse readBackIdCard(@RequestParam(name = "backIdCard") MultipartFile image) {
+        return getApiResponse(image, ApiBackIdCardResponse.class);
+    }
+
+    private <T> T getApiResponse(MultipartFile image, Class<T> responseType) {
         try {
             String url = "https://api.fpt.ai/vision/idr/vnm";
-            String apiKey = "wPrJCvdFjPEHVCvqfnAeuNaT6eAS7pxY";
+            String apiKey = "5YF2UL2BJTymRZ1zpDVUnUwhnQbBhg5r";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.set("api-key", apiKey);
@@ -229,9 +206,8 @@ public class BookingRestController {
             });
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<ApiBackIdCardResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, ApiBackIdCardResponse.class);
-            ApiBackIdCardResponse apiBackIdCardResponse = responseEntity.getBody();
-            return apiBackIdCardResponse;
+            ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, requestEntity, responseType);
+            return responseEntity.getBody();
         } catch (Exception e) {
             e.printStackTrace();
         }

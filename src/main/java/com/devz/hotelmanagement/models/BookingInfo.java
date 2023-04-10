@@ -23,9 +23,9 @@ public class BookingInfo {
 
     private Integer childs;
 
-    private Date createdDate;
-
     private String note;
+
+    private Date createdDate;
 
     private Integer status;
 

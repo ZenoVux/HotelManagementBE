@@ -72,4 +72,14 @@ public class AccountServiceImpl implements AccountService {
         acc.setRePasswordToken(null);
         accountRepo.save(acc);
     }
+
+    @Override
+    public Account findByUsername(String username) {
+        Optional<Account> optional = accountRepo.findByUsername(username);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
 }

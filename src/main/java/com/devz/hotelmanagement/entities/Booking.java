@@ -18,6 +18,10 @@ import java.util.List;
 public class Booking extends EntityBase {
 
     @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
