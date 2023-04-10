@@ -29,6 +29,9 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.id = :id")
     Optional<BookingDetail> findByInvoiceDetailId(@Param("id") Integer id);
 
+    @Query("SELECT bd FROM BookingDetail bd WHERE bd.room.code = :id")
+    Optional<BookingDetail> findByRoomCodeAndBookingId(@Param("id") Integer id);
+
     @Query(value = "SELECT booking_details.code FROM booking_details ORDER BY booking_details.code DESC LIMIT 1", nativeQuery = true)
     String getMaxCode();
 

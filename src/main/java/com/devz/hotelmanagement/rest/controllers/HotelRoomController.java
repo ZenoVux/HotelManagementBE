@@ -1,8 +1,6 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import com.devz.hotelmanagement.entities.Invoice;
 import com.devz.hotelmanagement.entities.InvoiceDetail;
-import com.devz.hotelmanagement.entities.UsedService;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.HotelRoomService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -20,8 +20,16 @@ public class HotelRoomController {
     private HotelRoomService hotelRoomService;
 
     @GetMapping
-    public HotelResp getHotel() {
-        return hotelRoomService.getHotel();
+    public HotelResp getHotel(
+            @RequestParam("statusFilter") Optional<Integer> statusFilter,
+            @RequestParam("bookingCode") Optional<String> bookingCode) {
+        if (statusFilter.isPresent()) {
+            return hotelRoomService.getHotel(statusFilter.get(), null);
+        } else if (bookingCode.isPresent()) {
+            return hotelRoomService.getHotel(null, bookingCode.get());
+        } else {
+            return hotelRoomService.getHotel(null, null);
+        }
     }
 
     @PostMapping("/checkin")

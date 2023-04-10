@@ -14,6 +14,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelRoomServiceImpl implements HotelRoomService {
@@ -67,7 +68,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     private AccountService accountService;
 
     @Override
-    public HotelResp getHotel() {
+    public HotelResp getHotel(Integer statusFilter, String bookingCode) {
         int status = 0, status1 = 0, status2 = 0, status3 = 0, status4 = 0, status5 = 0, status6 = 0;
         HotelResp hotelResp = new HotelResp();
         Setting setting = settingService.getSetting();
@@ -94,8 +95,10 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
                     //(nowDate > checkinExpectedDate && nowDate < checkoutExpectedDate) || (nowDate == checkinExpectedDate && nowTime > checkinTime)
                     if ((nowDate.isAfter(checkinExpectedDate) && nowDate.isBefore(checkoutExpectedDate)) || (!nowDate.isBefore(checkinExpectedDate) && !nowDate.isAfter(checkinExpectedDate) && nowTime.isAfter(checkinTime))) {
+                        hotelRoomResp.setBookingCode(bookingDetail.getBooking().getCode());
                         hotelRoomResp.setBookingDetailId(bookingDetail.getId());
-                        hotelRoomResp.setCustomer(bookingDetail.getBooking().getCustomer().getFullName() + " - " + bookingDetail.getBooking().getCustomer().getPhoneNumber());
+                        hotelRoomResp.setCustomer(bookingDetail.getBooking().getCustomer().getFullName());
+                        hotelRoomResp.setPhoneNumber(bookingDetail.getBooking().getCustomer().getPhoneNumber());
                         hotelRoomResp.setCheckinExpected(checkinExpected);
                         hotelRoomResp.setCheckoutExpected(checkoutExpected);
                         // chờ checkin
@@ -112,8 +115,10 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             } else if (room.getStatus() == 2) {
                 InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(room.getCode());
                 if (invoiceDetail != null) {
+                    hotelRoomResp.setBookingCode(invoiceDetail.getInvoice().getBooking().getCode());
                     hotelRoomResp.setInvoiceDetailId(invoiceDetail.getId());
-                    hotelRoomResp.setCustomer(invoiceDetail.getInvoice().getBooking().getCustomer().getFullName() + " - " + invoiceDetail.getInvoice().getBooking().getCustomer().getPhoneNumber());
+                    hotelRoomResp.setCustomer(invoiceDetail.getInvoice().getBooking().getCustomer().getFullName());
+                    hotelRoomResp.setPhoneNumber(invoiceDetail.getInvoice().getBooking().getCustomer().getPhoneNumber());
                     Date checkinExpected = invoiceDetail.getCheckinExpected();
                     Date checkoutExpected = invoiceDetail.getCheckoutExpected();
                     hotelRoomResp.setCheckinExpected(checkinExpected);
@@ -160,7 +165,17 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         statusCountResps.add(new StatusCountResp(5, (long) status5));
         statusCountResps.add(new StatusCountResp(6, (long) status6));
         hotelResp.setStatusCounts(statusCountResps);
-        hotelResp.setHotelRooms(hotelRoomResps);
+        if (statusFilter != null) {
+            hotelResp.setHotelRooms(hotelRoomResps.stream()
+                    .filter(hotelRoomResp -> hotelRoomResp.getStatus() == statusFilter)
+                    .collect(Collectors.toList()));
+        } else if (bookingCode != null) {
+            hotelResp.setHotelRooms(hotelRoomResps.stream()
+                    .filter(hotelRoomResp ->  hotelRoomResp.getBookingCode() != null && hotelRoomResp.getBookingCode().equals(bookingCode))
+                    .collect(Collectors.toList()));
+        } else {
+            hotelResp.setHotelRooms(hotelRoomResps);
+        }
         return hotelResp;
     }
 
@@ -222,7 +237,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             LocalDate checkoutExpectedDate = LocalDate.ofInstant(bookingDetail.getCheckoutExpected().toInstant(), ZoneId.systemDefault());
 
             long days = ChronoUnit.DAYS.between(checkinExpectedDate, checkoutExpectedDate);
-            invoiceDetail.setDeposit(bookingDetail.getRoom().getPrice() * days * 0.1);
+            invoiceDetail.setDeposit(bookingDetail.getRoom().getPrice() * days);
         } else {
             invoiceDetail.setDeposit(0.0);
         }
@@ -372,9 +387,24 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         Room room = invoiceDetail.getRoom();
         RoomType roomType = room.getRoomType();
 
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+
         // Tính tổng tiền dịch vụ
         List<UsedService> usedServices = usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetail.getId(), true);
+
+        usedServices.forEach(usedService -> {
+            usedService.setEndedTime(Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+            LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
+            LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
+            if (!startedDate.isAfter(endedDate) && !startedDate.isBefore(endedDate)) {
+                usedService.setStatus(false);
+            }
+        });
+        usedServiceService.updateAll(usedServices);
+
         Double totalServiceFee = usedServices.stream()
+                .filter(usedService -> usedService.getStatus())
                 .map(usedService -> {
                     LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
                     LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
@@ -383,8 +413,6 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 .reduce(0.0, Double::sum);
 
         invoiceDetail.setTotalServiceFee(totalServiceFee);
-
-        LocalDate today = LocalDate.now();
 
         // Tính tổng tiền phòng
         Date checkinExpected = invoiceDetail.getCheckinExpected();
@@ -422,11 +450,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         Double totalChildSurcharge = roomType.getChildSurcharge() * (numChilds - room.getNumChilds());
 
         //
-        Double lateCheckoutFee = 0.0;
-        Double earlyCheckinFee = 0.0;
-
-        invoiceDetail.setLateCheckoutFee(lateCheckoutFee);
-        invoiceDetail.setEarlyCheckinFee(earlyCheckinFee);
+        Double lateCheckoutFee = invoiceDetail.getEarlyCheckinFee();
+        Double earlyCheckinFee = invoiceDetail.getLateCheckoutFee();
 
         Double total = totalRoomFee + totalServiceFee + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
 
@@ -449,7 +474,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
         // cập nhật tổng tiền hoá đơn
         Double totalInvoice = invoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
-        invoice.setTotal(totalInvoice - totalDeposit);
+        invoice.setTotal(totalInvoice);
         // kiểm tra các hoá đơn chi tiết đã hoàn thành hay chưa
         boolean isSuccess = invoiceDetails.stream().allMatch(ivd -> ivd.getStatus() == 2);
         if (isSuccess) {
@@ -696,6 +721,11 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (invoiceDetail == null) {
             throw new RuntimeException("Không tìm thấy InvoiceDetail " + invoiceDetailUpdateReq.getInvoiceDetailId());
         }
+        Invoice invoice = invoiceDetail.getInvoice();
+        if (invoice.getStatus() != 1 && invoice.getStatus() != 2) {
+            throw new RuntimeException("Không thể cập nhật InvoiceDetail");
+        }
+
         InvoiceDetailHistory invoiceDetailHistory = new InvoiceDetailHistory();
         invoiceDetailHistory.setInvoiceDetail(invoiceDetail);
         invoiceDetailHistory.setCheckinExpected(invoiceDetail.getCheckinExpected());

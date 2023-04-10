@@ -1,8 +1,9 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.devz.hotelmanagement.entities.BookingDetail;
+import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,12 @@ public class InvoiceRestController {
     private InvoiceService invoiceService;
 
     @GetMapping
-    public List<Invoice> getAll() {
-        return invoiceService.findAll();
+    public List<Invoice> findAll(@RequestParam("status") Optional<Integer> status) {
+        if (status.isPresent()) {
+            return invoiceService.findByStatus(status.get());
+        } else {
+            return invoiceService.findAll();
+        }
     }
 
     @GetMapping("/{code}")
@@ -31,6 +36,11 @@ public class InvoiceRestController {
             return ResponseEntity.ok(invoice);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/status-count")
+    public List<InvoiceStatusCountResp> getStatusCount() {
+        return invoiceService.getStatusCount();
     }
 
     @PostMapping
