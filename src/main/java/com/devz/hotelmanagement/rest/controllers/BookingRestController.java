@@ -164,7 +164,7 @@ public class BookingRestController {
     @PutMapping("/cancel")
     public Booking cancelBooking(@RequestBody Booking booking) {
         Booking cancelBooking = bookingService.findByCode(booking.getCode());
-        cancelBooking.setNote(booking.getNote() + "- (Người huỷ: " + currentAccount.getUsername() + ")");
+        cancelBooking.setNote(booking.getNote() + " - (Người huỷ: " + currentAccount.getUsername() + ")");
         cancelBooking.setStatus(BookingStatus.CANCELLED.getCode());
         List<BookingDetail> bookingDetails = bookingDetailService.findByBookingId(cancelBooking.getId());
         bookingDetails.stream().forEach(detail -> detail.setStatus(BookingDetailStatus.CANCELLED.getCode()));
