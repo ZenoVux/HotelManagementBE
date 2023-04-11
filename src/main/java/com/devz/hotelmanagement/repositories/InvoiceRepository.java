@@ -35,29 +35,29 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     @Query(value = "SELECT invoices.code FROM invoices ORDER BY invoices.code DESC LIMIT 1", nativeQuery = true)
     String getMaxCode();
 
-    @Query(value = "SELECT 'Today' AS period, SUM(total_payment) AS total_payment\n" +
-            "FROM invoices\n" +
-            "WHERE status = 4 AND DATE(paid_date) = CURDATE()\n" +
-            "UNION\n" +
-            "SELECT 'This month' AS period, SUM(total_payment) AS total_payment\n" +
-            "FROM invoices\n" +
-            "WHERE status = 4 AND MONTH(paid_date) = MONTH(CURDATE()) AND YEAR(paid_date) = YEAR(CURDATE())\n" +
-            "UNION\n" +
-            "SELECT 'This week' AS period, SUM(total_payment) AS total_payment\n" +
-            "FROM invoices\n" +
+    @Query(value = "SELECT 'Today' AS period, SUM(total_payment) AS total_payment " +
+            "FROM invoices " +
+            "WHERE status = 4 AND DATE(paid_date) = CURDATE() " +
+            "UNION " +
+            "SELECT 'This month' AS period, SUM(total_payment) AS total_payment " +
+            "FROM invoices " +
+            "WHERE status = 4 AND MONTH(paid_date) = MONTH(CURDATE()) AND YEAR(paid_date) = YEAR(CURDATE()) " +
+            "UNION " +
+            "SELECT 'This week' AS period, SUM(total_payment) AS total_payment " +
+            "FROM invoices " +
             "WHERE status = 4 AND WEEK(paid_date, 1) = WEEK(CURDATE(), 1);", nativeQuery = true)
     List<Object[]> getTotalByToday();
 
-    @Query(value = "SELECT 'Yesterday' AS period, SUM(total_payment) AS total_payment\n" +
-            "FROM invoices\n" +
-            "WHERE status = 4 AND DATE(paid_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n" +
-            "UNION\n" +
-            "SELECT 'Last week' AS period, SUM(total_payment) AS total_payment\n" +
-            "FROM invoices\n" +
-            "WHERE status = 4 AND YEARWEEK(paid_date, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK), 1)\n" +
-            "UNION\n" +
-            "SELECT 'Last month' AS period, SUM(total_payment) AS total_payment\n" +
-            "FROM invoices\n" +
+    @Query(value = "SELECT 'Yesterday' AS period, SUM(total_payment) AS total_payment " +
+            "FROM invoices " +
+            "WHERE status = 4 AND DATE(paid_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+            "UNION " +
+            "SELECT 'Last week' AS period, SUM(total_payment) AS total_payment " +
+            "FROM invoices " +
+            "WHERE status = 4 AND YEARWEEK(paid_date, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK), 1) " +
+            "UNION " +
+            "SELECT 'Last month' AS period, SUM(total_payment) AS total_payment " +
+            "FROM invoices " +
             "WHERE status = 4 AND MONTH(paid_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND YEAR(paid_date) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH));", nativeQuery = true)
     List<Object[]> getTotalByYesterday();
 
