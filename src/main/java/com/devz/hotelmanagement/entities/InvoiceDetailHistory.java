@@ -39,6 +39,9 @@ public class InvoiceDetailHistory extends EntityBase {
     @Column
     private String note;
 
+    @Column(name = "update_by")
+    private String updateBy;
+
     @Column(name = "update_date")
     private Date updateDate;
 
