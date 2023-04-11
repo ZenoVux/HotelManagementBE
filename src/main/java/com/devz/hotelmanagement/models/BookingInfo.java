@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.models;
 
+import com.devz.hotelmanagement.entities.Account;
 import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.Room;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,7 @@ public class BookingInfo {
     private Date createdDate;
 
     private Integer status;
+
+    private Double deposit;
 
 }

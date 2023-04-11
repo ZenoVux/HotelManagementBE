@@ -13,6 +13,8 @@ public interface BookingDetailService extends ServiceBase<BookingDetail> {
 
     BookingDetail findByInvoiceDetailId(Integer id);
 
+    void deleteById(Integer id);
+
     List<BookingDetail> createAll(List<BookingDetail> bookingDetails);
 
     List<BookingDetail>  findByBookingId(Integer id);

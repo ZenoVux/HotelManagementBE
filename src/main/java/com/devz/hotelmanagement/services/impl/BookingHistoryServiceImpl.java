@@ -57,31 +57,23 @@ public class BookingHistoryServiceImpl implements BookingHistoryService {
     @Override
     public void updateBeforeEditBooking(Booking booking) {
         List<BookingDetail> bookingDetails = booking.getBookingDetails();
+        List<BookingDetailHistory> bookingDetailHistories = new ArrayList<>();
 
-        BookingHistory bookingHistory = new BookingHistory();
-        List<BookingDetailHistory> bookingDetailHistories = new ArrayList<>();;
+        BookingHistory bookingHistory = new BookingHistory(booking.getAccount(), booking, booking.getCreatedDate(), booking.getNumAdults(), booking.getNumChildren(), booking.getDeposit(), booking.getNote(), null);
 
         for (BookingDetail bookingDetail : bookingDetails) {
-            BookingDetailHistory bookingDetailHistory = new BookingDetailHistory();
-
-            bookingDetailHistory.setBookingHistory(bookingHistory);
-            bookingDetailHistory.setRoom(bookingDetail.getRoom());
-            bookingDetailHistory.setCheckinExpected(bookingDetail.getCheckinExpected());
-            bookingDetailHistory.setCheckoutExpected(bookingDetail.getCheckoutExpected());
-            bookingDetailHistory.setNote(bookingDetail.getNote());
-
+            BookingDetailHistory bookingDetailHistory = new BookingDetailHistory(bookingHistory, bookingDetail.getRoom(), bookingDetail.getNote(), bookingDetail.getCheckinExpected(), bookingDetail.getCheckoutExpected(), bookingDetail.getCreatedDate());
             bookingDetailHistories.add(bookingDetailHistory);
         }
 
-        bookingHistory.setBooking(booking);
-        bookingHistory.setCreatedDate(booking.getCreatedDate());
-        bookingHistory.setNumAdults(booking.getNumAdults());
-        bookingHistory.setNumChildren(booking.getNumChildren());
-        bookingHistory.setDeposit(booking.getDeposit());
-        bookingHistory.setNote(booking.getNote());
-        bookingHistory.setBookingDetailHistories(bookingDetailHistories);
-
         bookingHistoryRepo.save(bookingHistory);
         bookingDetailHistoryRepo.saveAll(bookingDetailHistories);
+
     }
+
+    @Override
+    public List<BookingHistory> findByBookingId(Integer id) {
+        return bookingHistoryRepo.findByBookingId(id);
+    }
+
 }

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface BookingDetailHistoryService extends ServiceBase<BookingDetailHistory> {
 
+    List<BookingDetailHistory> findByBookingHistoryId(Integer id);
+
 }

@@ -86,6 +86,10 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         return null;
     }
 
+    @Override
+    public void deleteById(Integer id) {
+        bookingDetailRepo.deleteById(id);
+    }
 
     @Override
     public List<BookingDetail> createAll(List<BookingDetail> bookingDetails) {

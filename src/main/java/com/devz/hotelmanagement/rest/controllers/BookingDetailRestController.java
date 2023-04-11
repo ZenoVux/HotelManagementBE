@@ -2,10 +2,9 @@ package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.*;
 import com.devz.hotelmanagement.models.BookingDetailReq;
-import com.devz.hotelmanagement.services.BookingDetailHistoryService;
-import com.devz.hotelmanagement.services.BookingDetailService;
-import com.devz.hotelmanagement.services.BookingHistoryService;
-import com.devz.hotelmanagement.services.BookingService;
+import com.devz.hotelmanagement.services.*;
+import com.devz.hotelmanagement.statuses.BookingDetailStatus;
+import com.devz.hotelmanagement.utilities.CurrentAccount;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @CrossOrigin("*")
@@ -28,10 +28,18 @@ public class BookingDetailRestController {
     private BookingService bookingService;
 
     @Autowired
+    private RoomService roomService;
+
+    @Autowired
     private BookingHistoryService bookingHistoryService;
 
     @Autowired
     private BookingDetailService bookingDetailService;
+
+    @Autowired
+    private AccountService accountService;
+
+    private CurrentAccount currentAccount;
 
     @GetMapping
     public List<BookingDetail> getAll() {
@@ -54,9 +62,7 @@ public class BookingDetailRestController {
     }
 
     @PostMapping("/add-bkd")
-    public void addBKD(
-            @RequestParam("bookingDetailReq") String bookingDetailReqJson
-    ) {
+    public void addBKD(@RequestParam("bookingDetailReq") String bookingDetailReqJson) {
         try {
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             ObjectMapper objectMapper = new ObjectMapper();
@@ -69,25 +75,17 @@ public class BookingDetailRestController {
             bookingHistoryService.updateBeforeEditBooking(booking);
 
             // Cập nhật booking hiện tại
+            Account account = accountService.findByUsername(currentAccount.getUsername());
             booking.setNumAdults(booking.getNumAdults() + bookingDetailReq.getNumAdults());
             booking.setNumChildren(booking.getNumChildren() + bookingDetailReq.getNumChilds());
             booking.setCreatedDate(new Date());
+            booking.setAccount(account);
 
             bookingService.update(booking);
 
             // Đặt thêm phòng
             List<Room> rooms = List.of(bookingDetailReq.getRooms());
-            List<BookingDetail> newBookingDetails = rooms.stream()
-                    .map(room -> new BookingDetail(
-                            room,
-                            bookingDetailReq.getCheckinExpected(),
-                            bookingDetailReq.getCheckoutExpected(),
-                            booking,
-                            room.getPrice(),
-                            bookingDetailReq.getNote(),
-                            1
-                    ))
-                    .collect(Collectors.toList());
+            List<BookingDetail> newBookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingDetailReq.getCheckinExpected(), bookingDetailReq.getCheckoutExpected(), booking, room.getPrice(), bookingDetailReq.getNote(), BookingDetailStatus.PENDING.getCode(), new Date())).collect(Collectors.toList());
 
             bookingDetailService.createAll(newBookingDetails);
 
@@ -95,6 +93,25 @@ public class BookingDetailRestController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+
+    }
+
+    @PostMapping("/delete-bkd")
+    public void deleteBKD(@RequestBody Map<String, Integer> data) {
+
+        Integer id = data.get("id");
+
+        BookingDetail boookingDetail = bookingDetailService.findById(id);
+        Booking booking = bookingService.findById(boookingDetail.getBooking().getId());
+
+        //Đưa bản hiện tại thành history
+        bookingHistoryService.updateBeforeEditBooking(booking);
+
+        Account account = accountService.findByUsername(currentAccount.getUsername());
+        booking.setCreatedDate(new Date());
+        booking.setAccount(account);
+        bookingService.update(booking);
+        bookingDetailService.deleteById(id);
 
     }
 

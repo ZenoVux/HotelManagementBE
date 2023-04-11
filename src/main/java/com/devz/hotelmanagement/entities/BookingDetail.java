@@ -39,4 +39,7 @@ public class BookingDetail extends EntityBase {
     @Column
     private Integer status;
 
+    @Column(name = "created_date")
+    private Date createdDate;
+
 }
