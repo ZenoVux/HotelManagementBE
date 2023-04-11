@@ -58,7 +58,6 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionRepo.save(promotion);
     }
     
-    @PostConstruct // chạy khi app khởi động
     @Scheduled(cron = "0 0 0 * * ?")// chạy vào mỗi ngày lúc 00h
     public void updatePromotionStatus() {
         List<Promotion> promotions = promotionRepo.findAll();

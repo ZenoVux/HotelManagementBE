@@ -1,8 +1,12 @@
 package com.devz.hotelmanagement.rest.controllers;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import com.devz.hotelmanagement.repositories.InvoiceRepository;
 import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +23,10 @@ public class InvoiceRestController {
 
 	@Autowired
     private InvoiceService invoiceService;
+
+    @Autowired
+    private InvoiceRepository invoiceRepository;
+
 
     @GetMapping
     public List<Invoice> findAll(@RequestParam("status") Optional<Integer> status) {
@@ -52,5 +60,41 @@ public class InvoiceRestController {
     public Invoice update(@RequestBody Invoice invoice) {
         return invoiceService.update(invoice);
     }
+
+    @GetMapping("/totals")
+    public ResponseEntity<Map<String, Double>> getTotals() {
+        List<Object[]> todayResult = invoiceRepository.getTotalByToday();
+        List<Object[]> yesterdayResult = invoiceRepository.getTotalByYesterday();
+        Map<String, Double> totals = new HashMap<>();
+
+        for (Object[] result : todayResult) {
+            String key = result[0].toString();
+            Double value = result[1] != null ? Double.parseDouble(result[1].toString()) : 0.0;
+            totals.put(key, value);
+        }
+
+        for (Object[] result : yesterdayResult) {
+            String key = result[0].toString();
+            Double value = result[1] != null ? Double.parseDouble(result[1].toString()) : 0.0;
+            totals.put(key, value);
+        }
+
+        return new ResponseEntity<>(totals, HttpStatus.OK);
+    }
+
+    @GetMapping("/byDate/{startDate}/{endDate}")
+    public ResponseEntity<Double> getTotalsByDateRange(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
+        Double totalAmount = invoiceRepository.getTotalAmountByDateRange(startDate, endDate);
+        if (totalAmount == null) {
+            totalAmount = 0.0;
+        }
+        return new ResponseEntity<>(totalAmount, HttpStatus.OK);
+    }
+
+
+
+
+
+
 
 }
