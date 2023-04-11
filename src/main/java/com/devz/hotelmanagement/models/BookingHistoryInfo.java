@@ -1,6 +1,7 @@
 package com.devz.hotelmanagement.models;
 
 import com.devz.hotelmanagement.entities.BookingDetail;
+import com.devz.hotelmanagement.entities.BookingDetailHistory;
 import com.devz.hotelmanagement.entities.BookingHistory;
 import com.devz.hotelmanagement.entities.Customer;
 import lombok.AllArgsConstructor;
@@ -12,14 +13,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDetailInfo {
+public class BookingHistoryInfo {
 
-    private String code;
+    private BookingHistory bookingHistory;
 
-    private Customer customer;
-
-    private List<BookingDetail> bkList;
-
-    private String username;
+    private List<BookingDetailHistory> bkdhList;
 
 }

@@ -35,6 +35,9 @@ public class BookingRestController {
     private BookingDetailService bookingDetailService;
 
     @Autowired
+    private BookingHistoryService bookingHistoryService;
+
+    @Autowired
     private CustomerService customerService;
 
     @Autowired
@@ -60,7 +63,7 @@ public class BookingRestController {
         List<Object[]> info = bookingService.getBooking();
 
         for (Object[] i : info) {
-            BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (Integer) i[2], (Integer) i[3], (String) i[4], (Date) i[5], (Integer) i[6]);
+            BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (Integer) i[2], (Integer) i[3], (String) i[4], (Date) i[5], (Integer) i[6], (Double) i[7]);
             bookingList.add(bookingInfo);
         }
 
@@ -72,7 +75,8 @@ public class BookingRestController {
         Booking booking = bookingService.findByCode(code);
         Customer customer = booking.getCustomer();
         List<BookingDetail> bkList = bookingDetailService.findByBookingId(booking.getId());
-        return new BookingDetailInfo(code, customer, bkList);
+        String username = booking.getAccount().getUsername();
+        return new BookingDetailInfo(code, customer, bkList, username);
     }
 
     @GetMapping("/info")
@@ -147,7 +151,7 @@ public class BookingRestController {
             Booking booking = new Booking(account, customer, new Date(), bookingReq.getNumAdults(), bookingReq.getNumChildren(), 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
             bookingService.create(booking);
 
-            List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", BookingDetailStatus.PENDING.getCode())).collect(Collectors.toList());
+            List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date())).collect(Collectors.toList());
             bookingDetailService.createAll(bookingDetails);
 
         } catch (JsonProcessingException e) {
@@ -193,7 +197,7 @@ public class BookingRestController {
     private <T> T getApiResponse(MultipartFile image, Class<T> responseType) {
         try {
             String url = "https://api.fpt.ai/vision/idr/vnm";
-            String apiKey = "5YF2UL2BJTymRZ1zpDVUnUwhnQbBhg5r";
+            String apiKey = "z9CI8rdlxk2vwReEPHk6w9WfI5HDBoox";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.set("api-key", apiKey);

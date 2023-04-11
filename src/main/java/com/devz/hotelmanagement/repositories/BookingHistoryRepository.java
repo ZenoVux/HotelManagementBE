@@ -14,4 +14,7 @@ import java.util.Optional;
 @Repository
 public interface BookingHistoryRepository extends JpaRepository<BookingHistory, Integer> {
 
+    @Query(value = "SELECT bh FROM BookingHistory bh WHERE bh.booking.id = :id")
+    List<BookingHistory> findByBookingId(@Param("id") Integer id);
+
 }

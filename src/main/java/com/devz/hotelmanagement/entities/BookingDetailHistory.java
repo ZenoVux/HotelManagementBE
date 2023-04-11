@@ -31,4 +31,7 @@ public class BookingDetailHistory extends EntityBase {
     @Column(name = "checkout_expected")
     private Date checkoutExpected;
 
+    @Column(name = "created_date")
+    private Date createdDate;
+
 }

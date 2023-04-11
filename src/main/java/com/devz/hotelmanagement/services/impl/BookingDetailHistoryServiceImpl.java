@@ -45,4 +45,8 @@ public class BookingDetailHistoryServiceImpl implements BookingDetailHistoryServ
         return bookingDetailHistoryRepo.save(bookingDetailHistory);
     }
 
+    @Override
+    public List<BookingDetailHistory> findByBookingHistoryId(Integer id) {
+        return bookingDetailHistoryRepo.findByBookingHistoryId(id);
+    }
 }
