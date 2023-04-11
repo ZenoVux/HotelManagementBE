@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,4 +27,37 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 
     @Query(value = "SELECT invoices.code FROM invoices ORDER BY invoices.code DESC LIMIT 1", nativeQuery = true)
     String getMaxCode();
+
+    @Query(value = "SELECT 'Today' AS period, SUM(total_payment) AS total_payment\n" +
+            "FROM invoices\n" +
+            "WHERE status = 4 AND DATE(paid_date) = CURDATE()\n" +
+            "UNION\n" +
+            "SELECT 'This month' AS period, SUM(total_payment) AS total_payment\n" +
+            "FROM invoices\n" +
+            "WHERE status = 4 AND MONTH(paid_date) = MONTH(CURDATE()) AND YEAR(paid_date) = YEAR(CURDATE())\n" +
+            "UNION\n" +
+            "SELECT 'This week' AS period, SUM(total_payment) AS total_payment\n" +
+            "FROM invoices\n" +
+            "WHERE status = 4 AND WEEK(paid_date, 1) = WEEK(CURDATE(), 1);", nativeQuery = true)
+    List<Object[]> getTotalByToday();
+
+    @Query(value = "SELECT 'Yesterday' AS period, SUM(total_payment) AS total_payment\n" +
+            "FROM invoices\n" +
+            "WHERE status = 4 AND DATE(paid_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)\n" +
+            "UNION\n" +
+            "SELECT 'Last week' AS period, SUM(total_payment) AS total_payment\n" +
+            "FROM invoices\n" +
+            "WHERE status = 4 AND YEARWEEK(paid_date, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK), 1)\n" +
+            "UNION\n" +
+            "SELECT 'Last month' AS period, SUM(total_payment) AS total_payment\n" +
+            "FROM invoices\n" +
+            "WHERE status = 4 AND MONTH(paid_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND YEAR(paid_date) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH));", nativeQuery = true)
+    List<Object[]> getTotalByYesterday();
+
+    @Query(value = "SELECT SUM(total_payment) AS total_amount FROM invoices WHERE status = 4 AND paid_date BETWEEN :start AND DATE_ADD(:end, INTERVAL 1 DAY)", nativeQuery = true)
+    Double getTotalAmountByDateRange(@Param("start") String start, @Param("end") String end);
+
+    
+
+
 }

@@ -58,8 +58,8 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionRepo.save(promotion);
     }
     
-    @PostConstruct // chạy khi app khởi động
-    @Scheduled(cron = "0 */5 * * * ?")// chạy vào mỗi 5
+//    @PostConstruct // chạy khi app khởi động
+//    @Scheduled(cron = "0 */5 * * * ?")// chạy vào mỗi 5
     public void updatePromotionStatus() {
         List<Promotion> promotions = promotionRepo.findAll();
         for (Promotion promotion : promotions) {
