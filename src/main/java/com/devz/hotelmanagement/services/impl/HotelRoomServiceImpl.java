@@ -213,7 +213,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
             String username = req.getAttribute("username").toString();
 
-            Account account = accountService.findByUsername(username);
+            Account account = accountService.findByUsernameAndActivate(username);
             if (account == null) {
                 throw new RuntimeException("Chưa đăng nhập!");
             }

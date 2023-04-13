@@ -75,7 +75,7 @@ public class BookingDetailRestController {
             bookingHistoryService.updateBeforeEditBooking(booking);
 
             // Cập nhật booking hiện tại
-            Account account = accountService.findByUsername(currentAccount.getUsername());
+            Account account = accountService.findByUsernameAndActivate(currentAccount.getUsername());
             booking.setNumAdults(booking.getNumAdults() + bookingDetailReq.getNumAdults());
             booking.setNumChildren(booking.getNumChildren() + bookingDetailReq.getNumChilds());
             booking.setCreatedDate(new Date());
@@ -107,7 +107,7 @@ public class BookingDetailRestController {
         //Đưa bản hiện tại thành history
         bookingHistoryService.updateBeforeEditBooking(booking);
 
-        Account account = accountService.findByUsername(currentAccount.getUsername());
+        Account account = accountService.findByUsernameAndActivate(currentAccount.getUsername());
         booking.setCreatedDate(new Date());
         booking.setAccount(account);
         bookingService.update(booking);

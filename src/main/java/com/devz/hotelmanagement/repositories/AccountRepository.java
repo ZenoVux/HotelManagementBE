@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
-	@Query("SELECT acc FROM Account acc WHERE acc.username = :username")
-	Optional<Account> findByUsername(@Param("username") String username);
+	@Query("SELECT acc FROM Account acc WHERE acc.username = :username AND acc.status = true")
+	Optional<Account> findByUsernameAndActivate(@Param("username") String username);
 	
 	Account findByEmail(String email);
 	

@@ -146,7 +146,7 @@ public class BookingRestController {
                 customer = customerService.create(bookingReq.getCustomer());
             }
 
-            Account account = accountService.findByUsername(currentAccount.getUsername());
+            Account account = accountService.findByUsernameAndActivate(currentAccount.getUsername());
 
             Booking booking = new Booking(account, customer, new Date(), bookingReq.getNumAdults(), bookingReq.getNumChildren(), 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
             bookingService.create(booking);

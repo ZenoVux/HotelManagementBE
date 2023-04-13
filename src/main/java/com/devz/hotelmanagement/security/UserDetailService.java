@@ -27,7 +27,7 @@ public class UserDetailService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Account account = accRe.findByUsername(username)
+		Account account = accRe.findByUsernameAndActivate(username)
 				.orElseThrow(() -> new UsernameNotFoundException("No user found"));
 
 		List<UserRole> userRoles = roleRe.findByAccountId(account.getId());

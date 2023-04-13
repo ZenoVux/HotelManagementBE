@@ -92,6 +92,11 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     }
 
     @Override
+    public List<BookingDetail> findAllWaitingCheckin() {
+        return null;
+    }
+
+    @Override
     public List<BookingDetail> createAll(List<BookingDetail> bookingDetails) {
         try {
             String maxCode = bookingDetailRepo.getMaxCode();
