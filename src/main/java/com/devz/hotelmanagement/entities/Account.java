@@ -29,9 +29,6 @@ public class Account extends EntityBase {
     private String phoneNumber;
 
     @Column()
-    private String address;
-
-    @Column()
     private String email;
 
     @Column()

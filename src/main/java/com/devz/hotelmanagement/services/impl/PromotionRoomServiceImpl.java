@@ -1,7 +1,7 @@
 package com.devz.hotelmanagement.services.impl;
 
-import com.devz.hotelmanagement.entities.PromotionRoom;
-import com.devz.hotelmanagement.repositories.PromotionRoomRepository;
+import com.devz.hotelmanagement.entities.RoomTypePromotion;
+import com.devz.hotelmanagement.repositories.RoomTypePromotionRepository;
 import com.devz.hotelmanagement.services.PromotionRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,26 +12,26 @@ import java.util.Optional;
 @Service
 public class PromotionRoomServiceImpl implements PromotionRoomService {
     @Autowired
-    PromotionRoomRepository promotionRoomRepository ;
+    RoomTypePromotionRepository roomTypePromotionRepository;
 
     @Override
-    public List<PromotionRoom> findByRoomId(Integer roomId) {
-        return promotionRoomRepository.findByRoomId(roomId);
+    public List<RoomTypePromotion> findByRoomTypeId(Integer roomTypeId) {
+        return roomTypePromotionRepository.findByRoomTypeId(roomTypeId);
     }
 
     @Override
     public void delete(Integer id) {
-    	promotionRoomRepository.deleteById(id);
+    	roomTypePromotionRepository.deleteById(id);
     }
 
     @Override
-    public List<PromotionRoom> findAll() {
-        return promotionRoomRepository.findAll();
+    public List<RoomTypePromotion> findAll() {
+        return roomTypePromotionRepository.findAll();
     }
 
     @Override
-    public PromotionRoom findById(int id) {
-    	 Optional<PromotionRoom> optional = promotionRoomRepository.findById(id);
+    public RoomTypePromotion findById(int id) {
+    	 Optional<RoomTypePromotion> optional = roomTypePromotionRepository.findById(id);
          if (optional.isPresent()) {
              return optional.get();
          }
@@ -39,18 +39,18 @@ public class PromotionRoomServiceImpl implements PromotionRoomService {
     }
 
     @Override
-    public PromotionRoom findByCode(String code) {
+    public RoomTypePromotion findByCode(String code) {
         return null;
     }
 
     @Override
-    public PromotionRoom create(PromotionRoom entity) {
+    public RoomTypePromotion create(RoomTypePromotion entity) {
     	entity.setId(null);
-    	return promotionRoomRepository.save(entity);
+    	return roomTypePromotionRepository.save(entity);
     }
 
     @Override
-    public PromotionRoom update(PromotionRoom entity) {
-    	return promotionRoomRepository.save(entity);
+    public RoomTypePromotion update(RoomTypePromotion entity) {
+    	return roomTypePromotionRepository.save(entity);
     }
 }

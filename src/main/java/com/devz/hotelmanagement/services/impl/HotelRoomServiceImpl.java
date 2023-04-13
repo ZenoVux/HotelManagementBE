@@ -728,6 +728,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             throw new RuntimeException("Không thể cập nhật InvoiceDetail");
         }
 
+        String username = req.getAttribute("username").toString();
+
         InvoiceDetailHistory invoiceDetailHistory = new InvoiceDetailHistory();
         invoiceDetailHistory.setInvoiceDetail(invoiceDetail);
         invoiceDetailHistory.setCheckinExpected(invoiceDetail.getCheckinExpected());
@@ -737,6 +739,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
         invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
         invoiceDetailHistory.setNote(invoiceDetailUpdateReq.getNote());
+        invoiceDetailHistory.setCreatedBy(username);
         invoiceDetailHistory.setUpdateDate(new Date());
         if (invoiceDetailHistoryService.create(invoiceDetailHistory) == null) {
             throw new RuntimeException("Tạo InvoiceDetailHistory thất bại");

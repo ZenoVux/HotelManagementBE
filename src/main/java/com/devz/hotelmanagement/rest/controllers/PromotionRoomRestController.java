@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.devz.hotelmanagement.entities.PromotionRoom;
+import com.devz.hotelmanagement.entities.RoomTypePromotion;
 import com.devz.hotelmanagement.services.PromotionRoomService;
-import com.devz.hotelmanagement.services.PromotionService;
 
 @CrossOrigin("*")
 @RestController
@@ -25,18 +24,18 @@ public class PromotionRoomRestController {
 	PromotionRoomService promotionRoomService;
 	
 		@GetMapping
-	    public List<PromotionRoom> getAll() {
+	    public List<RoomTypePromotion> getAll() {
 	        return promotionRoomService.findAll();
 	    }
 
 	    @PostMapping
-	    public PromotionRoom create(@RequestBody PromotionRoom promotionRoom) {
-	        return promotionRoomService.create(promotionRoom);
+	    public RoomTypePromotion create(@RequestBody RoomTypePromotion roomTypePromotion) {
+	        return promotionRoomService.create(roomTypePromotion);
 	    }
 
 	    @PutMapping
-	    public PromotionRoom update(@RequestBody PromotionRoom promotionRoom) {
-	        return promotionRoomService.update(promotionRoom);
+	    public RoomTypePromotion update(@RequestBody RoomTypePromotion roomTypePromotion) {
+	        return promotionRoomService.update(roomTypePromotion);
 	    }
 
 	    @DeleteMapping("/{id}")

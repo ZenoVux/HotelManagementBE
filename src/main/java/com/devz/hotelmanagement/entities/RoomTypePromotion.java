@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "promotion_rooms")
-public class PromotionRoom extends EntityBase {
+@Table(name = "room_type_promotions")
+public class RoomTypePromotion extends EntityBase {
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "room_type_id")
+    private RoomType roomType;
 
     @ManyToOne
     @JoinColumn(name = "promotion_id")
