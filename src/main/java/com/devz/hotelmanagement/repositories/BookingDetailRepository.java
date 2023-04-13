@@ -17,7 +17,7 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
     // Tìm BKD trong
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.room.code = :code " +
             "AND bd.checkinExpected <= CURRENT_DATE " +
-            "AND bd.checkoutExpected >= CURRENT_DATE " +
+            "AND bd.checkoutExpected > CURRENT_DATE " +
             "AND (bd.booking.status = 2 OR bd.booking.status = 3) AND bd.status = 1 AND bd.room.status = 0")
     Optional<BookingDetail> findWaitingCheckinByRoomCode(@Param("code") String code);
 
