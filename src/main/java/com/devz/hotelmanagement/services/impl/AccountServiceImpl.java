@@ -74,6 +74,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account findByUsername(String username) {
+        Optional<Account> optional = accountRepo.findByUsername(username);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
+    @Override
     public Account findByUsernameAndActivate(String username) {
         Optional<Account> optional = accountRepo.findByUsernameAndActivate(username);
         if (optional.isPresent()) {

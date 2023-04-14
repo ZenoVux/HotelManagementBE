@@ -18,4 +18,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 	Account findByEmail(String email);
 	
 	Account findByRePasswordToken(String rePasswordToken);
+
+	@Query("SELECT acc FROM Account acc WHERE acc.username = :username")
+	Optional<Account> findByUsername(@Param("username") String username);
 }
