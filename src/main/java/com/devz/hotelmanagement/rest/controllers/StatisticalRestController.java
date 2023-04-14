@@ -66,5 +66,10 @@ public class StatisticalRestController {
     public List<Object[]> getRoomTypeReport() {
         return statisticalRepository.getTypeRoomGoogleChart();
     }
+
+	@GetMapping("/excel")
+	public List<Object[]> getReportExcel() {
+		return statisticalRepository.getReportExcel();
+	}
 	
 }

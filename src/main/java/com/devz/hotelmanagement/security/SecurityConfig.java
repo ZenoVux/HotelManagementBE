@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
     private static final String[] SECURED_URLs = {"/api/accounts/**", "/api/service-types/**", "/api/services/**",
-            "/api/rooms/types/**", "/api/invoices/**", "/api/settings/**"}; // Url cần bảo vệ theo quyền ADMIN
+            "/api/rooms/types/**", "/api/invoices/**", "/api/settings/**","/api/promotions/**"}; // Url cần bảo vệ theo quyền ADMIN
 
     private static final String[] UN_SECURED_URLs = { // URL cho phep
             "/auth/login/**", "/reset-password/**", "/images/**", "/payment/**"};

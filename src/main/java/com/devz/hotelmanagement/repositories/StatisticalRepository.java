@@ -59,5 +59,25 @@ public interface StatisticalRepository extends JpaRepository<BookingDetail, Inte
             "GROUP BY rt.id;", nativeQuery = true)
     List<Object[]> getTypeRoomGoogleChart(); // so do tang truong google chart
 
+    @Query(value = "SELECT t1.period, t1.total_booked, COALESCE(t2.total_revenue, 0) AS total_revenue\n" +
+            "FROM (\n" +
+            "         SELECT rt.name AS period, COUNT(*) AS total_booked\n" +
+            "         FROM room_types rt\n" +
+            "                  INNER JOIN rooms r ON r.room_type_id = rt.id\n" +
+            "                  INNER JOIN booking_details bd ON bd.room_id = r.id\n" +
+            "                  INNER JOIN bookings b ON bd.booking_id = b.id AND b.status = 2\n" +
+            "         GROUP BY rt.id\n" +
+            "     ) t1\n" +
+            "         LEFT JOIN (\n" +
+            "    SELECT room_types.name, SUM(invoice_details.total) AS total_revenue\n" +
+            "    FROM invoices\n" +
+            "             INNER JOIN invoice_details ON invoices.id = invoice_details.invoice_id\n" +
+            "             INNER JOIN rooms ON invoice_details.room_id = rooms.id\n" +
+            "             INNER JOIN room_types ON rooms.room_type_id = room_types.id\n" +
+            "    WHERE invoices.status = 4\n" +
+            "    GROUP BY room_types.id\n" +
+            ") t2 ON t1.period = t2.name;", nativeQuery = true)
+    List<Object[]> getReportExcel(); // xuat Excel
+
 
 }
