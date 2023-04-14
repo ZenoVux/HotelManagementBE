@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface AccountService extends ServiceBase<Account> {
 
+    Account findByUsername(String username);
+
     Account findByUsernameAndActivate(String username);
 
 }

@@ -47,4 +47,9 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
             "   booking_details.status = 1 AND rooms.`code` = :code", nativeQuery = true)
     List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(@Param("code") String code, @Param("checkin") Date checkin, @Param("checkout") Date checkout);
 
+    @Query("SELECT bd FROM BookingDetail bd " +
+            "WHERE bd.checkinExpected <= CURRENT_DATE " +
+            "AND bd.checkoutExpected > CURRENT_DATE " +
+            "AND (bd.booking.status = 2 OR bd.booking.status = 3) AND bd.status = 1 AND bd.room.status = 0")
+    List<BookingDetail> findAllWaitingCheckin();
 }

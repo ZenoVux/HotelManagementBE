@@ -73,6 +73,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         HotelResp hotelResp = new HotelResp();
         Setting setting = settingService.getSetting();
         List<Room> rooms = roomService.findAllByCodeASC();
+        List<BookingDetail> bookingDetails = bookingDetailService.findAllWaitingCheckin();
+
         List<StatusCountResp> statusCountResps = new ArrayList<>();
         List<HotelRoomResp> hotelRoomResps = new ArrayList<>();
         for (Room room : rooms) {
@@ -80,7 +82,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             hotelRoomResp.setCode(room.getCode());
             hotelRoomResp.setRoomType(room.getRoomType().getName());
             if (room.getStatus() == 0) {
-                BookingDetail bookingDetail = bookingDetailService.findWaitingCheckinByRoomCode(room.getCode());
+                BookingDetail bookingDetail = bookingDetails.stream().filter(bkd -> bkd.getRoom().getCode().equals(room.getCode())).findAny().orElse(null);;//bookingDetailService.findWaitingCheckinByRoomCode(room.getCode());
                 if (bookingDetail != null) {
                     Date checkinExpected = bookingDetail.getCheckinExpected();
                     Date checkoutExpected = bookingDetail.getCheckoutExpected();
@@ -108,6 +110,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                         status++;
                         hotelRoomResp.setStatus(0);
                     }
+                    bookingDetails.remove(bookingDetail);
                 } else {
                     status++;
                     hotelRoomResp.setStatus(0);

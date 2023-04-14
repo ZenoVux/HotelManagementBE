@@ -93,7 +93,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
 
     @Override
     public List<BookingDetail> findAllWaitingCheckin() {
-        return null;
+        return bookingDetailRepo.findAllWaitingCheckin();
     }
 
     @Override
