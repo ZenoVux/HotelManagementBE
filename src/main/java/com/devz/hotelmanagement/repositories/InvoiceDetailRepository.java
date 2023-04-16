@@ -24,4 +24,7 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, In
 
     @Query("SELECT iv FROM InvoiceDetail iv WHERE iv.code = :code")
     Optional<InvoiceDetail> findByCode(String code);
+
+    @Query("SELECT iv FROM InvoiceDetail iv WHERE iv.room.status = 2 AND iv.status = 1")
+    List<InvoiceDetail> findAllUsing();
 }

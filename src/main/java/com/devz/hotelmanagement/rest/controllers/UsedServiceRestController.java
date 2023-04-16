@@ -34,12 +34,17 @@ public class UsedServiceRestController {
     }
 
     @PostMapping
-    public ResponseEntity<UsedService> create(@RequestBody UsedService usedService) {
-        usedService = usedServiceService.create(usedService);
-        if (usedService != null) {
-            return ResponseEntity.ok(usedService);
+    public ResponseEntity<?> create(@RequestBody UsedService usedService) {
+        try {
+            usedService = usedServiceService.create(usedService);
+            if (usedService != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(usedService);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PutMapping
@@ -68,13 +73,13 @@ public class UsedServiceRestController {
     }
 
     @PostMapping("/stop-service/{id}")
-    public ResponseEntity<Void> stopService(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> stopService(@PathVariable("id") Integer id) {
         try {
             usedServiceService.stop(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
 }

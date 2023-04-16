@@ -2,6 +2,7 @@ package com.devz.hotelmanagement.repositories;
 
 import com.devz.hotelmanagement.entities.Invoice;
 
+import com.devz.hotelmanagement.models.InvoiceResp;
 import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -64,7 +65,16 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     @Query(value = "SELECT SUM(total_payment) AS total_amount FROM invoices WHERE status = 4 AND paid_date BETWEEN :start AND DATE_ADD(:end, INTERVAL 1 DAY)", nativeQuery = true)
     Double getTotalAmountByDateRange(@Param("start") String start, @Param("end") String end);
 
-    
-
-
+    @Query("SELECT " +
+            "new com.devz.hotelmanagement.models.InvoiceResp(" +
+            "   iv.code, " +
+            "   iv.booking.code, " +
+            "   iv.booking.customer.fullName, " +
+            "   iv.account.fullName, " +
+            "   iv.total, " +
+            "   iv.status," +
+            "   iv.createdDate" +
+            ") " +
+            "FROM Invoice iv")
+    List<InvoiceResp> findByAllResp();
 }

@@ -1,6 +1,7 @@
 package com.devz.hotelmanagement.services;
 
 import com.devz.hotelmanagement.entities.Invoice;
+import com.devz.hotelmanagement.models.InvoiceResp;
 import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface InvoiceService extends ServiceBase<Invoice> {
     List<InvoiceStatusCountResp> getStatusCount();
 
     List<Invoice> findByStatus(Integer status);
+
+    List<InvoiceResp> findByAllResp();
 }

@@ -14,7 +14,6 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class HotelRoomServiceImpl implements HotelRoomService {
@@ -68,12 +67,13 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     private AccountService accountService;
 
     @Override
-    public HotelResp getHotel(Integer statusFilter, String bookingCode) {
+    public HotelResp getHotel() {
         int status = 0, status1 = 0, status2 = 0, status3 = 0, status4 = 0, status5 = 0, status6 = 0;
         HotelResp hotelResp = new HotelResp();
         Setting setting = settingService.getSetting();
         List<Room> rooms = roomService.findAllByCodeASC();
         List<BookingDetail> bookingDetails = bookingDetailService.findAllWaitingCheckin();
+        List<InvoiceDetail> invoiceDetails = invoiceDetailService.findAllUsing();
 
         List<StatusCountResp> statusCountResps = new ArrayList<>();
         List<HotelRoomResp> hotelRoomResps = new ArrayList<>();
@@ -82,7 +82,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             hotelRoomResp.setCode(room.getCode());
             hotelRoomResp.setRoomType(room.getRoomType().getName());
             if (room.getStatus() == 0) {
-                BookingDetail bookingDetail = bookingDetails.stream().filter(bkd -> bkd.getRoom().getCode().equals(room.getCode())).findAny().orElse(null);;//bookingDetailService.findWaitingCheckinByRoomCode(room.getCode());
+                BookingDetail bookingDetail = bookingDetails.stream().filter(bkd -> bkd.getRoom().getCode().equals(room.getCode())).findAny().orElse(null);//bookingDetailService.findWaitingCheckinByRoomCode(room.getCode());
                 if (bookingDetail != null) {
                     Date checkinExpected = bookingDetail.getCheckinExpected();
                     Date checkoutExpected = bookingDetail.getCheckoutExpected();
@@ -113,10 +113,11 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                     bookingDetails.remove(bookingDetail);
                 } else {
                     status++;
+                    hotelRoomResp.setBookingCode("");
                     hotelRoomResp.setStatus(0);
                 }
             } else if (room.getStatus() == 2) {
-                InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(room.getCode());
+                InvoiceDetail invoiceDetail = invoiceDetails.stream().filter(ivd -> ivd.getRoom().getCode().equals(room.getCode())).findAny().orElse(null);;//invoiceDetailService.findUsingByRoomCode(room.getCode());
                 if (invoiceDetail != null) {
                     hotelRoomResp.setBookingCode(invoiceDetail.getInvoice().getBooking().getCode());
                     hotelRoomResp.setInvoiceDetailId(invoiceDetail.getId());
@@ -143,9 +144,11 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                         status2++;
                         hotelRoomResp.setStatus(2);
                     }
+                    invoiceDetails.remove(invoiceDetail);
                 } else {
                     // trống
                     status++;
+                    hotelRoomResp.setBookingCode("");
                     hotelRoomResp.setStatus(0);
                 }
             } else {
@@ -156,6 +159,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 } else {
                     status6++;
                 }
+                hotelRoomResp.setBookingCode("");
                 hotelRoomResp.setStatus(room.getStatus());
             }
             hotelRoomResps.add(hotelRoomResp);
@@ -168,18 +172,87 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         statusCountResps.add(new StatusCountResp(5, (long) status5));
         statusCountResps.add(new StatusCountResp(6, (long) status6));
         hotelResp.setStatusCounts(statusCountResps);
-        if (statusFilter != null) {
-            hotelResp.setHotelRooms(hotelRoomResps.stream()
-                    .filter(hotelRoomResp -> hotelRoomResp.getStatus() == statusFilter)
-                    .collect(Collectors.toList()));
-        } else if (bookingCode != null) {
-            hotelResp.setHotelRooms(hotelRoomResps.stream()
-                    .filter(hotelRoomResp ->  hotelRoomResp.getBookingCode() != null && hotelRoomResp.getBookingCode().equals(bookingCode))
-                    .collect(Collectors.toList()));
-        } else {
-            hotelResp.setHotelRooms(hotelRoomResps);
-        }
+        hotelResp.setHotelRooms(hotelRoomResps);
         return hotelResp;
+    }
+
+    @Override
+    public HotelRoomResp getHotelRoom(String code) {
+        Room room = roomService.findByCode(code);
+        if (room == null) {
+            return null;
+        }
+        Setting setting = settingService.getSetting();
+        HotelRoomResp hotelRoomResp = new HotelRoomResp();
+        hotelRoomResp.setCode(room.getCode());
+        hotelRoomResp.setRoomType(room.getRoomType().getName());
+        if (room.getStatus() == 0) {
+            BookingDetail bookingDetail = bookingDetailService.findWaitingCheckinByRoomCode(room.getCode());
+            if (bookingDetail != null) {
+                Date checkinExpected = bookingDetail.getCheckinExpected();
+                Date checkoutExpected = bookingDetail.getCheckoutExpected();
+                // ngày
+                LocalDate nowDate = LocalDate.now(ZoneId.systemDefault());
+                LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
+                LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
+                // giờ
+                LocalTime nowTime = LocalTime.now();
+                LocalTime checkinTime = LocalTime.ofInstant(setting.getCheckinTime().toInstant(), ZoneId.systemDefault());
+                checkinTime.minusMinutes(30); // trừ 30p
+
+                //(nowDate > checkinExpectedDate && nowDate < checkoutExpectedDate) || (nowDate == checkinExpectedDate && nowTime > checkinTime)
+                if ((nowDate.isAfter(checkinExpectedDate) && nowDate.isBefore(checkoutExpectedDate)) || (!nowDate.isBefore(checkinExpectedDate) && !nowDate.isAfter(checkinExpectedDate) && nowTime.isAfter(checkinTime))) {
+                    hotelRoomResp.setBookingCode(bookingDetail.getBooking().getCode());
+                    hotelRoomResp.setBookingDetailId(bookingDetail.getId());
+                    hotelRoomResp.setCustomer(bookingDetail.getBooking().getCustomer().getFullName());
+                    hotelRoomResp.setPhoneNumber(bookingDetail.getBooking().getCustomer().getPhoneNumber());
+                    hotelRoomResp.setCheckinExpected(checkinExpected);
+                    hotelRoomResp.setCheckoutExpected(checkoutExpected);
+                    // chờ checkin
+                    hotelRoomResp.setStatus(4);
+                } else {
+                    hotelRoomResp.setStatus(0);
+                }
+            } else {
+                hotelRoomResp.setBookingCode("");
+                hotelRoomResp.setStatus(0);
+            }
+        } else if (room.getStatus() == 2) {
+            InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(room.getCode());
+            if (invoiceDetail != null) {
+                hotelRoomResp.setBookingCode(invoiceDetail.getInvoice().getBooking().getCode());
+                hotelRoomResp.setInvoiceDetailId(invoiceDetail.getId());
+                hotelRoomResp.setCustomer(invoiceDetail.getInvoice().getBooking().getCustomer().getFullName());
+                hotelRoomResp.setPhoneNumber(invoiceDetail.getInvoice().getBooking().getCustomer().getPhoneNumber());
+                Date checkinExpected = invoiceDetail.getCheckinExpected();
+                Date checkoutExpected = invoiceDetail.getCheckoutExpected();
+                hotelRoomResp.setCheckinExpected(checkinExpected);
+                hotelRoomResp.setCheckoutExpected(checkoutExpected);
+                // ngày
+                LocalDate nowDate = LocalDate.now(ZoneId.systemDefault());
+                LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
+                // giờ
+                LocalTime nowTime = LocalTime.now();
+                LocalTime checkoutTime = LocalTime.ofInstant(setting.getCheckoutTime().toInstant(), ZoneId.systemDefault());
+
+                // nowDate > checkoutExpectedDate || (nowDate == checkoutExpectedDate && nowTime > checkoutTime)
+                if (nowDate.isAfter(checkoutExpectedDate) || (!nowDate.isBefore(checkoutExpectedDate) && !nowDate.isAfter(checkoutExpectedDate) && nowTime.isAfter(checkoutTime))) {
+                    // quá hạn
+                    hotelRoomResp.setStatus(5);
+                } else {
+                    // đang ở
+                    hotelRoomResp.setStatus(2);
+                }
+            } else {
+                // trống
+                hotelRoomResp.setBookingCode("");
+                hotelRoomResp.setStatus(0);
+            }
+        } else {
+            hotelRoomResp.setBookingCode("");
+            hotelRoomResp.setStatus(room.getStatus());
+        }
+        return hotelRoomResp;
     }
 
     @Override
@@ -187,26 +260,34 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     public void checkin(CheckinRoomReq checkinRoomReq) {
         BookingDetail bookingDetail = bookingDetailService.findWaitingCheckinByRoomCode(checkinRoomReq.getCode());
         if (bookingDetail == null) {
-            throw new RuntimeException("Không tìm thấy BookingDetail của room " + checkinRoomReq.getCode());
+            // Không tìm thấy BookingDetail của room
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
+        Room room = bookingDetail.getRoom();
+        if (room.getStatus() != 0) {
+            // Trạng thái phòng không hợp lệ
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+
+        // update status for Room
+        room.setStatus(2); // trạng thái đang ở
+        if (roomService.update(room) == null) {
+            // Cập nhật trạng thái Room thất bại!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+
         Booking booking = bookingDetail.getBooking();
-        // trạng thái đã xác nhận
-        if (booking.getStatus() == 2) {
-            booking.setStatus(3); // trạng thái đã xử lý
-            if (bookingService.update(booking) == null) {
-                throw new RuntimeException("Cập nhật Booking thất bại " + booking.getCode());
-            }
-        }
         List<CustomerCheckinReq> customerCheckinReqs = checkinRoomReq.getCustomers();
         List<ServiceCheckinReq> serviceCheckinReqs = checkinRoomReq.getServices();
 
         if (customerCheckinReqs.size() <= 0) {
-            throw new RuntimeException("Phòng không có người ở " + checkinRoomReq.getCode());
+            // Phòng không có người ở
+            throw new RuntimeException("{\"error\":\"Chưa có thông tin người ở!\"}");
         }
-        Invoice invoice = invoiceService.findFirstByBookingId(bookingDetail.getBooking().getId());
+        Invoice invoice = invoiceService.findFirstByBookingId(booking.getId());
         if (invoice == null) {
             invoice = new Invoice();
-            invoice.setBooking(bookingDetail.getBooking());
+            invoice.setBooking(booking);
             invoice.setCreatedDate(new Date());
             invoice.setTotalDeposit(0.0);
             invoice.setDiscountMoney(0.0);
@@ -218,12 +299,13 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
             Account account = accountService.findByUsernameAndActivate(username);
             if (account == null) {
-                throw new RuntimeException("Chưa đăng nhập!");
+                // Chưa đăng nhập!
+                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
             }
             invoice.setAccount(account);
             if (invoiceService.create(invoice) == null) {
                 // lỗi tạo invoice
-                throw new RuntimeException("lỗi tạo invoice");
+                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
             }
         }
         InvoiceDetail invoiceDetail = new InvoiceDetail();
@@ -251,7 +333,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setCheckin(new Date());
         invoiceDetail.setStatus(1); // trạng thái đang sử dụng
         if (invoiceDetailService.create(invoiceDetail) == null) {
-            throw new RuntimeException("check in thất bại " + checkinRoomReq.getCode());
+            // check in thất bại
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         // update InvoiceDetail for all UsedService in BookingDetail
         List<UsedService> usedServices = new ArrayList<>();
@@ -295,14 +378,22 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         // update status for BookingDetail
         bookingDetail.setStatus(2); // trạng thái đã nhận
         if (bookingDetailService.update(bookingDetail) == null) {
-            throw new RuntimeException("Cập nhật trạng thái BookingDetail " + bookingDetail.getCode() + " thất bại!");
+            // Cập nhật trạng thái BookingDetail thất bại!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
 
-        // update status for Room
-        Room room = bookingDetail.getRoom();
-        room.setStatus(2); // trạng thái đang ở
-        if (roomService.update(room) == null) {
-            throw new RuntimeException("Cập nhật trạng thái Room " + room.getCode() + " thất bại!");
+        // trạng thái đã xác nhận
+        if (booking.getStatus() == 2) {
+            List<BookingDetail> bookingDetails = bookingDetailService.findByBookingId(booking.getId());
+            // kiểm tra các đơn đặt chi tiết đã hoàn thành hay chưa
+            boolean isSuccess = bookingDetails.stream().allMatch(bkd -> bkd.getStatus() == 2);
+            if (isSuccess) {
+                booking.setStatus(3); // trạng thái đã xử lý
+                if (bookingService.update(booking) == null) {
+                    // Cập nhật Booking thất bại
+                    throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+                }
+            }
         }
     }
 
@@ -320,9 +411,13 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
                 // trạng thái phòng trống
                 room.setStatus(0);
-                roomService.update(room);
+                if (roomService.update(room) == null) {
+                    // Cập nhật trạng thái phòng thất bại
+                    throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+                }
             } else {
-                throw new RuntimeException("Huỷ phòng thất bại");
+                // Huỷ phòng thất bại
+                throw new RuntimeException("{\"error\":\"Huỷ phòng thất bại!\"}");
             }
         } else if (room.getStatus() == 2) {
             InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(room.getCode());
@@ -369,13 +464,16 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 // Trạng thái dọn phòng
                 room.setStatus(6);
                 if (roomService.update(room) == null) {
-                    throw new RuntimeException("Cập nhật trạng thái phòng " + room.getCode() + " thất bại");
+                    // Cập nhật trạng thái phòng thất bại
+                    throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
                 }
             } else {
-                throw new RuntimeException("Huỷ phòng thất bại");
+                // Huỷ phòng thất bại
+                throw new RuntimeException("{\"error\":\"Huỷ phòng thất bại!\"}");
             }
         } else {
-            throw new RuntimeException("Huỷ phòng thất bại");
+            // Huỷ phòng thất bại
+            throw new RuntimeException("{\"error\":\"Huỷ phòng thất bại!\"}");
         }
     }
 
@@ -384,10 +482,22 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     public void checkout(CheckoutRoomReq checkoutRoomReq) {
         InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(checkoutRoomReq.getCode());
         if (invoiceDetail == null) {
-            throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + checkoutRoomReq.getCode());
+            // Không tìm thấy InvoiceDetail của room
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        Room room = invoiceDetail.getRoom();
+        if (room.getStatus() != 2) {
+            // Trạng thái phòng không hợp lệ
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+
+        // trạng thái dọn phòng
+        room.setStatus(6);
+        if (roomService.update(room) == null) {
+            // Cập nhật Room thất bại!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         Invoice invoice = invoiceDetail.getInvoice();
-        Room room = invoiceDetail.getRoom();
         RoomType roomType = room.getRoomType();
 
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
@@ -462,12 +572,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setCheckout(new Date());
         invoiceDetail.setStatus(2); // trạng thái chờ thanh toán
         if (invoiceDetailService.update(invoiceDetail) == null) {
-            throw new RuntimeException("Cập nhật InvoiceDetail " + invoiceDetail.getCode() + " thất bại!");
-        }
-        // trạng thái dọn phòng
-        room.setStatus(6);
-        if (roomService.update(room) == null) {
-            throw new RuntimeException("Cập nhật Room " + room.getCode() + " thất bại!");
+            // Cập nhật InvoiceDetail thất bại!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
 
         List<InvoiceDetail> invoiceDetails = invoiceDetailService.findByInvoiceCode(invoice.getCode());
@@ -485,19 +591,26 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoice.setStatus(2);
         }
         if (invoiceService.update(invoice) == null) {
-            throw new RuntimeException("Cập nhật Invoice " + invoice.getCode() + " thất bại!");
+            // Cập nhật Invoice thất bại!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
     }
 
     @Override
     @Transactional(rollbackFor = { RuntimeException.class })
-    public InvoiceDetail extendCheckoutDate(String code, Date extendDate, String note) {
+    public void extendCheckoutDate(String code, Date extendDate, String note) {
         if (code == null || extendDate == null || note == null) {
-            throw new RuntimeException("Dữ liệu không hợp lệ");
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(code);
         if (invoiceDetail == null) {
-            throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + code);
+            // Không tìm thấy InvoiceDetail của room
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        Room room = invoiceDetail.getRoom();
+        if (room.getStatus() != 2) {
+            // Trạng thái phòng không hợp lệ
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         Date checkinExpected = invoiceDetail.getCheckinExpected();
         Date checkoutExpected = invoiceDetail.getCheckoutExpected();
@@ -507,11 +620,13 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         LocalDate newCheckoutDate = LocalDate.ofInstant(extendDate.toInstant(), ZoneId.systemDefault());
 
         if (!checkoutExpectedDate.isAfter(newCheckoutDate) && !checkoutExpectedDate.isBefore(newCheckoutDate)) {
-            throw new RuntimeException("Ngày checkout hiện tại " + code);
+            // Ngày checkout hiện tại
+            throw new RuntimeException("{\"error\":\"Ngày trả phòng không phải là ngày hiện tại!\"}");
         }
         List<BookingDetail> bookingDetails = bookingDetailService.findByRoomCodeAndCheckinAndCheckout(code, checkinExpected, Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         if (bookingDetails.size() > 0) {
-            throw new RuntimeException("Ngày checkout không hợp lệ " + code);
+            // Ngày checkout không hợp lệ
+            throw new RuntimeException("{\"error\":\"Ngày trả phòng không hợp lệ!\"}");
         }
         InvoiceDetailHistory invoiceDetailHistory = new InvoiceDetailHistory();
         invoiceDetailHistory.setInvoiceDetail(invoiceDetail);
@@ -528,9 +643,33 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         }
         invoiceDetail.setCheckoutExpected(Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         if (invoiceDetailService.update(invoiceDetail) == null) {
-            throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + code);
+            // Không tìm thấy InvoiceDetail của room
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
-        return invoiceDetail;
+    }
+
+    @Override
+    public void checkExtendCheckoutDate(String code, Date checkoutDate) {
+        if (code == null || checkoutDate == null) {
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
+        }
+        InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(code);
+        if (invoiceDetail == null) {
+            // Không tìm thấy InvoiceDetail của room
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        Room room = invoiceDetail.getRoom();
+        if (room.getStatus() != 2 && room.getStatus() != 5) {
+            // Trạng thái phòng không hợp lệ
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        Date checkinExpected = invoiceDetail.getCheckinExpected();
+        LocalDate newCheckoutDate = LocalDate.ofInstant(checkoutDate.toInstant(), ZoneId.systemDefault());
+        List<BookingDetail> bookingDetails = bookingDetailService.findByRoomCodeAndCheckinAndCheckout(code, checkinExpected, Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        if (bookingDetails.size() > 0) {
+            // Ngày checkout không hợp lệ
+            throw new RuntimeException("{\"error\":\"Ngày trả phòng không hợp lệ!\"}");
+        }
     }
 
     @Override
@@ -538,14 +677,17 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     public void ready(String code) {
         Room room = roomService.findByCode(code);
         if (room == null) {
-            throw new RuntimeException("Không tìm thấy phòng " + code);
+            // Không tìm thấy phòng
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         if (room.getStatus() != 6) {
-            throw new RuntimeException("Trạng thái không hợp lệ");
+            // Trạng thái không hợp lệ
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         room.setStatus(0);
         if (roomService.update(room) == null) {
-            throw new RuntimeException("Cập nhật trạng thái thất bại");
+            // Cập nhật trạng thái thất bại
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
     }
 
@@ -553,11 +695,17 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     @Transactional(rollbackFor = { RuntimeException.class })
     public void change(String fromRoomCode, String toRoomCode, Date checkoutDate, String note) {
         if (fromRoomCode == null || toRoomCode == null || checkoutDate == null || note == null) {
-            throw new RuntimeException("Dữ liệu không hợp lệ");
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(fromRoomCode);
         if (invoiceDetail == null) {
-            throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + fromRoomCode);
+            // Không tìm thấy InvoiceDetail của room
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        Room room = invoiceDetail.getRoom();
+        if (room.getStatus() != 2) {
+            // Trạng thái phòng không hợp lệ
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         Date checkoutExpected = invoiceDetail.getCheckoutExpected();
         Date checkinExpected = invoiceDetail.getCheckinExpected();
@@ -568,15 +716,17 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         LocalDate newCheckoutDate = LocalDate.ofInstant(checkoutDate.toInstant(), ZoneId.systemDefault());
 
         if (newCheckoutDate.isBefore(checkoutExpectedDate)) {
-            throw new RuntimeException("Ngày trả phòng phải sau ngày trả phòng hiện tại!");
+            // Ngày trả phòng phải sau ngày trả phòng hiện tại!
+            throw new RuntimeException("{\"error\":\"Ngày trả phòng phải sau ngày trả phòng hiện tại!\"}");
         }
 
         Room oldRoom = invoiceDetail.getRoom();
         List<Room> rooms = roomService.findUnbookedRoomsByCheckinAndCheckout(invoiceDetail.getCheckinExpected(), Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         if (rooms.size() <= 0) {
-            throw new RuntimeException("Không tìm thấy phòng hợp lệ");
+            // Không tìm thấy phòng hợp lệ
+            throw new RuntimeException("{\"error\":\"Không tìm thấy phòng hợp lệ!\"}");
         }
-        Room newRoom = rooms.stream().filter(room -> toRoomCode.equals(room.getCode())).findAny().orElse(null);
+        Room newRoom = rooms.stream().filter(r -> toRoomCode.equals(r.getCode())).findAny().orElse(null);
         if (newRoom == null) {
             throw new RuntimeException("Không tìm thấy room " + toRoomCode);
         }
@@ -592,12 +742,14 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setStatus(2); // trạng thái đã sử dụng
         invoiceDetail.setNote("Đổi sang phòng " + toRoomCode + ". " + note);
         if (invoiceDetailService.update(invoiceDetail) == null) {
-            throw new RuntimeException("Không tìm thấy InvoiceDetail của room " + fromRoomCode);
+            // Không tìm thấy InvoiceDetail của room
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         // Trạng thái dọn phòng
         oldRoom.setStatus(6);
         if (roomService.update(oldRoom) == null) {
-            throw new RuntimeException("Cập nhật trạng thái phòng " + fromRoomCode + " thất bại");
+            // Cập nhật trạng thái phòng thất bại
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         // Tạo InvoiceDetail cho phòng muốn đổi
         InvoiceDetail newInvoiceDetail = new InvoiceDetail();
@@ -616,24 +768,28 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         newInvoiceDetail.setNote("");
         newInvoiceDetail.setStatus(1); // trạng thái đang sử dụng
         if (invoiceDetailService.create(newInvoiceDetail) == null) {
-            throw new RuntimeException("Tạo InvoiceDetail thất bại");
+            // Tạo InvoiceDetail thất bại
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         // Chuyển DS UsedService sang InvoiceDetail mới
         List<UsedService> usedServices = usedServiceService.findByInvoiceDetailId(invoiceDetail.getId());
         usedServices.forEach(usedService -> usedService.setInvoiceDetail(newInvoiceDetail));
         if (usedServiceService.updateAll(usedServices).size() != usedServices.size()) {
-            throw new RuntimeException("Cập nhật DS UsedService thất bại");
+            // Cập nhật DS UsedService thất bại
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         // Chuyển DS HostedAt sang InvoiceDetail mới
         List<HostedAt> hostedAts = hostedAtService.findByInvoiceDetailId(invoiceDetail.getId());
         hostedAts.forEach(hostedAt -> hostedAt.setInvoiceDetail(newInvoiceDetail));
         if (hostedAtService.updateAll(hostedAts).size() != hostedAts.size()) {
-            throw new RuntimeException("Cập nhật DS HostedAt thất bại");
+            // Cập nhật DS HostedAt thất bại
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         // Trạng thái đang ở
         newRoom.setStatus(2);
         if (roomService.update(newRoom) == null) {
-            throw new RuntimeException("Cập nhật trạng thái phòng " + toRoomCode + " thất bại");
+            // Cập nhật trạng thái phòng thất bại
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
     }
 
@@ -641,30 +797,36 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     @Transactional(rollbackFor = { RuntimeException.class })
     public void payment(String invoiceCode, String promotionCode, String paymentMethodCode) {
         if (invoiceCode == null || paymentMethodCode == null) {
-            throw new RuntimeException("Dữ liệu không hợp lệ");
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         Invoice invoice = invoiceService.findByCode(invoiceCode);
         if (invoice == null) {
-            throw new RuntimeException("Không tìm thấy Invoice " + invoiceCode);
+            // Không tìm thấy Invoice
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         if (invoice.getStatus() != 2) {
-            throw new RuntimeException("Trạng thái Invoice " + invoiceCode + " không hợp lệ");
+            // Trạng thái Invoice không hợp lệ
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         PaymentMethod paymentMethod = paymentMethodService.findByCode(paymentMethodCode);
         if (paymentMethod == null) {
-            throw new RuntimeException("Không tìm thấy PaymentMethod " + invoiceCode);
+            // Không tìm thấy PaymentMethod
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         invoice.setPaymentMethod(paymentMethod);
         if (promotionCode != null) {
             Promotion promotion = promotionService.findByCode(promotionCode);
             if (promotion == null) {
-                throw new RuntimeException("Không tìm thấy Promotion " + invoiceCode);
+                // Không tìm thấy Promotion
+                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
             }
             if (promotion.getType()) {
-                throw new RuntimeException("Promotion " + invoiceCode + " không đủ điều kiện sửa dụng Promotion " + promotionCode);
+                // Promotion không đủ điều kiện sửa dụng Promotion
+                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
             }
             if (promotion.getMinAmount() > invoice.getTotal()) {
-                throw new RuntimeException("Invoice " + invoiceCode + " không đủ điều kiện sửa dụng Promotion " + promotionCode);
+                // Invoice không đủ điều kiện sửa dụng Promotion
+                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
             }
             Double discount = invoice.getTotal() / 100 * promotion.getPercent();
             if (discount >= promotion.getMaxDiscount()) {
@@ -689,7 +851,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 break;
         }
         if (invoiceService.update(invoice) == null) {
-            throw new RuntimeException("Cập nhật Invoice " + invoiceCode + " không thành công");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
     }
 
@@ -697,19 +859,19 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     @Transactional(rollbackFor = { RuntimeException.class })
     public void confirmPayment(String invoiceCode) {
         if (invoiceCode == null) {
-            throw new RuntimeException("Dữ liệu không hợp lệ");
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         Invoice invoice = invoiceService.findByCode(invoiceCode);
         if (invoice == null) {
-            throw new RuntimeException("Không tìm thấy Invoice " + invoiceCode);
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         if (invoice.getStatus() != 3) {
-            throw new RuntimeException("Trạng thái Invoice " + invoiceCode + " không hợp lệ");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         invoice.setPaidDate(new Date());
         invoice.setStatus(4);
         if (invoiceService.update(invoice) == null) {
-            throw new RuntimeException("Cập nhật Invoice " + invoiceCode + " không thành công");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
     }
 
@@ -717,18 +879,18 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     @Transactional(rollbackFor = { RuntimeException.class })
     public void updateInvoiceDetail(InvoiceDetailUpdateReq invoiceDetailUpdateReq) {
         if (invoiceDetailUpdateReq.getInvoiceDetailId() == null || invoiceDetailUpdateReq.getRoomPrice() == null || invoiceDetailUpdateReq.getDeposit() == null) {
-            throw new RuntimeException("Dữ liệu không hợp lệ");
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         if (invoiceDetailUpdateReq.getEarlyCheckinFee() == null || invoiceDetailUpdateReq.getLateCheckoutFee() == null || invoiceDetailUpdateReq.getNote() == null) {
-            throw new RuntimeException("Dữ liệu không hợp lệ");
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         InvoiceDetail invoiceDetail = invoiceDetailService.findById(invoiceDetailUpdateReq.getInvoiceDetailId());
         if (invoiceDetail == null) {
-            throw new RuntimeException("Không tìm thấy InvoiceDetail " + invoiceDetailUpdateReq.getInvoiceDetailId());
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         Invoice invoice = invoiceDetail.getInvoice();
         if (invoice.getStatus() != 1 && invoice.getStatus() != 2) {
-            throw new RuntimeException("Không thể cập nhật InvoiceDetail");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
 
         String username = req.getAttribute("username").toString();
@@ -745,7 +907,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setCreatedBy(username);
         invoiceDetailHistory.setUpdateDate(new Date());
         if (invoiceDetailHistoryService.create(invoiceDetailHistory) == null) {
-            throw new RuntimeException("Tạo InvoiceDetailHistory thất bại");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         invoiceDetail.setRoomPrice(invoiceDetailUpdateReq.getRoomPrice());
         invoiceDetail.setDeposit(invoiceDetailUpdateReq.getDeposit());
@@ -785,7 +947,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoiceDetail.setTotal(total);
         }
         if (invoiceDetailService.update(invoiceDetail) == null) {
-            throw new RuntimeException("Cập nhật InvoiceDetail thất bại");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         if (invoice.getStatus() == 2) {
             List<InvoiceDetail> invoiceDetails = invoiceDetailService.findByInvoiceCode(invoice.getCode());
@@ -797,7 +959,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             Double totalInvoice = invoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
             invoice.setTotal(totalInvoice);
             if (invoiceService.update(invoice) == null) {
-                throw new RuntimeException("Cập nhật Invoice " + invoice.getCode() + " thất bại!");
+                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
             }
         }
     }

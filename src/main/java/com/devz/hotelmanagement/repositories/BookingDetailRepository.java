@@ -25,9 +25,6 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
             "AND bd.room.status = 2 AND bd.status = 1")
     Optional<BookingDetail> findByCheckedinRoomCode(@Param("code") String code);
 
-    @Query("SELECT bd FROM BookingDetail bd WHERE bd.id = :id")
-    Optional<BookingDetail> findByInvoiceDetailId(@Param("id") Integer id);
-
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.room.code = :id")
     Optional<BookingDetail> findByRoomCodeAndBookingId(@Param("id") Integer id);
 
@@ -44,7 +41,7 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
             "WHERE " +
             "   (DATE(booking_details.checkin_expected) < DATE(:checkout)) AND " +
             "   (DATE(booking_details.checkout_expected) > DATE(:checkin)) AND " +
-            "   booking_details.status = 1 AND rooms.`code` = :code", nativeQuery = true)
+            "   booking_details.status = 1 AND (bookings.status = 2 OR bookings.status = 3) AND rooms.code = :code", nativeQuery = true)
     List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(@Param("code") String code, @Param("checkin") Date checkin, @Param("checkout") Date checkout);
 
     @Query("SELECT bd FROM BookingDetail bd " +

@@ -11,4 +11,7 @@ public interface InvoiceDetailService extends ServiceBase<InvoiceDetail> {
     List<InvoiceDetail> findByInvoiceCode(String code);
 
     void updateAll(List<InvoiceDetail> invoiceDetails);
+
+    List<InvoiceDetail> findAllUsing();
+
 }

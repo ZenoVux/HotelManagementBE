@@ -79,4 +79,9 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
     public void updateAll(List<InvoiceDetail> invoiceDetails) {
         invoiceDetailRepo.saveAll(invoiceDetails);
     }
+
+    @Override
+    public List<InvoiceDetail> findAllUsing() {
+        return invoiceDetailRepo.findAllUsing();
+    }
 }
