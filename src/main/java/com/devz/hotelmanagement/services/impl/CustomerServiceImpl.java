@@ -65,4 +65,5 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> getCustomerInUse() {
         return customerRepo.getCustomerInUse();
     }
+
 }

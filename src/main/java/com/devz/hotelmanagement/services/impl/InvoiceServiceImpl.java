@@ -91,4 +91,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepo.findByStatus(status);
     }
 
+    @Override
+    public Integer countInvoiceByPeopleId(String peopleId) {
+        return invoiceRepo.countInvoiceByPeopleId(peopleId);
+    }
+
 }

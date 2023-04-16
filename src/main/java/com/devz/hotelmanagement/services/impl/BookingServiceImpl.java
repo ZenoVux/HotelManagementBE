@@ -83,4 +83,9 @@ public class BookingServiceImpl implements BookingService {
     public List<Object[]> getBooking() {
         return bookingRepo.getBooking();
     }
+
+    @Override
+    public List<Booking> getBookingByCusId(Integer id) {
+        return bookingRepo.getBookingByCusId(id);
+    }
 }

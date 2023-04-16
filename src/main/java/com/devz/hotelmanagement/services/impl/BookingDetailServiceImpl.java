@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.devz.hotelmanagement.models.BookingDetailEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
 
     @Override
     public BookingDetail findByCode(String code) {
-        return null;
+        return bookingDetailRepo.findByCode(code);
     }
 
     @Override
@@ -123,6 +124,16 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     @Override
     public List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(String code, Date checkin, Date checkout) {
         return bookingDetailRepo.findByRoomCodeAndCheckinAndCheckout(code, checkin, checkout);
+    }
+
+    @Override
+    public List<Object[]> getInfoBookingDetail(Integer id) {
+        return bookingDetailRepo.getInfoBookingDetail(id);
+    }
+
+    @Override
+    public List<BookingDetail> checkRoomInRangeDay(String roomCode, Date checkin, Date checkout, String bookingCode) {
+        return bookingDetailRepo.checkRoomInRangeDay(roomCode, checkin, checkout, bookingCode);
     }
 
 }

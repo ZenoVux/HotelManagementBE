@@ -64,7 +64,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     @Query(value = "SELECT SUM(total_payment) AS total_amount FROM invoices WHERE status = 4 AND paid_date BETWEEN :start AND DATE_ADD(:end, INTERVAL 1 DAY)", nativeQuery = true)
     Double getTotalAmountByDateRange(@Param("start") String start, @Param("end") String end);
 
-    
-
+    @Query(value = "SELECT COUNT(*) FROM Invoice WHERE status = 4 AND booking.customer.peopleId = :customerId")
+    Integer countInvoiceByPeopleId(@Param("customerId") String customerId);
 
 }

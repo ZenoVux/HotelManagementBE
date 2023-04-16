@@ -17,14 +17,16 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-    @Query(value = "CALL GET_INFO_ROOMS_BY_TIMES_BOOKING(:roomType, :checkinDate, :checkoutDate)", nativeQuery = true)
+//    @Query(value = "CALL GET_INFO_ROOMS_BY_TIMES_BOOKING(:roomType, :checkinDate, :checkoutDate)", nativeQuery = true)
+    @Query(value = "CALL MINH_TEST(:roomType, :checkinDate, :checkoutDate)", nativeQuery = true)
     List<Object[]> getInfoRoomBooking(
             @Param("roomType") String roomType,
             @Param("checkinDate") Date checkinDate,
             @Param("checkoutDate") Date checkoutDate
     );
 
-    @Query(value = "CALL GET_ROOMS_BY_TIMES_BOOKING(:categoryName, :checkinDate, :checkoutDate)", nativeQuery = true)
+//    @Query(value = "CALL GET_ROOMS_BY_TIMES_BOOKING(:categoryName, :checkinDate, :checkoutDate)", nativeQuery = true)
+    @Query(value = "CALL MINH_TEST_2(:categoryName, :checkinDate, :checkoutDate)", nativeQuery = true)
     List<Integer> getRoomsByTimeBooking(
             @Param("categoryName") String categoryName,
             @Param("checkinDate") Date checkinDate,
@@ -42,5 +44,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query(value = "SELECT bookings.code FROM bookings ORDER BY bookings.code DESC LIMIT 1", nativeQuery = true)
     String getMaxCode();
+
+    @Query(value = "SELECT b FROM Booking b WHERE b.customer.id = :id")
+    List<Booking> getBookingByCusId(@Param("id") Integer id);
 
 }

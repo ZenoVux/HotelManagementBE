@@ -1,7 +1,9 @@
 package com.devz.hotelmanagement.rest.controllers;
 
+import com.devz.hotelmanagement.entities.Booking;
 import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.CustomerType;
+import com.devz.hotelmanagement.services.BookingService;
 import com.devz.hotelmanagement.services.CustomerService;
 import com.devz.hotelmanagement.services.StorageService;
 import jakarta.websocket.server.PathParam;
@@ -19,6 +21,9 @@ public class CustomerRestController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping
     public List<Customer> getAll() {
@@ -57,15 +62,19 @@ public class CustomerRestController {
         return customerService.update(customer);
     }
 
-
-    @GetMapping("/search-by-people-id/{id}")
-    public ResponseEntity<Customer> searchByPeopleId(@PathVariable("id") String id) {
-        Customer customer = customerService.searchByPeopleId(id);
-        System.out.println(id);
+    @GetMapping("/search-by-people-id/{peopleId}")
+    public ResponseEntity<Customer> searchByPeopleId(@PathVariable("peopleId") String peopleId) {
+        Customer customer = customerService.searchByPeopleId(peopleId);
         if (customer != null) {
             return ResponseEntity.ok(customer);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/history-booking/{id}")
+    public List<Booking> getHistoryBooking(@PathVariable("id") Integer id) {
+        List<Booking> bookings = bookingService.getBookingByCusId(id);
+        return bookings;
     }
 
 }

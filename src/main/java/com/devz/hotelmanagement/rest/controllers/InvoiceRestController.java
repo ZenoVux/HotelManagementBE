@@ -91,10 +91,9 @@ public class InvoiceRestController {
         return new ResponseEntity<>(totalAmount, HttpStatus.OK);
     }
 
-
-
-
-
-
+    @GetMapping("/count-by-customer/{peopleId}")
+    public Integer countInvoiceByPeopleId(@PathVariable("peopleId") String peopleId) {
+        return invoiceService.countInvoiceByPeopleId(peopleId);
+    }
 
 }
