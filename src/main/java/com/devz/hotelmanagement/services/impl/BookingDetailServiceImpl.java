@@ -79,15 +79,6 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     }
 
     @Override
-    public BookingDetail findByInvoiceDetailId(Integer id) {
-        Optional<BookingDetail> optional = bookingDetailRepo.findByInvoiceDetailId(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        return null;
-    }
-
-    @Override
     public void deleteById(Integer id) {
         bookingDetailRepo.deleteById(id);
     }

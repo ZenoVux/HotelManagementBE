@@ -3,6 +3,7 @@ package com.devz.hotelmanagement.services.impl;
 import java.util.List;
 import java.util.Optional;
 
+import com.devz.hotelmanagement.models.InvoiceResp;
 import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +90,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<Invoice> findByStatus(Integer status) {
         return invoiceRepo.findByStatus(status);
+    }
+
+    @Override
+    public List<InvoiceResp> findByAllResp() {
+        return invoiceRepo.findByAllResp();
     }
 
     @Override

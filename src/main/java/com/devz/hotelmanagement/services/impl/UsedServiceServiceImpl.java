@@ -57,17 +57,14 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     public UsedService create(UsedService usedService) {
         ServiceRoom serviceRoom = serviceRoomService.findById(usedService.getServiceRoom().getId());
         if (serviceRoom == null) {
-            System.out.println(0);
-            return null;
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         if (!serviceRoom.getStatus()) {
-            System.out.println(1);
             return null;
         }
         InvoiceDetail invoiceDetail = invoiceDetailService.findById(usedService.getInvoiceDetail().getId());
         if (invoiceDetail == null) {
-            System.out.println(2);
-            return null;
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
         LocalDate checkoutExpectedDate = LocalDate.ofInstant(invoiceDetail.getCheckoutExpected().toInstant(), ZoneId.systemDefault());
@@ -75,23 +72,19 @@ public class UsedServiceServiceImpl implements UsedServiceService {
         LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
         if (startedDate.isBefore(today)) {
             // startedDate < today
-            System.out.println(3);
-            return null;
+            throw new RuntimeException("{\"error\":\"Không thể chọn ngày bắt đầu trước ngày hiện tại!\"}");
         }
         if (endedDate.isAfter(checkoutExpectedDate)) {
             // endedDate > checkoutExpectedDate
-            System.out.println(4);
-            return null;
+            throw new RuntimeException("{\"error\":\"Không thể chọn ngày kết thúc sau ngày trả phòng!\"}");
         }
         if (startedDate.isAfter(endedDate)) {
             // startedDate > endedDate
-            System.out.println(5);
-            return null;
+            throw new RuntimeException("{\"error\":\"Không thể chọn ngày bắt đầu sau ngày kết thúc!\"}");
         }
         if (!startedDate.isAfter(endedDate) && !startedDate.isBefore(endedDate)) {
             // startedDate == startedDate
-            System.out.println(6);
-            return null;
+            throw new RuntimeException("{\"error\":\"Không thể chọn ngày bắt đầu trùng ngày kết thúc!\"}");
         }
         Boolean isUseInRange = usedServiceRepo.existsByServiceRoomIdAndInRangeStartedTimeToEndedTime(
                 usedService.getInvoiceDetail().getId(),
@@ -101,8 +94,7 @@ public class UsedServiceServiceImpl implements UsedServiceService {
                 true
         );
         if (isUseInRange) {
-            System.out.println(7);
-            return null;
+            throw new RuntimeException("{\"error\":\"Dịch vụ đang được sử dụng!\"}");
         }
         usedService.setId(null);
         usedService.setStatus(true);
@@ -131,7 +123,7 @@ public class UsedServiceServiceImpl implements UsedServiceService {
         try {
             usedServiceRepo.deleteById(id);
         } catch (Exception ex) {
-            throw new RuntimeException("Xoá UsedService " + id + " thất bại");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
     }
 
@@ -140,20 +132,23 @@ public class UsedServiceServiceImpl implements UsedServiceService {
     public void stop(Integer id) {
         UsedService usedService = this.findById(id);
         if (usedService == null) {
-            throw new RuntimeException("Sử dụng dịch vụ không tồn tại!");
+            // Sử dụng dịch vụ không tồn tại!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
         LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
         LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
         if (!today.isAfter(endedDate) && !today.isBefore(endedDate)) {
-            throw new RuntimeException("Sử dụng dịch vụ đã hoàn tất!");
+            // Sử dụng dịch vụ đã hoàn tất!
+            throw new RuntimeException("{\"error\":\"Sử dụng dịch vụ đã hoàn tất!\"}");
         } else if (!today.isAfter(startedDate) && !today.isBefore(startedDate)) {
             usedService.setStatus(false);
         } else {
             usedService.setEndedTime(new Date());
         }
         if (this.update(usedService) == null) {
-            throw new RuntimeException("Cập nhật sử dụng dịch vụ không tồn tại!");
+            // Cập nhật sử dụng dịch vụ không tồn tại!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
     }
 

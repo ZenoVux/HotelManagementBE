@@ -12,8 +12,6 @@ public interface BookingDetailService extends ServiceBase<BookingDetail> {
 
     BookingDetail findByCheckedinRoomCode(String code);
 
-    BookingDetail findByInvoiceDetailId(Integer id);
-
     void deleteById(Integer id);
 
     List<BookingDetail> findAllWaitingCheckin();

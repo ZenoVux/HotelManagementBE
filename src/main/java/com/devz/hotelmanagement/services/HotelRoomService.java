@@ -1,13 +1,14 @@
 package com.devz.hotelmanagement.services;
 
-import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.models.*;
 
 import java.util.Date;
 
 public interface HotelRoomService {
 
-    HotelResp getHotel(Integer statusFilter, String bookingCode);
+    HotelResp getHotel();
+
+    HotelRoomResp getHotelRoom(String code);
 
     void checkin(CheckinRoomReq checkinRoomReq);
 
@@ -15,7 +16,9 @@ public interface HotelRoomService {
 
     void checkout(CheckoutRoomReq checkoutRoomReq);
 
-    InvoiceDetail extendCheckoutDate(String code, Date extendDate, String note);
+    void extendCheckoutDate(String code, Date extendDate, String note);
+
+    void checkExtendCheckoutDate(String code, Date checkoutDate);
 
     void ready(String code);
 

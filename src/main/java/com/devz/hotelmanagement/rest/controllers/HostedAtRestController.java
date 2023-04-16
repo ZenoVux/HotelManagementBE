@@ -24,12 +24,17 @@ public class HostedAtRestController {
     }
 
     @PostMapping
-    public ResponseEntity<HostedAt> create(@RequestBody HostedAt hostedAt) {
-        hostedAt = hostedAtService.create(hostedAt);
-        if (hostedAt != null) {
-            return ResponseEntity.ok(hostedAt);
+    public ResponseEntity<?> create(@RequestBody HostedAt hostedAt) {
+        try {
+            hostedAt = hostedAtService.create(hostedAt);
+            if (hostedAt != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(hostedAt);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PutMapping

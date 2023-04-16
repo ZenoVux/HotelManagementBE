@@ -1,11 +1,8 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import com.devz.hotelmanagement.models.InvoiceResp;
 import com.devz.hotelmanagement.repositories.InvoiceRepository;
 import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +26,8 @@ public class InvoiceRestController {
 
 
     @GetMapping
-    public List<Invoice> findAll(@RequestParam("status") Optional<Integer> status) {
-        if (status.isPresent()) {
-            return invoiceService.findByStatus(status.get());
-        } else {
-            return invoiceService.findAll();
-        }
+    public List<InvoiceResp> findAll() {
+        return invoiceService.findByAllResp();
     }
 
     @GetMapping("/{code}")

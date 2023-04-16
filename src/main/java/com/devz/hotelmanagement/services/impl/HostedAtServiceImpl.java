@@ -54,11 +54,11 @@ public class HostedAtServiceImpl implements HostedAtService {
     public HostedAt create(HostedAt hostedAt) {
         Customer customer = customerService.findById(hostedAt.getCustomer().getId());
         if (customer == null) {
-            return null;
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         InvoiceDetail invoiceDetail = invoiceDetailService.findById(hostedAt.getInvoiceDetail().getId());
         if (invoiceDetail == null) {
-            return null;
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         List<HostedAt> hostedAts = this.findByInvoiceDetailId(invoiceDetail.getId());
         LocalDate today = LocalDate.now();
@@ -78,11 +78,11 @@ public class HostedAtServiceImpl implements HostedAtService {
         Room room = invoiceDetail.getRoom();
         if (age >= 13 && numAdults >= (room.getNumAdults() + room.getMaxAdultsAdd())) {
             // không thể thêm người lớn vào phòng này. số lượng đạt tối đa
-            return null;
+            throw new RuntimeException("{\"error\":\"Không thể thêm người lớn vào phòng này. Số lượng đạt tối đa!\"}");
         }
         if (age < 13 && numChilds >= (room.getNumChilds() + room.getMaxChildsAdd())) {
             // không thể thêm trẻ em vào phòng này. số lượng đạt tối đa
-            return null;
+            throw new RuntimeException("{\"error\":\"Không thể thêm trẻ em vào phòng này. Số lượng đạt tối đa!\"}");
         }
         hostedAt.setId(null);
         hostedAt.setCheckin(new Date());
