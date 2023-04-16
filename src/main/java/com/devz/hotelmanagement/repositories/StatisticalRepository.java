@@ -56,8 +56,9 @@ public interface StatisticalRepository extends JpaRepository<BookingDetail, Inte
             "         LEFT JOIN booking_details bd ON bd.room_id = r.id\n" +
             "         LEFT JOIN bookings b ON bd.booking_id = b.id AND b.status = 2\n" +
             "WHERE b.created_date BETWEEN DATE(DATE_SUB(NOW(), INTERVAL WEEKDAY(NOW()) DAY)) AND DATE(DATE_ADD(NOW(), INTERVAL 6 - WEEKDAY(NOW()) DAY))\n" +
+            "   OR (b.created_date BETWEEN DATE(DATE_SUB(NOW(), INTERVAL WEEKDAY(NOW()) + 7 DAY)) AND DATE(DATE_ADD(NOW(), INTERVAL 6 - WEEKDAY(NOW()) + 7 DAY)))\n" +
             "GROUP BY rt.id;", nativeQuery = true)
-    List<Object[]> getTypeRoomGoogleChart(); // so do tang truong google chart
+    List<Object[]> getTypeRoomGoogleChart(); // so do tang truong google chart (17/4)
 
     @Query(value = "SELECT t1.period, t1.total_booked, COALESCE(t2.total_revenue, 0) AS total_revenue\n" +
             "FROM (\n" +
