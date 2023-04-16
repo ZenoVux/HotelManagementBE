@@ -35,9 +35,6 @@ public class BookingRestController {
     private BookingDetailService bookingDetailService;
 
     @Autowired
-    private BookingHistoryService bookingHistoryService;
-
-    @Autowired
     private CustomerService customerService;
 
     @Autowired
@@ -70,8 +67,13 @@ public class BookingRestController {
         return bookingList;
     }
 
+    @GetMapping("/get-by-id/{id}")
+    public Booking getById(@PathVariable("id") Integer id) {
+        return bookingService.findById(id);
+    }
+
     @GetMapping("/{code}")
-    public BookingDetailInfo getById(@PathVariable("code") String code) {
+    public BookingDetailInfo getByCode(@PathVariable("code") String code) {
         Booking booking = bookingService.findByCode(code);
         Customer customer = booking.getCustomer();
         List<BookingDetail> bkList = bookingDetailService.findByBookingId(booking.getId());
@@ -122,7 +124,7 @@ public class BookingRestController {
     }
 
     @PostMapping
-    public void createBooking(
+    public ResponseEntity<?>  createBooking(
             @RequestParam("frontIdCard") MultipartFile frontIdCard,
             @RequestParam("backIdCard") MultipartFile backIdCard,
             @RequestParam("bookingReq") String bookingReqJson
@@ -136,26 +138,47 @@ public class BookingRestController {
             BookingReq bookingReq = objectMapper.readValue(bookingReqJson, BookingReq.class);
 
             List<Room> rooms = List.of(bookingReq.getRooms());
-            String peopelId = bookingReq.getCustomer().getPeopleId();
-            Customer customer = customerService.searchByPeopleId(peopelId);
-
-            if (customer == null) {
-                bookingReq.getCustomer().setCustomerType(customerTypeService.findById(1));
-                bookingReq.getCustomer().setFrontIdCard(storageService.saveFile(frontIdCard));
-                bookingReq.getCustomer().setBackIdCard(storageService.saveFile(backIdCard));
-                customer = customerService.create(bookingReq.getCustomer());
+            boolean areAllRoomsAvailable = true;
+            for (Room room : rooms) {
+                if(!bookingDetailService.findByRoomCodeAndCheckinAndCheckout(room.getCode(), bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected()).isEmpty()){
+                    areAllRoomsAvailable = false;
+                    break;
+                }
             }
 
-            Account account = accountService.findByUsername(currentAccount.getUsername());
+            if (!areAllRoomsAvailable) {
+                throw new RuntimeException("{\"error\": \"Trong danh sách phòng đã chọn có phòng đã được book, vui lòng chọn phòng lại!\"}");
+            } else {
 
-            Booking booking = new Booking(account, customer, new Date(), bookingReq.getNumAdults(), bookingReq.getNumChildren(), 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
-            bookingService.create(booking);
+                String peopelId = bookingReq.getCustomer().getPeopleId();
 
-            List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date())).collect(Collectors.toList());
-            bookingDetailService.createAll(bookingDetails);
+                Customer customer = customerService.searchByPeopleId(peopelId);
+
+                if (customer == null) {
+                    bookingReq.getCustomer().setCustomerType(customerTypeService.findById(1));
+                    bookingReq.getCustomer().setFrontIdCard(storageService.saveFile(frontIdCard));
+                    bookingReq.getCustomer().setBackIdCard(storageService.saveFile(backIdCard));
+                    customer = customerService.create(bookingReq.getCustomer());
+                }
+
+                Account account = accountService.findByUsername(currentAccount.getUsername());
+
+                if(bookingReq.getNote() == null){
+                    bookingReq.setNote("");
+                }
+                Booking booking = new Booking(account, customer, new Date(), bookingReq.getNumAdults(), bookingReq.getNumChildren(), 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
+                bookingService.create(booking);
+
+                List<BookingDetail> bookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date())).collect(Collectors.toList());
+                bookingDetailService.createAll(bookingDetails);
+
+                return ResponseEntity.ok().body(booking);
+            }
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
@@ -197,7 +220,7 @@ public class BookingRestController {
     private <T> T getApiResponse(MultipartFile image, Class<T> responseType) {
         try {
             String url = "https://api.fpt.ai/vision/idr/vnm";
-            String apiKey = "z9CI8rdlxk2vwReEPHk6w9WfI5HDBoox";
+            String apiKey = "FkJdbhOQ3Gqq6u6mUfJEmMwaU56QfsIo";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.set("api-key", apiKey);

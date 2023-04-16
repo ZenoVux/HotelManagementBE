@@ -15,6 +15,8 @@ public class BookingDetailReq {
 
     private String bookingCode;
 
+    private String bookingDetailCode;
+
     private Date checkinExpected;
 
     private Date checkoutExpected;

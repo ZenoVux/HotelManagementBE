@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.repositories;
 
+import com.devz.hotelmanagement.models.BookingDetailEdit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -46,5 +47,19 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, In
             "   (DATE(booking_details.checkout_expected) > DATE(:checkin)) AND " +
             "   booking_details.status = 1 AND rooms.`code` = :code", nativeQuery = true)
     List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(@Param("code") String code, @Param("checkin") Date checkin, @Param("checkout") Date checkout);
+
+    @Query(value = "CALL GET_INFO_BOOKINGDETAIL(:id)", nativeQuery = true)
+    List<Object[]> getInfoBookingDetail(@Param("id") Integer id);
+
+    @Query(value = "SELECT bkd " +
+            "FROM BookingDetail bkd " +
+            "WHERE bkd.room.code = :roomCode " +
+            "   AND bkd.checkinExpected >= :checkin " +
+            "   AND bkd.checkoutExpected <= :checkout " +
+            "   AND bkd.booking.code != :bookingCode")
+    List<BookingDetail> checkRoomInRangeDay(@Param("roomCode") String roomCode, @Param("checkin") Date checkin, @Param("checkout") Date checkout, @Param("bookingCode") String bookingCode);
+
+    @Query("SELECT bd FROM BookingDetail bd WHERE bd.code = :code")
+    BookingDetail findByCode(@Param("code") String code);
 
 }

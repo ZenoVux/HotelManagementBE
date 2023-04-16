@@ -16,4 +16,6 @@ public interface BookingService extends ServiceBase<Booking> {
 
     List<Object[]> getBooking();
 
+    List<Booking> getBookingByCusId(Integer id);
+
 }

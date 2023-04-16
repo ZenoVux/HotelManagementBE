@@ -14,4 +14,7 @@ public interface InvoiceService extends ServiceBase<Invoice> {
     List<InvoiceStatusCountResp> getStatusCount();
 
     List<Invoice> findByStatus(Integer status);
+
+    Integer countInvoiceByPeopleId(String peopleId);
+
 }
