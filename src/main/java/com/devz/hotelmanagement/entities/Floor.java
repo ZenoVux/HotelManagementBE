@@ -22,6 +22,9 @@ public class Floor extends EntityBase {
     @Column
     private Integer number;
 
+    @Column
+    private Boolean status;
+
     @JsonIgnore
     @OneToMany(mappedBy = "floor")
     private List<Room> rooms;
