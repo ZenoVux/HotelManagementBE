@@ -20,7 +20,7 @@ import java.util.List;
 public class Floor extends EntityBase {
 
     @Column
-    private String name;
+    private Integer number;
 
     @JsonIgnore
     @OneToMany(mappedBy = "floor")
