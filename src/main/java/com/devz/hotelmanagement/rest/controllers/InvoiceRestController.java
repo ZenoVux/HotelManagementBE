@@ -26,8 +26,12 @@ public class InvoiceRestController {
 
 
     @GetMapping
-    public List<InvoiceResp> findAll() {
-        return invoiceService.findByAllResp();
+    public List<InvoiceResp> findAll(@RequestParam("status") Optional<Integer> status) {
+        if (status.isPresent()) {
+            return invoiceService.findByAllRespByStatus(status.get());
+        } else {
+            return invoiceService.findByAllResp();
+        }
     }
 
     @GetMapping("/{code}")

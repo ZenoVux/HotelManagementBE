@@ -18,6 +18,8 @@ public interface InvoiceService extends ServiceBase<Invoice> {
 
     List<InvoiceResp> findByAllResp();
 
+    List<InvoiceResp> findByAllRespByStatus(Integer status);
+
     Integer countInvoiceByPeopleId(String peopleId);
 
 }

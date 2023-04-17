@@ -78,7 +78,20 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "FROM Invoice iv")
     List<InvoiceResp> findByAllResp();
 
-    @Query(value = "SELECT COUNT(*) FROM Invoice WHERE status = 4 AND booking.customer.peopleId = :customerId")
+    @Query("SELECT " +
+            "new com.devz.hotelmanagement.models.InvoiceResp(" +
+            "   iv.code, " +
+            "   iv.booking.code, " +
+            "   iv.booking.customer.fullName, " +
+            "   iv.account.fullName, " +
+            "   iv.total, " +
+            "   iv.status," +
+            "   iv.createdDate" +
+            ") " +
+            "FROM Invoice iv WHERE iv.status = :status")
+    List<InvoiceResp> findByAllRespByStatus(@Param("status") Integer status);
+
+    @Query("SELECT COUNT(iv) FROM Invoice iv WHERE iv.status = 4 AND iv.booking.customer.peopleId = :customerId")
     Integer countInvoiceByPeopleId(@Param("customerId") String customerId);
 
 }

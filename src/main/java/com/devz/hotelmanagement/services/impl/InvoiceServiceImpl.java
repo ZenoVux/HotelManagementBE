@@ -98,6 +98,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    public List<InvoiceResp> findByAllRespByStatus(Integer status) {
+        return invoiceRepo.findByAllRespByStatus(status);
+    }
+
+    @Override
     public Integer countInvoiceByPeopleId(String peopleId) {
         return invoiceRepo.countInvoiceByPeopleId(peopleId);
     }

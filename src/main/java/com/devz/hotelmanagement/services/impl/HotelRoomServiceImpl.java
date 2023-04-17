@@ -853,6 +853,20 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (invoiceService.update(invoice) == null) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
+        if (invoice.getStatus() == 4) {
+            Customer customer = invoice.getBooking().getCustomer();
+            if (customer.getCustomerType().getCode().equals("member")) {
+                int count = invoiceService.countInvoiceByPeopleId(customer.getPeopleId());
+                if (count >= 10) {
+                    CustomerType customerType = new CustomerType();
+                    customer.setId(2);
+                    customer.setCustomerType(customerType);
+                    if (customerService.update(customer) == null) {
+                        throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -872,6 +886,20 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoice.setStatus(4);
         if (invoiceService.update(invoice) == null) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        if (invoice.getStatus() == 4) {
+            Customer customer = invoice.getBooking().getCustomer();
+            if (customer.getCustomerType().getCode().equals("member")) {
+                int count = invoiceService.countInvoiceByPeopleId(customer.getPeopleId());
+                if (count >= 10) {
+                    CustomerType customerType = new CustomerType();
+                    customer.setId(2);
+                    customer.setCustomerType(customerType);
+                    if (customerService.update(customer) == null) {
+                        throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+                    }
+                }
+            }
         }
     }
 
