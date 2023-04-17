@@ -859,7 +859,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 int count = invoiceService.countInvoiceByPeopleId(customer.getPeopleId());
                 if (count >= 10) {
                     CustomerType customerType = new CustomerType();
-                    customer.setId(2);
+                    customerType.setId(2);
                     customer.setCustomerType(customerType);
                     if (customerService.update(customer) == null) {
                         throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
@@ -893,7 +893,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 int count = invoiceService.countInvoiceByPeopleId(customer.getPeopleId());
                 if (count >= 10) {
                     CustomerType customerType = new CustomerType();
-                    customer.setId(2);
+                    customerType.setId(2);
                     customer.setCustomerType(customerType);
                     if (customerService.update(customer) == null) {
                         throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
