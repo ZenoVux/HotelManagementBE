@@ -41,18 +41,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room create(Room room) {
         room.setId(null);
-        try {
-            String maxCode = roomRepo.getMaxCode(room.getFloor().getId());
-            Integer index = 1;
-            if (maxCode != null) {
-                index = Integer.parseInt(maxCode);
-                index++;
-            }
-            String code = String.valueOf(index);
-            room.setCode(code);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
         return roomRepo.save(room);
     }
 
@@ -78,6 +67,23 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<Room> findUnbookedRoomsByCheckinAndCheckout(Date checkin, Date checkout) {
         return roomRepo.findUnbookedRoomsByCheckinAndCheckout(checkin, checkout);
+    }
+
+    @Override
+    public String getMaxCode(Integer floor_Id) {
+        try {
+            String maxCode = roomRepo.getMaxCode(floor_Id);
+            Integer index = 1;
+            if (maxCode != null) {
+                index = Integer.parseInt(maxCode);
+                index++;
+            }
+            String code = String.valueOf(index);
+            return code;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }

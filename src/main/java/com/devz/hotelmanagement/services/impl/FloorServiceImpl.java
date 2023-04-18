@@ -44,4 +44,9 @@ public class FloorServiceImpl implements FloorService {
     public Floor update(Floor floor) {
         return floorRepo.save(floor);
     }
+
+    @Override
+    public void delete(Integer id) {
+        floorRepo.deleteById(id);
+    }
 }

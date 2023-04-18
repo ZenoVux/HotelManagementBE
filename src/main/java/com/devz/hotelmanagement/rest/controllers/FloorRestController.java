@@ -29,4 +29,8 @@ public class FloorRestController {
     public Floor update(@RequestBody Floor floor) {
         return floorService.update(floor);
     }
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Integer id){
+        floorService.delete(id);
+    }
 }
