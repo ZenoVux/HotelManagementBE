@@ -24,4 +24,11 @@ public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
             "   p.status = true AND p.type = true")
     List<Promotion> findByInvoiceAmount(@Param("amount") Double amount);
 
+    @Query("SELECT p " +
+            "FROM Promotion p " +
+            "LEFT JOIN RoomTypePromotion rtp ON p.id = rtp.promotion.id " +
+            "LEFT JOIN RoomType rt ON rtp.roomType.id = rt.id " +
+            "WHERE p.status = true AND p.type = false AND rt.code = :roomType")
+    List<Promotion> findByRoomType(@Param("roomType") String roomType);
+
 }
