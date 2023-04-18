@@ -48,6 +48,11 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
+    public List<Promotion> findByRoomType(String roomType) {
+        return promotionRepo.findByRoomType(roomType);
+    }
+
+    @Override
     public Promotion create(Promotion promotion) {
         promotion.setId(null);
         return promotionRepo.save(promotion);

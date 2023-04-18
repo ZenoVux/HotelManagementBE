@@ -10,4 +10,6 @@ public interface PromotionService extends ServiceBase<Promotion> {
 
     List<Promotion> findByInvoiceAmount(Double amount);
 
+    List<Promotion> findByRoomType(String roomType);
+
 }
