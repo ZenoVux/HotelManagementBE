@@ -67,4 +67,9 @@ public class RoomRestController {
         return roomService.findUnbookedRoomsByCheckinAndCheckout(checkinDate, checkoutDate);
     }
 
+    @GetMapping("/set-code-room/{floor_Id}")
+    public String setCodeRoom(@PathVariable("floor_Id") Integer floor_Id) {
+        return roomService.getMaxCode(floor_Id);
+    }
+
 }

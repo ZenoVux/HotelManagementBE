@@ -16,4 +16,6 @@ public interface RoomService extends ServiceBase<Room> {
 
     List<Room> findUnbookedRoomsByCheckinAndCheckout(Date checkin, Date checkout);
 
+    String getMaxCode(Integer floor_Id);
+
 }
