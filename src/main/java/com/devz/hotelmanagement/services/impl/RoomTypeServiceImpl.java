@@ -32,7 +32,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public RoomType findByCode(String code) {
-        return null;
+        return roomTypeRepo.findByCode(code);
     }
 
     @Override

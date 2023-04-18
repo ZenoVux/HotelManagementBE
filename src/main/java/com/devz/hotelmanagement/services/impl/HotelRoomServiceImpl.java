@@ -795,7 +795,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
     @Override
     @Transactional(rollbackFor = { RuntimeException.class })
-    public void payment(String invoiceCode, String promotionCode, String paymentMethodCode) {
+    public void payment(String invoiceCode, String promotionCode, String paymentMethodCode, String note) {
         if (invoiceCode == null || paymentMethodCode == null) {
             throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
@@ -811,22 +811,22 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         PaymentMethod paymentMethod = paymentMethodService.findByCode(paymentMethodCode);
         if (paymentMethod == null) {
             // Không tìm thấy PaymentMethod
-            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+            throw new RuntimeException("{\"error\":\"Vui lòng chọn phương thức thanh toán!\"}");
         }
         invoice.setPaymentMethod(paymentMethod);
         if (promotionCode != null) {
             Promotion promotion = promotionService.findByCode(promotionCode);
             if (promotion == null) {
                 // Không tìm thấy Promotion
-                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+                throw new RuntimeException("{\"error\":\"Khuyến mại không hợp lệ!\"}");
             }
             if (promotion.getType()) {
                 // Promotion không đủ điều kiện sửa dụng Promotion
-                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+                throw new RuntimeException("{\"error\":\"Khuyến mại không hợp lệ!\"}");
             }
             if (promotion.getMinAmount() > invoice.getTotal()) {
                 // Invoice không đủ điều kiện sửa dụng Promotion
-                throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+                throw new RuntimeException("{\"error\":\"Hóa đơn không đủ điều kiện để sử dụng khuyến mại này!\"}");
             }
             Double discount = invoice.getTotal() / 100 * promotion.getPercent();
             if (discount >= promotion.getMaxDiscount()) {
@@ -850,6 +850,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 invoice.setStatus(3);
                 break;
         }
+        invoice.setNote(note);
         if (invoiceService.update(invoice) == null) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }

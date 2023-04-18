@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="325" height="100" viewBox="0 0 325 100">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 22.392px;
+        font-family: Ebrima;
+        font-weight: 700;
+      }
+
+      .cls-1, .cls-2 {
+        fill: #fff;
+        text-anchor: middle;
+      }
+
+      .cls-2 {
+        font-size: 72px;
+        font-family: Damion;
+      }
+    </style>
+  </defs>
+  <text id="HOTEL" class="cls-1" transform="translate(162.701 100) scale(1.119)"><tspan x="0">HOTEL</tspan></text>
+  <text id="NamViet" class="cls-2" transform="translate(152.182 65.404) scale(1.272)"><tspan x="0">NamViet</tspan></text>
+</svg>

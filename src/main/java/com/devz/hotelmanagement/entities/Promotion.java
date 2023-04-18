@@ -31,7 +31,7 @@ public class Promotion extends EntityBase {
     @Column(name = "min_amount")
     private Double minAmount;
 
-    @Column(name = "stated_date")
+    @Column(name = "started_date")
     private Date startedDate;
 
     @Column(name = "ended_date")

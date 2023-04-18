@@ -2,11 +2,9 @@ package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.Booking;
 import com.devz.hotelmanagement.entities.Customer;
-import com.devz.hotelmanagement.entities.InvoiceDetail;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -16,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin("*")
@@ -157,7 +153,7 @@ public class HotelRoomController {
     public ResponseEntity<?> payment(@RequestBody PaymentInvoiceReq paymentInvoiceReq) {
         try {
             System.out.println(paymentInvoiceReq);
-            hotelRoomService.payment(paymentInvoiceReq.getInvoiceCode(), paymentInvoiceReq.getPromotionCode(), paymentInvoiceReq.getPaymentMethodCode());
+            hotelRoomService.payment(paymentInvoiceReq.getInvoiceCode(), paymentInvoiceReq.getPromotionCode(), paymentInvoiceReq.getPaymentMethodCode(), paymentInvoiceReq.getNote());
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception ex) {
             ex.printStackTrace();

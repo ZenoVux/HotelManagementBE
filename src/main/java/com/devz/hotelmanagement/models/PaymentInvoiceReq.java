@@ -10,5 +10,6 @@ public class PaymentInvoiceReq {
     private String invoiceCode;
     private String promotionCode;
     private String paymentMethodCode;
+    private String note;
 
 }

@@ -28,7 +28,7 @@ public class SecurityConfig {
             "/api/rooms/types/**", "/api/invoices/**", "/api/settings/**","/api/promotions/**"}; // Url cần bảo vệ theo quyền ADMIN
 
     private static final String[] UN_SECURED_URLs = { // URL cho phep
-            "/auth/login/**", "/reset-password/**", "/images/**", "/payment/**"};
+            "/auth/login/**", "/reset-password/**", "/images/**", "/payment/**", "/api/booking-online/**", "/home/**", "/assets/**"};
 
     @Autowired
     UserDetailService userDetailService;
