@@ -1,20 +1,20 @@
 package com.devz.hotelmanagement.services.impl;
 
 import com.devz.hotelmanagement.entities.SupplyRoomType;
-import com.devz.hotelmanagement.repositories.SupplyRoomRepository;
+import com.devz.hotelmanagement.repositories.SupplyRoomTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.devz.hotelmanagement.services.SupplyRoomService;
+import com.devz.hotelmanagement.services.SupplyRoomTypeService;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SupplyRoomServiceImpl implements SupplyRoomService {
+public class SupplyRoomTypeServiceImpl implements SupplyRoomTypeService {
 
     @Autowired
-    private SupplyRoomRepository supplyRoomRepo;
+    private SupplyRoomTypeRepository supplyRoomRepo;
 
     @Override
     public List<SupplyRoomType> findAll() {
@@ -46,10 +46,10 @@ public class SupplyRoomServiceImpl implements SupplyRoomService {
         return supplyRoomRepo.save(supplyRoomType);
     }
 
-	@Override
-	public List<SupplyRoomType> findByCodeRoom(String code) {
-		return supplyRoomRepo.findByCodeRoom(code);
-	}
+//	@Override
+//	public List<SupplyRoomType> findByCodeRoom(String code) {
+//		return supplyRoomRepo.findByCodeRoom(code);
+//	}
 
 	@Override
 	public void deleteById(Integer id) {

@@ -1,20 +1,20 @@
 package com.devz.hotelmanagement.services.impl;
 
 import com.devz.hotelmanagement.entities.RoomTypeImage;
-import com.devz.hotelmanagement.repositories.RoomImageRepository;
+import com.devz.hotelmanagement.repositories.RoomTypeImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.devz.hotelmanagement.services.RoomImageService;
+import com.devz.hotelmanagement.services.RoomTypeImageService;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RoomImageServiceImpl implements RoomImageService {
+public class RoomTypeImageServiceImpl implements RoomTypeImageService {
 
     @Autowired
-    private RoomImageRepository roomImageRepo;
+    private RoomTypeImageRepository roomImageRepo;
 
     @Override
     public List<RoomTypeImage> findAll() {
@@ -46,10 +46,10 @@ public class RoomImageServiceImpl implements RoomImageService {
         return roomImageRepo.save(roomTypeImage);
     }
 
-	@Override
-	public List<RoomTypeImage> getListByCodeRoom(String codeRoom) {
-		return roomImageRepo.getListByCodeRoom(codeRoom);
-	}
+//	@Override
+//	public List<RoomTypeImage> getListByCodeRoom(String codeRoom) {
+//		return roomImageRepo.getListByCodeRoom(codeRoom);
+//	}
 
 	@Override
 	public void deleteById(Integer id) {
