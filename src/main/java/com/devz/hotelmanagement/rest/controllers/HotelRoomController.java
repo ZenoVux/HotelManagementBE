@@ -2,6 +2,7 @@ package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.Booking;
 import com.devz.hotelmanagement.entities.Customer;
+import com.devz.hotelmanagement.entities.Invoice;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -178,6 +179,17 @@ public class HotelRoomController {
         try {
             hotelRoomService.updateInvoiceDetail(invoiceDetailUpdateReq);
             return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/split-invoice")
+    public ResponseEntity<?> splitInvoice(@RequestBody InvoiceSplitReq invoiceSplitReq) {
+        try {
+            Invoice invoice = hotelRoomService.splitInvoice(invoiceSplitReq);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"code\":\"" + invoice.getCode() + "\"}");
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
