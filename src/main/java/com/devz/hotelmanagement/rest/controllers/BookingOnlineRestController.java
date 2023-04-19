@@ -1,7 +1,16 @@
 package com.devz.hotelmanagement.rest.controllers;
 
+import com.devz.hotelmanagement.entities.Promotion;
+import com.devz.hotelmanagement.entities.Room;
+import com.devz.hotelmanagement.entities.RoomImage;
 import com.devz.hotelmanagement.entities.RoomType;
+import com.devz.hotelmanagement.entities.ServiceRoom;
+import com.devz.hotelmanagement.services.PromotionService;
+import com.devz.hotelmanagement.services.RoomImageService;
+import com.devz.hotelmanagement.services.RoomService;
 import com.devz.hotelmanagement.services.RoomTypeService;
+import com.devz.hotelmanagement.services.ServiceRoomService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,17 +21,49 @@ import java.util.List;
 @RequestMapping("/api/booking-online")
 public class BookingOnlineRestController {
 
-    @Autowired
-    private RoomTypeService roomTypeService;
+	@Autowired
+	private ServiceRoomService serviceRoomService;
 
-    @GetMapping("/room-types")
-    public List<RoomType> findAllRoomType() {
-        return roomTypeService.findAll();
-    }
+	@Autowired
+	private RoomImageService roomImageService;
 
-    @GetMapping("/room-types/{code}")
-    public RoomType findRoomTypeByCode(@PathVariable("code") String code) {
-        return roomTypeService.findByCode(code);
-    }
+	@Autowired
+	private RoomTypeService roomTypeService;
+
+	@Autowired
+	private RoomService roomService;
+	
+	@Autowired
+    private PromotionService promotionService;
+
+	@GetMapping("/room-types")
+	public List<RoomType> findAllRoomType() {
+		return roomTypeService.findAll();
+	}
+
+	@GetMapping("/services")
+	public List<ServiceRoom> findAllService() {
+		return serviceRoomService.findAll();
+	}
+	
+	@GetMapping("/promotions")
+	public List<Promotion> findAllPomotion() {
+		return promotionService.findAll();
+	}
+
+	@GetMapping("/rooms")
+	public List<Room> findAllRooms() {
+		return roomService.findAll();
+	}
+
+	@GetMapping("/room-types/{code}")
+	public RoomType findRoomTypeByCode(@PathVariable("code") String code) {
+		return roomTypeService.findByCode(code);
+	}
+
+	@GetMapping("/img/{codeRoom}")
+	public List<RoomImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+		return roomImageService.getListByCodeRoom(codeRoom);
+	}
 
 }

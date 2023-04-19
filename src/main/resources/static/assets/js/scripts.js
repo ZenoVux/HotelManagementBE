@@ -66,11 +66,45 @@ app.controller("bookOnlineCtrl", function ($scope, $http, $location) {
     $scope.init = function () {
         $http.get("http://localhost:8000/api/booking-online/room-types").then(resp => {
             $scope.roomTypes = resp.data;
-            console.log($scope.roomTypes)
+            // console.log($scope.roomTypes)
+        }).catch(error => {
+            console.log("Error", error);
+        })
+        $http.get("http://localhost:8000/api/booking-online/rooms").then(resp => {
+            $scope.rooms = resp.data;
+            // console.log($scope.rooms)
+        }).catch(error => {
+            console.log("Error", error);
+        })
+        $http.get("http://localhost:8000/api/booking-online/services").then(resp => {
+            $scope.services = resp.data;
+            // console.log($scope.services)
+        }).catch(error => {
+            console.log("Error", error);
+        })
+
+        $http.get("http://localhost:8000/api/booking-online/promotions").then(resp => {
+            $scope.promotions = resp.data;
+            // console.log($scope.promotions)
+        }).catch(error => {
+            console.log("Error", error);
+        })
+
+    }
+
+
+    $scope.loadImageRoom = function (codeRoom) { // load anh phong
+        $http.get("http://localhost:8000/api/booking-online/img/" + codeRoom).then(resp => {
+            $scope.imageRooms = resp.data;
+            // console.log(resp.data)
         }).catch(error => {
             console.log("Error", error);
         })
     }
+
+    $scope.url = function(imageName){
+        return `http://localhost:8000/images/${imageName}`;
+}
 
     $scope.close = function () {
         var myModalEl = document.getElementById('roomModal1');
@@ -78,12 +112,14 @@ app.controller("bookOnlineCtrl", function ($scope, $http, $location) {
         modal.hide();
     }
 
-    $scope.views = function (roomType, link) {
-        $scope.link = link;
+    $scope.views = function (roomType, code) {
+        $scope.loadImageRoom(code)
+
+        // $scope.link = link;
         $scope.form = roomType;
     }
     $scope.books = function (roomTypeCode) {
-        $scope.close();
+        // $scope.close();
         $location.path("/book/" + roomTypeCode);
     }
 
