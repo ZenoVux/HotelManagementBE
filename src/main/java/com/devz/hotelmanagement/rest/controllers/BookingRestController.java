@@ -118,7 +118,7 @@ public class BookingRestController {
                 List<Room> roomList = roomService.findByIds(roomIds);
                 roomBooking.setListRooms(roomList);
 
-                DoubleSummaryStatistics priceStats = roomList.stream().map(Room::getPrice).filter(Objects::nonNull).mapToDouble(Double::doubleValue).summaryStatistics();
+                DoubleSummaryStatistics priceStats = roomList.stream().map(r -> r.getRoomType().getPrice()).filter(Objects::nonNull).mapToDouble(Double::doubleValue).summaryStatistics();
                 roomBooking.setMinPrice(priceStats.getMin());
                 roomBooking.setMaxPrice(priceStats.getMax());
 
@@ -181,13 +181,13 @@ public class BookingRestController {
 
                     if (promotions != null && !promotions.isEmpty()) {
                         double promotionPrice = 0.0;
-                        promotionPrice = (100 - promotions.get(0).getPercent()) * room.getPrice() / 100;
-                        if ((promotions.get(0).getPercent() * room.getPrice() / 100) > promotions.get(0).getMaxDiscount()) {
-                            promotionPrice = room.getPrice() - promotions.get(0).getMaxDiscount();
+                        promotionPrice = (100 - promotions.get(0).getPercent()) * room.getRoomType().getPrice() / 100;
+                        if ((promotions.get(0).getPercent() * room.getRoomType().getPrice() / 100) > promotions.get(0).getMaxDiscount()) {
+                            promotionPrice = room.getRoomType().getPrice() - promotions.get(0).getMaxDiscount();
                         }
                         return new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, promotionPrice, "", BookingDetailStatus.PENDING.getCode(), new Date());
                     }
-                    return new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date());
+                    return new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getRoomType().getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date());
                 }).collect(Collectors.toList());
                 bookingDetailService.createAll(bookingDetails);
 

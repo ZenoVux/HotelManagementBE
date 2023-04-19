@@ -1,6 +1,6 @@
 package com.devz.hotelmanagement.rest.controllers;
 
-import com.devz.hotelmanagement.entities.RoomImage;
+import com.devz.hotelmanagement.entities.RoomTypeImage;
 import com.devz.hotelmanagement.services.RoomImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,22 +16,22 @@ public class RoomImageRestController {
     private RoomImageService roomImageService;
 
     @GetMapping
-    public List<RoomImage> getAll() {
+    public List<RoomTypeImage> getAll() {
         return roomImageService.findAll();
     }
     
     @GetMapping("/{codeRoom}")
-    public List<RoomImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+    public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
         return roomImageService.getListByCodeRoom(codeRoom);
     }
     @PostMapping
-    public RoomImage create(@RequestBody RoomImage roomImage) {
-        return roomImageService.create(roomImage);
+    public RoomTypeImage create(@RequestBody RoomTypeImage roomTypeImage) {
+        return roomImageService.create(roomTypeImage);
     }
 
     @PutMapping
-    public RoomImage update(@RequestBody RoomImage roomImage) {
-        return roomImageService.update(roomImage);
+    public RoomTypeImage update(@RequestBody RoomTypeImage roomTypeImage) {
+        return roomImageService.update(roomTypeImage);
     }
     
     @DeleteMapping("/{id}")

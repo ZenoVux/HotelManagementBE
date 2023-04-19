@@ -2,7 +2,6 @@ package com.devz.hotelmanagement.rest.controllers;
 
 
 import com.devz.hotelmanagement.entities.BedRoom;
-import com.devz.hotelmanagement.entities.SupplyRoom;
 import com.devz.hotelmanagement.services.BedRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

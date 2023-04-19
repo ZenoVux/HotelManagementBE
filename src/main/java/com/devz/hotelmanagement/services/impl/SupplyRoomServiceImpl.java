@@ -1,6 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
-import com.devz.hotelmanagement.entities.SupplyRoom;
+import com.devz.hotelmanagement.entities.SupplyRoomType;
 import com.devz.hotelmanagement.repositories.SupplyRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ public class SupplyRoomServiceImpl implements SupplyRoomService {
     private SupplyRoomRepository supplyRoomRepo;
 
     @Override
-    public List<SupplyRoom> findAll() {
+    public List<SupplyRoomType> findAll() {
         return supplyRoomRepo.findAll();
     }
 
     @Override
-    public SupplyRoom findById(int id) {
-        Optional<SupplyRoom> optional = supplyRoomRepo.findById(id);
+    public SupplyRoomType findById(int id) {
+        Optional<SupplyRoomType> optional = supplyRoomRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
@@ -31,23 +31,23 @@ public class SupplyRoomServiceImpl implements SupplyRoomService {
     }
 
     @Override
-    public SupplyRoom findByCode(String code) {
+    public SupplyRoomType findByCode(String code) {
     	return null;
     }
 
     @Override
-    public SupplyRoom create(SupplyRoom supplyRoom) {
-        supplyRoom.setId(null);
-        return supplyRoomRepo.save(supplyRoom);
+    public SupplyRoomType create(SupplyRoomType supplyRoomType) {
+        supplyRoomType.setId(null);
+        return supplyRoomRepo.save(supplyRoomType);
     }
 
     @Override
-    public SupplyRoom update(SupplyRoom supplyRoom) {
-        return supplyRoomRepo.save(supplyRoom);
+    public SupplyRoomType update(SupplyRoomType supplyRoomType) {
+        return supplyRoomRepo.save(supplyRoomType);
     }
 
 	@Override
-	public List<SupplyRoom> findByCodeRoom(String code) {
+	public List<SupplyRoomType> findByCodeRoom(String code) {
 		return supplyRoomRepo.findByCodeRoom(code);
 	}
 

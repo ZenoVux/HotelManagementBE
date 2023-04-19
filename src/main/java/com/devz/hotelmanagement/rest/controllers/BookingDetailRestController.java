@@ -133,7 +133,7 @@ public class BookingDetailRestController {
                 booking.setAccount(account);
                 bookingService.update(booking);
 
-                List<BookingDetail> newBookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingDetailReq.getCheckinExpected(), bookingDetailReq.getCheckoutExpected(), booking, room.getPrice(), "Thêm: " + bookingDetailReq.getNote(), BookingDetailStatus.PENDING.getCode(), new Date())).collect(Collectors.toList());
+                List<BookingDetail> newBookingDetails = rooms.stream().map(room -> new BookingDetail(room, bookingDetailReq.getCheckinExpected(), bookingDetailReq.getCheckoutExpected(), booking, room.getRoomType().getPrice(), "Thêm: " + bookingDetailReq.getNote(), BookingDetailStatus.PENDING.getCode(), new Date())).collect(Collectors.toList());
                 bookingDetailService.createAll(newBookingDetails);
             }
             return ResponseEntity.ok().body(booking);
