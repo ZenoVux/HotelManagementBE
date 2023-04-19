@@ -76,12 +76,17 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
     }
 
     @Override
-    public void updateAll(List<InvoiceDetail> invoiceDetails) {
-        invoiceDetailRepo.saveAll(invoiceDetails);
+    public List<InvoiceDetail> updateAll(List<InvoiceDetail> invoiceDetails) {
+        return invoiceDetailRepo.saveAll(invoiceDetails);
     }
 
     @Override
     public List<InvoiceDetail> findAllUsing() {
         return invoiceDetailRepo.findAllUsing();
+    }
+
+    @Override
+    public List<InvoiceDetail> findByInvoiceCodeAndStatus(String code, Integer status) {
+        return invoiceDetailRepo.findByInvoiceCodeAndStatus(code, status);
     }
 }
