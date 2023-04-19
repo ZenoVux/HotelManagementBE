@@ -39,6 +39,6 @@ public class Supply extends EntityBase {
 
     @JsonIgnore
     @OneToMany(mappedBy = "supply")
-    private List<SupplyRoom> supplyRooms;
+    private List<SupplyRoomType> supplyRoomTypes;
 
 }

@@ -1,6 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
-import com.devz.hotelmanagement.entities.RoomImage;
+import com.devz.hotelmanagement.entities.RoomTypeImage;
 import com.devz.hotelmanagement.repositories.RoomImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ public class RoomImageServiceImpl implements RoomImageService {
     private RoomImageRepository roomImageRepo;
 
     @Override
-    public List<RoomImage> findAll() {
+    public List<RoomTypeImage> findAll() {
         return roomImageRepo.findAll();
     }
 
     @Override
-    public RoomImage findById(int id) {
-        Optional<RoomImage> optional = roomImageRepo.findById(id);
+    public RoomTypeImage findById(int id) {
+        Optional<RoomTypeImage> optional = roomImageRepo.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
@@ -31,23 +31,23 @@ public class RoomImageServiceImpl implements RoomImageService {
     }
 
     @Override
-    public RoomImage findByCode(String code) {
+    public RoomTypeImage findByCode(String code) {
         return null;
     }	
 
     @Override
-    public RoomImage create(RoomImage roomImage) {
-        roomImage.setId(null);
-        return roomImageRepo.save(roomImage);
+    public RoomTypeImage create(RoomTypeImage roomTypeImage) {
+        roomTypeImage.setId(null);
+        return roomImageRepo.save(roomTypeImage);
     }
 
     @Override
-    public RoomImage update(RoomImage roomImage) {
-        return roomImageRepo.save(roomImage);
+    public RoomTypeImage update(RoomTypeImage roomTypeImage) {
+        return roomImageRepo.save(roomTypeImage);
     }
 
 	@Override
-	public List<RoomImage> getListByCodeRoom(String codeRoom) {
+	public List<RoomTypeImage> getListByCodeRoom(String codeRoom) {
 		return roomImageRepo.getListByCodeRoom(codeRoom);
 	}
 

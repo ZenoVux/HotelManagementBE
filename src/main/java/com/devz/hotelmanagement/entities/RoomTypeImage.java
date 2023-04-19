@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "room_images")
-public class RoomImage extends EntityBase {
+@Table(name = "room_type_images")
+public class RoomTypeImage extends EntityBase {
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "room_type_id")
+    private RoomType roomType;
 
     @Column(name = "file_name")
     private String fileName;

@@ -1,7 +1,7 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 
-import com.devz.hotelmanagement.entities.SupplyRoom;
+import com.devz.hotelmanagement.entities.SupplyRoomType;
 import com.devz.hotelmanagement.services.SupplyRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +17,23 @@ public class SupplyRoomRestController {
     private SupplyRoomService supplyRoomService;
 
     @GetMapping
-    public List<SupplyRoom> getAll() {
+    public List<SupplyRoomType> getAll() {
         return supplyRoomService.findAll();
     }
     
     @GetMapping("/{code}")
-    public List<SupplyRoom> getByCodeRoom(@PathVariable("code") String code) {
+    public List<SupplyRoomType> getByCodeRoom(@PathVariable("code") String code) {
         return supplyRoomService.findByCodeRoom(code);
     }
     
     @PostMapping
-    public SupplyRoom create(@RequestBody SupplyRoom supplyRoom) {
-        return supplyRoomService.create(supplyRoom);
+    public SupplyRoomType create(@RequestBody SupplyRoomType supplyRoomType) {
+        return supplyRoomService.create(supplyRoomType);
     }
 
     @PutMapping
-    public SupplyRoom update(@RequestBody SupplyRoom supplyRoom) {
-        return supplyRoomService.update(supplyRoom);
+    public SupplyRoomType update(@RequestBody SupplyRoomType supplyRoomType) {
+        return supplyRoomService.update(supplyRoomType);
     }
     
     @DeleteMapping("{id}")

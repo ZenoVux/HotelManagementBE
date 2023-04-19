@@ -16,27 +16,6 @@ import java.util.List;
 public class Room extends EntityBase {
 
     @Column()
-    private Double price;
-
-    @Column(name = "max_adults_add")
-    private Integer maxAdultsAdd;
-
-    @Column(name = "max_childs_add")
-    private Integer maxChildsAdd;
-
-    @Column()
-    private Double area;
-
-    @Column(name = "is_smoking")
-    private Boolean isSmoking;
-
-    @Column(name = "num_adults")
-    private Integer numAdults;
-
-    @Column(name = "num_childs")
-    private Integer numChilds;
-
-    @Column()
     private String description;
 
     @Column()
@@ -53,14 +32,6 @@ public class Room extends EntityBase {
     @JsonIgnore
     @OneToMany(mappedBy = "room")
     private List<BedRoom> bedRooms;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "room")
-    private List<SupplyRoom> supplyRooms;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "room")
-    private List<RoomImage> roomImages;
 
     @JsonIgnore
     @OneToMany(mappedBy = "room")

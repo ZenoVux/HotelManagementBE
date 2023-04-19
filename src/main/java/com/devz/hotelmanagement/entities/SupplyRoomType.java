@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "supply_rooms")
-public class SupplyRoom extends EntityBase {
+public class SupplyRoomType extends EntityBase {
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "room_type_id")
+    private RoomType roomType;
 
     @ManyToOne
     @JoinColumn(name = "supply_id")

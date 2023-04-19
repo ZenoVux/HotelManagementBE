@@ -76,11 +76,11 @@ public class HostedAtServiceImpl implements HostedAtService {
         int age = Period.between(birthdate, today).getYears();
 
         Room room = invoiceDetail.getRoom();
-        if (age >= 13 && numAdults >= (room.getNumAdults() + room.getMaxAdultsAdd())) {
+        if (age >= 13 && numAdults >= (room.getRoomType().getNumAdults() + room.getRoomType().getMaxAdultsAdd())) {
             // không thể thêm người lớn vào phòng này. số lượng đạt tối đa
             throw new RuntimeException("{\"error\":\"Không thể thêm người lớn vào phòng này. Số lượng đạt tối đa!\"}");
         }
-        if (age < 13 && numChilds >= (room.getNumChilds() + room.getMaxChildsAdd())) {
+        if (age < 13 && numChilds >= (room.getRoomType().getNumChilds() + room.getRoomType().getMaxChildsAdd())) {
             // không thể thêm trẻ em vào phòng này. số lượng đạt tối đa
             throw new RuntimeException("{\"error\":\"Không thể thêm trẻ em vào phòng này. Số lượng đạt tối đa!\"}");
         }

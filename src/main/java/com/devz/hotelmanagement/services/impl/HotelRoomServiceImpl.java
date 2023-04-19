@@ -328,7 +328,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             LocalDate checkoutExpectedDate = LocalDate.ofInstant(bookingDetail.getCheckoutExpected().toInstant(), ZoneId.systemDefault());
 
             long days = ChronoUnit.DAYS.between(checkinExpectedDate, checkoutExpectedDate);
-            invoiceDetail.setDeposit(bookingDetail.getRoom().getPrice() * days);
+            invoiceDetail.setDeposit(bookingDetail.getRoomPrice() * days);
         } else {
             invoiceDetail.setDeposit(0.0);
         }
@@ -565,8 +565,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             return age < 13;
         }).count();
 
-        Double totalAdultSurcharge = roomType.getAdultSurcharge() * (numAdults - room.getNumAdults());
-        Double totalChildSurcharge = roomType.getChildSurcharge() * (numChilds - room.getNumChilds());
+        Double totalAdultSurcharge = roomType.getAdultSurcharge() * (numAdults - roomType.getNumAdults());
+        Double totalChildSurcharge = roomType.getChildSurcharge() * (numChilds - roomType.getNumChilds());
         invoiceDetail.setAdultSurcharge(totalAdultSurcharge);
         invoiceDetail.setChildSurcharge(totalChildSurcharge);
 
@@ -767,7 +767,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         // Tạo InvoiceDetail cho phòng muốn đổi
         InvoiceDetail newInvoiceDetail = new InvoiceDetail();
         newInvoiceDetail.setRoom(newRoom);
-        newInvoiceDetail.setRoomPrice(newRoom.getPrice());
+        newInvoiceDetail.setRoomPrice(newRoom.getRoomType().getPrice());
         newInvoiceDetail.setInvoice(invoiceDetail.getInvoice());
         newInvoiceDetail.setCheckin(new Date());
         newInvoiceDetail.setCheckinExpected(Date.from(LocalDate.now(ZoneId.systemDefault()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
@@ -1009,8 +1009,8 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 return age < 13;
             }).count();
 
-            Double totalAdultSurcharge = roomType.getAdultSurcharge() * (numAdults - room.getNumAdults());
-            Double totalChildSurcharge = roomType.getChildSurcharge() * (numChilds - room.getNumChilds());
+            Double totalAdultSurcharge = roomType.getAdultSurcharge() * (numAdults - roomType.getNumAdults());
+            Double totalChildSurcharge = roomType.getChildSurcharge() * (numChilds - roomType.getNumChilds());
             invoiceDetail.setAdultSurcharge(totalAdultSurcharge);
             invoiceDetail.setChildSurcharge(totalChildSurcharge);
 

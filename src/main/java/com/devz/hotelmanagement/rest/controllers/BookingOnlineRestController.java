@@ -2,7 +2,7 @@ package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.Promotion;
 import com.devz.hotelmanagement.entities.Room;
-import com.devz.hotelmanagement.entities.RoomImage;
+import com.devz.hotelmanagement.entities.RoomTypeImage;
 import com.devz.hotelmanagement.entities.RoomType;
 import com.devz.hotelmanagement.entities.ServiceRoom;
 import com.devz.hotelmanagement.services.PromotionService;
@@ -62,7 +62,7 @@ public class BookingOnlineRestController {
 	}
 
 	@GetMapping("/img/{codeRoom}")
-	public List<RoomImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+	public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
 		return roomImageService.getListByCodeRoom(codeRoom);
 	}
 
