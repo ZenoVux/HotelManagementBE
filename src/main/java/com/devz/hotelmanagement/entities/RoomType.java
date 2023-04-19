@@ -33,6 +33,9 @@ public class RoomType extends EntityBase {
     @Column()
     private String description;
 
+    @Column()
+    private String image;
+
     @JsonIgnore
     @OneToMany(mappedBy = "roomType")
     private List<Room> rooms;

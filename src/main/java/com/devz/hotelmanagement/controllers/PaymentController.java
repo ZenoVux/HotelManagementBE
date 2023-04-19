@@ -52,6 +52,15 @@ public class PaymentController {
         resp.sendRedirect(paymentUrl);
     }
 
+//    public void bookOnline(HttpServletRequest req, HttpServletResponse resp, @PathVariable("code") String code) throws IOException {
+//        resp.setContentType("text/html;charset=UTF-8");
+//
+//        String ip = VNPayUtil.getIpAddress(req);
+//
+//        String paymentUrl = vnPayService.paymentUrl(code + "-" + VNPayUtil.getRandomNumber(8), amount , ip);
+//        resp.sendRedirect(paymentUrl);
+//    }
+
     @GetMapping("/vnpay/return")
     public void vnpayReturn(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, String> fields = new HashMap<>();
