@@ -317,6 +317,9 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setRoomPrice(bookingDetail.getRoomPrice());
         invoiceDetail.setTotalRoomFee(0.0);
         invoiceDetail.setTotalServiceFee(0.0);
+        invoiceDetail.setAdultSurcharge(0.0);
+        invoiceDetail.setChildSurcharge(0.0);
+        invoiceDetail.setOrtherSurcharge(0.0);
         invoiceDetail.setEarlyCheckinFee(0.0);
         invoiceDetail.setLateCheckoutFee(0.0);
 
@@ -564,12 +567,14 @@ public class HotelRoomServiceImpl implements HotelRoomService {
 
         Double totalAdultSurcharge = roomType.getAdultSurcharge() * (numAdults - room.getNumAdults());
         Double totalChildSurcharge = roomType.getChildSurcharge() * (numChilds - room.getNumChilds());
+        invoiceDetail.setAdultSurcharge(totalAdultSurcharge);
+        invoiceDetail.setChildSurcharge(totalChildSurcharge);
 
         // Tính phụ phí nhận / trả phòng
         Double lateCheckoutFee = invoiceDetail.getEarlyCheckinFee();
         Double earlyCheckinFee = invoiceDetail.getLateCheckoutFee();
 
-        Double total = totalRoomFee + totalServiceFee + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
+        Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalAdultSurcharge + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
 
         invoiceDetail.setTotal(total);
         invoiceDetail.setCheckout(new Date());
@@ -638,14 +643,18 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
         invoiceDetailHistory.setRoomPrice(invoiceDetail.getRoomPrice());
         invoiceDetailHistory.setDeposit(invoiceDetail.getDeposit());
+        invoiceDetailHistory.setAdultSurcharge(invoiceDetail.getAdultSurcharge());
+        invoiceDetailHistory.setChildSurcharge(invoiceDetail.getChildSurcharge());
+        invoiceDetailHistory.setOrtherSurcharge(invoiceDetail.getOrtherSurcharge());
         invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
         invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
-        invoiceDetailHistory.setNote("Gia hạn thêm ngày. " + note);
+        invoiceDetailHistory.setNote(invoiceDetail.getNote());
         invoiceDetailHistory.setUpdateDate(new Date());
         if (invoiceDetailHistoryService.create(invoiceDetailHistory) == null) {
             throw new RuntimeException("Tạo InvoiceDetailHistory thất bại của room " + code);
         }
         invoiceDetail.setCheckoutExpected(Date.from(newCheckoutDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        invoiceDetail.setNote("Gia hạn thêm ngày. " + note);
         if (invoiceDetailService.update(invoiceDetail) == null) {
             // Không tìm thấy InvoiceDetail của room
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
@@ -766,6 +775,9 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         newInvoiceDetail.setDeposit(0.0);
         newInvoiceDetail.setTotalRoomFee(0.0);
         newInvoiceDetail.setTotalServiceFee(0.0);
+        newInvoiceDetail.setAdultSurcharge(0.0);
+        newInvoiceDetail.setChildSurcharge(0.0);
+        newInvoiceDetail.setOrtherSurcharge(0.0);
         newInvoiceDetail.setEarlyCheckinFee(0.0);
         newInvoiceDetail.setLateCheckoutFee(0.0);
         newInvoiceDetail.setTotal(0.0);
@@ -934,9 +946,12 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
         invoiceDetailHistory.setRoomPrice(invoiceDetail.getRoomPrice());
         invoiceDetailHistory.setDeposit(invoiceDetail.getDeposit());
+        invoiceDetailHistory.setAdultSurcharge(invoiceDetail.getAdultSurcharge());
+        invoiceDetailHistory.setChildSurcharge(invoiceDetail.getChildSurcharge());
+        invoiceDetailHistory.setOrtherSurcharge(invoiceDetail.getOrtherSurcharge());
         invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
         invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
-        invoiceDetailHistory.setNote(invoiceDetailUpdateReq.getNote());
+        invoiceDetailHistory.setNote("Chỉnh sửa . " + invoiceDetail.getNote());
         invoiceDetailHistory.setCreatedBy(username);
         invoiceDetailHistory.setUpdateDate(new Date());
         if (invoiceDetailHistoryService.create(invoiceDetailHistory) == null) {
@@ -946,8 +961,12 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setDeposit(invoiceDetailUpdateReq.getDeposit());
         invoiceDetail.setEarlyCheckinFee(invoiceDetailUpdateReq.getEarlyCheckinFee());
         invoiceDetail.setLateCheckoutFee(invoiceDetailUpdateReq.getLateCheckoutFee());
+        invoiceDetail.setNote(invoiceDetailUpdateReq.getNote());
 
         if (invoiceDetail.getStatus() == 2) {
+            Room room = invoiceDetail.getRoom();
+            RoomType roomType = room.getRoomType();
+
             // Tổng tiền dịch vụ
             Double totalServiceFee = invoiceDetail.getTotalServiceFee();
 
@@ -974,6 +993,26 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             Double totalRoomFee = invoiceDetail.getRoomPrice() * days;
 
             invoiceDetail.setTotalRoomFee(totalRoomFee);
+
+            // Tính phụ phí người ở
+            List<HostedAt> hostedAts = hostedAtService.findByInvoiceDetailId(invoiceDetail.getId());
+
+            long numAdults = hostedAts.stream().filter(hostedAt -> {
+                LocalDate birthdate = LocalDate.ofInstant(hostedAt.getCustomer().getDateOfBirth().toInstant(), ZoneId.systemDefault());
+                int age = Period.between(birthdate, today).getYears();
+                return age >= 13;
+            }).count();
+
+            long numChilds = hostedAts.stream().filter(hostedAt -> {
+                LocalDate birthdate = LocalDate.ofInstant(hostedAt.getCustomer().getDateOfBirth().toInstant(), ZoneId.systemDefault());
+                int age = Period.between(birthdate, today).getYears();
+                return age < 13;
+            }).count();
+
+            Double totalAdultSurcharge = roomType.getAdultSurcharge() * (numAdults - room.getNumAdults());
+            Double totalChildSurcharge = roomType.getChildSurcharge() * (numChilds - room.getNumChilds());
+            invoiceDetail.setAdultSurcharge(totalAdultSurcharge);
+            invoiceDetail.setChildSurcharge(totalChildSurcharge);
 
             Double total = totalRoomFee + totalServiceFee + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
 

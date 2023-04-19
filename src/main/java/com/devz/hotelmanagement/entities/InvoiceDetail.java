@@ -51,6 +51,15 @@ public class InvoiceDetail extends EntityBase {
     @Column(name = "total_service_fee")
     private Double totalServiceFee;
 
+    @Column(name = "adult_surcharge")
+    private Double adultSurcharge;
+
+    @Column(name = "child_surcharge")
+    private Double childSurcharge;
+
+    @Column(name = "orther_surcharge")
+    private Double ortherSurcharge;
+
     @Column(name = "late_checkout_fee")
     private Double lateCheckoutFee;
 
