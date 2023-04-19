@@ -1,7 +1,7 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.RoomTypeImage;
-import com.devz.hotelmanagement.services.RoomImageService;
+import com.devz.hotelmanagement.services.RoomTypeImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,33 +9,34 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/room-images")
-public class RoomImageRestController {
+@RequestMapping("/api/room-type-images")
+public class RoomTypeImageRestController {
 
     @Autowired
-    private RoomImageService roomImageService;
+    private RoomTypeImageService roomTypeImageService;
 
     @GetMapping
     public List<RoomTypeImage> getAll() {
-        return roomImageService.findAll();
+        return roomTypeImageService.findAll();
     }
     
-    @GetMapping("/{codeRoom}")
-    public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
-        return roomImageService.getListByCodeRoom(codeRoom);
-    }
+//    @GetMapping("/{codeRoom}")
+//    public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+//        return roomTypeImageService.getListByCodeRoom(codeRoom);
+//    }
+
     @PostMapping
     public RoomTypeImage create(@RequestBody RoomTypeImage roomTypeImage) {
-        return roomImageService.create(roomTypeImage);
+        return roomTypeImageService.create(roomTypeImage);
     }
 
     @PutMapping
     public RoomTypeImage update(@RequestBody RoomTypeImage roomTypeImage) {
-        return roomImageService.update(roomTypeImage);
+        return roomTypeImageService.update(roomTypeImage);
     }
     
     @DeleteMapping("/{id}")
     public void deleteByID(@PathVariable("id") Integer id) {
-        roomImageService.deleteById(id);
+        roomTypeImageService.deleteById(id);
     }
 }

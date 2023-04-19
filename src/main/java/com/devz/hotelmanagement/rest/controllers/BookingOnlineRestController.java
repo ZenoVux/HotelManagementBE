@@ -6,7 +6,7 @@ import com.devz.hotelmanagement.entities.RoomTypeImage;
 import com.devz.hotelmanagement.entities.RoomType;
 import com.devz.hotelmanagement.entities.ServiceRoom;
 import com.devz.hotelmanagement.services.PromotionService;
-import com.devz.hotelmanagement.services.RoomImageService;
+import com.devz.hotelmanagement.services.RoomTypeImageService;
 import com.devz.hotelmanagement.services.RoomService;
 import com.devz.hotelmanagement.services.RoomTypeService;
 import com.devz.hotelmanagement.services.ServiceRoomService;
@@ -25,7 +25,7 @@ public class BookingOnlineRestController {
 	private ServiceRoomService serviceRoomService;
 
 	@Autowired
-	private RoomImageService roomImageService;
+	private RoomTypeImageService roomTypeImageService;
 
 	@Autowired
 	private RoomTypeService roomTypeService;
@@ -61,9 +61,9 @@ public class BookingOnlineRestController {
 		return roomTypeService.findByCode(code);
 	}
 
-	@GetMapping("/img/{codeRoom}")
-	public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
-		return roomImageService.getListByCodeRoom(codeRoom);
-	}
+//	@GetMapping("/img/{codeRoom}")
+//	public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+//		return roomTypeImageService.getListByCodeRoom(codeRoom);
+//	}
 
 }
