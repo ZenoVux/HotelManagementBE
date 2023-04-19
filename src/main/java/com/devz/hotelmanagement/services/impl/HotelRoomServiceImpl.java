@@ -3,6 +3,7 @@ package com.devz.hotelmanagement.services.impl;
 import com.devz.hotelmanagement.entities.*;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
+import com.devz.hotelmanagement.statuses.InvoiceDetailStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelRoomServiceImpl implements HotelRoomService {
@@ -293,6 +295,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoice.setDiscountMoney(0.0);
             invoice.setTotal(0.0);
             invoice.setTotalPayment(0.0);
+            invoice.setNote("");
             invoice.setStatus(1); // trạng thái chờ
 
             String username = req.getAttribute("username").toString();
@@ -577,16 +580,17 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         }
 
         List<InvoiceDetail> invoiceDetails = invoiceDetailService.findByInvoiceCode(invoice.getCode());
-        // Tổng tiền trả trước
-        Double totalDeposit = invoiceDetails.stream().map(ivd -> ivd.getDeposit()).reduce(0.0, Double::sum);
-        invoice.setTotalDeposit(totalDeposit);
-
-        // Tổng tiền hoá đơn
-        Double totalInvoice = invoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
-        invoice.setTotal(totalInvoice);
         // kiểm tra các hoá đơn chi tiết đã hoàn thành hay chưa
         boolean isSuccess = invoiceDetails.stream().allMatch(ivd -> ivd.getStatus() == 2);
         if (isSuccess) {
+            // Tổng tiền trả trước
+            Double totalDeposit = invoiceDetails.stream().map(ivd -> ivd.getDeposit()).reduce(0.0, Double::sum);
+            invoice.setTotalDeposit(totalDeposit);
+
+            // Tổng tiền hoá đơn
+            Double totalInvoice = invoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
+            invoice.setTotal(totalInvoice);
+
             // trạng thái chờ thanh toán
             invoice.setStatus(2);
         }
@@ -991,6 +995,64 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
             }
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = { RuntimeException.class })
+    public Invoice splitInvoice(InvoiceSplitReq invoiceSplitReq) {
+        if (invoiceSplitReq.getInvoiceCode() == null || invoiceSplitReq.getRoomCodes().length == 0) {
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
+        }
+        Invoice invoice = invoiceService.findByCode(invoiceSplitReq.getInvoiceCode());
+        if (invoice == null) {
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        if (invoice.getStatus() != 1 && invoice.getStatus() != 2) {
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        List<InvoiceDetail> invoiceDetails = invoiceDetailService.findByInvoiceCodeAndStatus(invoice.getCode(), InvoiceDetailStatus.COMPLETED.getCode());
+        if (invoiceDetails.size() <= 1) {
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        List<String> roomCodes = Arrays.asList(invoiceSplitReq.getRoomCodes());
+        List<InvoiceDetail> splitInvoiceDetails = invoiceDetails.stream().filter(ivd -> roomCodes.contains(ivd.getRoom().getCode())).collect(Collectors.toList());
+        if (splitInvoiceDetails.size() <= 0) {
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        Invoice newInvoice = new Invoice();
+        newInvoice.setBooking(invoice.getBooking());
+        newInvoice.setCreatedDate(new Date());
+
+        // Tổng tiền trả trước
+        Double totalDeposit = splitInvoiceDetails.stream().map(ivd -> ivd.getDeposit()).reduce(0.0, Double::sum);
+        newInvoice.setTotalDeposit(totalDeposit);
+
+        // Tổng tiền hoá đơn
+        Double totalInvoice = splitInvoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
+        newInvoice.setTotal(totalInvoice);
+
+        newInvoice.setDiscountMoney(0.0);
+        newInvoice.setTotalPayment(0.0);
+        invoice.setNote("");
+        newInvoice.setStatus(2); // trạng thái chờ
+
+        String username = req.getAttribute("username").toString();
+
+        Account account = accountService.findByUsernameAndActivate(username);
+        if (account == null) {
+            // Chưa đăng nhập!
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        newInvoice.setAccount(account);
+        if (invoiceService.create(newInvoice) == null) {
+            // lỗi tạo invoice
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        splitInvoiceDetails.forEach(ivd -> ivd.setInvoice(newInvoice));
+        if (invoiceDetailService.updateAll(splitInvoiceDetails).size() != splitInvoiceDetails.size()) {
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        return newInvoice;
     }
 
 }
