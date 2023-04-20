@@ -225,6 +225,7 @@ public class BookingOnlineRestController {
             }
 
             List<BookingDetail> bookingDetails = rooms.stream().map(room -> {
+                room.setStatus(0);
                 List<Promotion> promotions = promotionService.findByRoomType(room.getRoomType().getCode());
                 if (promotions != null && !promotions.isEmpty()) {
                     double promotionPrice = 0.0;
@@ -236,6 +237,9 @@ public class BookingOnlineRestController {
                 }
                 return new BookingDetail(room, checkinDate, checkoutDate, booking, room.getRoomType().getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date());
             }).collect(Collectors.toList());
+
+            // update all room
+            roomService.updateAll(rooms);
 
             double totalDeposit = 0.0;
             for (BookingDetail bookingDetail : bookingDetails) {

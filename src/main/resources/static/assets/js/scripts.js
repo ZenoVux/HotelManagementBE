@@ -287,12 +287,12 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $loca
 
         $http.post("/api/booking-online/get-booking", $scope.formBook).then(resp => {
             console.log(resp.data);
-            // if (resp.status == 200) {
-            //     window.location.href = http://localhost:8000/payment/booking/" + resp.data.id;
-            // }
+            if (resp.status == 200) {
+                window.location.href = "http://localhost:8000/payment/booking/" + resp.data.id;
+            }
             $scope.loading = false;
 
-            $location.path("/booking/detail/" + resp.data.id);
+            // $location.path("/booking/detail/" + resp.data.id);
         }).catch(error => {
             console.log("Error", error);
         });
