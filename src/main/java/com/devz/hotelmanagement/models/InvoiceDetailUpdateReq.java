@@ -8,6 +8,7 @@ public class InvoiceDetailUpdateReq {
     private Integer invoiceDetailId;
     private Double roomPrice;
     private Double deposit;
+    private Double ortherSurcharge;
     private Double earlyCheckinFee;
     private Double lateCheckoutFee;
     private String note;
