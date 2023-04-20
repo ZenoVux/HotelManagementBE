@@ -60,6 +60,10 @@ app.config(function ($routeProvider) {
             templateUrl: "/assets/view/book.html",
             controller: "bookCtrl",
         })
+        .when("/booking/detail/:code", {
+            templateUrl: "/assets/view/booking-detail.html",
+            controller: "bookDetailCtrl",
+        })
         .otherwise({
             redirectTo: "/"
         });
@@ -129,7 +133,7 @@ app.controller("bookOnlineCtrl", function ($scope, $http, $location) {
 
 });
 
-app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
+app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $location) {
 
     $scope.formBook = {};
     $scope.formBook.checkinDate = new Date();
@@ -141,8 +145,7 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
     $scope.infoRoomBooking = [];
     $scope.roomTypes = [];
 
-    // var code = $routeParams.code
-    var code = null
+    $scope.formBook.roomType = $routeParams.code
 
     $scope.getRoomType = function () {
         $http.get("/api/booking-online/room-types").then(resp => {
@@ -223,14 +226,18 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
     }
 
     $scope.openModalBooking = function () {
-        // if ($scope.infoRoomBooking == null || $scope.infoRoomBooking.length == 0) {
-        //     alert("Vui lòng chọn ngày checkin, checkout và kiểm tra lại lượng phòng còn lại!");
-        //     return;
-        // }
-        // if ($scope.infoRoomBooking[0].quantity == 0) {
-        //     alert("Phòng đã hết!");
-        //     return;
-        // }
+        if ($scope.infoRoomBooking == null || $scope.infoRoomBooking.length == 0) {
+            alert("Vui lòng chọn ngày checkin, checkout và kiểm tra lại lượng phòng còn lại!");
+            return;
+        }
+        if ($scope.infoRoomBooking[0].quantity == 0) {
+            alert("Phòng đã hết!");
+            return;
+        }
+        if ($scope.formBook.numRoomsBooking.length == 0) {
+            alert("Vui lòng chọn số lượng phòng!");
+            return;
+        }
         $('#book-modal').modal('show');
     }
 
@@ -256,18 +263,20 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
     };
 
     $scope.getBooking = function () {
-        console.log($scope.formBook);
+
+        $scope.loading = true;
 
         $scope.formBook.checkinDate = $filter('date')($scope.formBook.checkinDate, 'dd-MM-yyyy');
         $scope.formBook.checkoutDate = $filter('date')($scope.formBook.checkoutDate, 'dd-MM-yyyy');
 
-        var bookingJson = JSON.stringify($scope.formBook);
-
-        console.log(bookingJson);
-
         $http.post("/api/booking-online/get-booking", $scope.formBook).then(resp => {
             console.log(resp.data);
-            //window.location.href = "/booking-online";
+            // if (resp.status == 200) {
+            //     window.location.href = http://localhost:8000/payment/booking/" + resp.data.id;
+            // }
+            $scope.loading = false;
+
+            $location.path("/booking/detail/" + resp.data.id);
         }).catch(error => {
             console.log("Error", error);
         });
@@ -279,5 +288,42 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
     }
 
     $scope.init()
+
+});
+
+app.controller("bookDetailCtrl", function ($scope, $http, $routeParams) {
+    var bookingId = $routeParams.code
+    $scope.bookingDetails = [];
+    $scope.bookingDetails = [];
+    $scope.booking = {};
+    $scope.booking.numOfRooms = 0;
+
+    $scope.getBooking = function () {
+        $http.get("/api/booking-online/get-booking/" + bookingId).then(resp => {
+            $scope.booking = resp.data;
+        }).catch(error => {
+            console.log("Error", error);
+        });
+    }
+
+    $scope.getBookingDetail = function () {
+        $http.get("/api/booking-online/get-booking-detail/" + bookingId).then(resp => {
+            $scope.bookingDetails = resp.data;
+            for (var i = 0; i < $scope.bookingDetails.length; i++) {
+                $scope.bookingDetails[i].checkinExpected = new Date($scope.bookingDetails[i].checkinExpected);
+                $scope.bookingDetails[i].checkoutExpected = new Date($scope.bookingDetails[i].checkoutExpected);
+            }
+            $scope.booking.numOfRooms = $scope.bookingDetails.length;
+        }).catch(error => {
+            console.log("Error", error);
+        });
+    }
+
+    $scope.init = function () {
+        $scope.getBooking();
+        $scope.getBookingDetail();
+    }
+
+    $scope.init();
 
 });

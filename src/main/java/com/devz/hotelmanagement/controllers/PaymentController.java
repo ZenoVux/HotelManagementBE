@@ -1,6 +1,8 @@
 package com.devz.hotelmanagement.controllers;
 
+import com.devz.hotelmanagement.entities.Booking;
 import com.devz.hotelmanagement.entities.Invoice;
+import com.devz.hotelmanagement.services.BookingService;
 import com.devz.hotelmanagement.services.InvoiceService;
 import com.devz.hotelmanagement.services.VNPayService;
 import com.devz.hotelmanagement.utilities.VNPayUtil;
@@ -27,6 +29,9 @@ public class PaymentController {
     @Autowired
     private InvoiceService invoiceService;
 
+    @Autowired
+    private BookingService bookingService;
+
     @GetMapping("/invoice/{code}")
     public void invoice(HttpServletRequest req, HttpServletResponse resp, @PathVariable("code") String code) throws IOException {
         resp.setContentType("text/html;charset=UTF-8");
@@ -52,10 +57,35 @@ public class PaymentController {
         resp.sendRedirect(paymentUrl);
     }
 
+    @GetMapping("/booking/{id}")
+    public void booking(HttpServletRequest req, HttpServletResponse resp, @PathVariable("id") Integer bookingId) throws IOException {
+        resp.setContentType("text/html;charset=UTF-8");
+        Booking booking = bookingService.findById(bookingId);
+        if (booking == null) {
+            resp.getWriter().println("<script type=\"text/javascript\">");
+            resp.getWriter().println("alert('Booking không tồn tại!');");
+            resp.getWriter().println("window.close();");
+            resp.getWriter().println("</script>");
+            return;
+        }
+        if (booking.getStatus() != 1) {
+            resp.getWriter().println("<script type=\"text/javascript\">");
+            resp.getWriter().println("alert('Booking không hợp lệ!');");
+            resp.getWriter().println("window.close();");
+            resp.getWriter().println("</script>");
+            return;
+        }
+        String ip = VNPayUtil.getIpAddress(req);
+
+        String paymentUrl = vnPayService.paymentUrl(booking.getCode() + "-" + VNPayUtil.getRandomNumber(8), booking.getDeposit().intValue(), ip);
+        // chuyển hướng trang sang VNPay
+        resp.sendRedirect(paymentUrl);
+    }
+
     @GetMapping("/vnpay/return")
     public void vnpayReturn(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, String> fields = new HashMap<>();
-        for (Enumeration<String> params = req.getParameterNames(); params.hasMoreElements();) {
+        for (Enumeration<String> params = req.getParameterNames(); params.hasMoreElements(); ) {
             String fieldName = URLEncoder.encode(params.nextElement(), StandardCharsets.US_ASCII.toString());
             String fieldValue = URLEncoder.encode(req.getParameter(fieldName), StandardCharsets.US_ASCII.toString());
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
@@ -75,31 +105,46 @@ public class PaymentController {
 
         String vnp_TxnRef = req.getParameter("vnp_TxnRef");
         String vnp_Amount = req.getParameter("vnp_Amount");
-		String vnp_OrderInfo = req.getParameter("vnp_OrderInfo");
-		String vnp_BankCode = req.getParameter("vnp_BankCode");
-		String vnp_TransactionNo = req.getParameter("vnp_TransactionNo");
-		String vnp_PayDate = req.getParameter("vnp_PayDate");
+        String vnp_OrderInfo = req.getParameter("vnp_OrderInfo");
+        String vnp_BankCode = req.getParameter("vnp_BankCode");
+        String vnp_TransactionNo = req.getParameter("vnp_TransactionNo");
+        String vnp_PayDate = req.getParameter("vnp_PayDate");
         String vnp_TransactionStatus = req.getParameter("vnp_TransactionStatus");
 
         if (signValue.equals(vnp_SecureHash)) {
             String code = vnp_TxnRef.split("-")[0];
-            Invoice invoice = invoiceService.findByCode(code);
-            if (invoice == null) {
-                resp.sendRedirect("http://127.0.0.1:5500/#!/invoices");
-                return;
+            if (code.startsWith("IV")) {
+                Invoice invoice = invoiceService.findByCode(code);
+                if (invoice == null) {
+                    resp.sendRedirect("http://127.0.0.1:5500/#!/invoices");
+                    return;
+                }
+                if ("00".equals(req.getParameter("vnp_TransactionStatus"))) {
+                    System.out.println("Success");
+                    invoice.setPaidDate(new Date());
+                    invoice.setStatus(4);
+                    invoiceService.update(invoice);
+                } else {
+                    System.out.println("Failed");
+                }
+                resp.sendRedirect("http://127.0.0.1:5500/#!/invoices/" + code);
+            } else if (code.startsWith("BK")) {
+                Booking booking = bookingService.findByCode(code);
+                if (booking == null) {
+                    resp.sendRedirect("http://localhost:8000/home#!/");
+                    return;
+                }
+                if ("00".equals(req.getParameter("vnp_TransactionStatus"))) {
+                    System.out.println("Success");
+                    bookingService.update(booking);
+                } else {
+                    System.out.println("Failed");
+                }
+                resp.sendRedirect("http://localhost:8000/home#!/booking/detail/" + code);
             }
-            if ("00".equals(req.getParameter("vnp_TransactionStatus"))) {
-                System.out.println("Success");
-                invoice.setPaidDate(new Date());
-                invoice.setStatus(4);
-                invoiceService.update(invoice);
-            } else {
-                System.out.println("Failed");
-            }
-            resp.sendRedirect("http://127.0.0.1:5500/#!/invoices/" + code);
         } else {
             System.out.println("invalid signature");
-            resp.sendRedirect("http://127.0.0.1:5500/#!/invoices");
+            resp.sendRedirect("http://localhost:8000/home#!/");
         }
     }
 
