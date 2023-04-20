@@ -6,6 +6,7 @@ import com.devz.hotelmanagement.models.RoomBooking;
 import com.devz.hotelmanagement.models.RoomBookingOnl;
 import com.devz.hotelmanagement.services.*;
 
+import com.devz.hotelmanagement.statuses.BookingDetailStatus;
 import com.devz.hotelmanagement.statuses.BookingStatus;
 import com.devz.hotelmanagement.utilities.CurrentAccount;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @CrossOrigin("*")
@@ -25,6 +30,9 @@ public class BookingOnlineRestController {
 
     @Autowired
     private ServiceRoomService serviceRoomService;
+
+    @Autowired
+    private BookingDetailService bookingDetailService;
 
     @Autowired
     private CustomerTypeService customerTypeService;
@@ -135,12 +143,27 @@ public class BookingOnlineRestController {
     @PostMapping("/get-booking")
     public void createBooking(@RequestBody BookingOnlReq bookingData) {
         try {
-            Booking booking = new Booking();
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             Date checkinDate = dateFormat.parse(bookingData.getCheckinDate());
             Date checkoutDate = dateFormat.parse(bookingData.getCheckoutDate());
 
+            Booking booking = new Booking();
+            Account account = accountService.findByUsername("admin");
+            booking.setAccount(account);
+
+            Customer customer = new Customer();
+            if (customerService.findByPhoneNumber(bookingData.getPhoneNumber()) == null) {
+                customer.setFullName(bookingData.getFullName());
+                customer.setGender(true);
+                customer.setPhoneNumber(bookingData.getPhoneNumber());
+                customer.setEmail(bookingData.getEmail());
+                customer.setCustomerType(customerTypeService.findById(1));
+                customerService.create(customer);
+            }else{
+                customer = customerService.findByPhoneNumber(bookingData.getPhoneNumber());
+            }
+            booking.setCustomer(customer);
             booking.setCreatedDate(new Date());
             booking.setNumAdults(bookingData.getNumAdults());
             booking.setNumChildren(bookingData.getNumChildren());
@@ -149,28 +172,42 @@ public class BookingOnlineRestController {
             booking.setStatus(BookingStatus.PENDING.getCode());
 
             List<RoomBookingOnl> numRoomsBooking = List.of(bookingData.getNumRoomsBooking());
-
+            List<Room> rooms = new ArrayList<>();
             for (RoomBookingOnl roomBooking : numRoomsBooking) {
                 String roomType = roomBooking.getRoomType();
                 int numRooms = roomBooking.getNumRooms();
                 List<Integer> roomIds = bookingService.getRoomsByTimeBooking(roomType, checkinDate, checkoutDate).subList(0, numRooms);
-
-
+                List<Room> roomsForBooking = roomIds.stream()
+                        .map(id -> roomService.findById(id))
+                        .collect(Collectors.toList());
+                rooms.addAll(roomsForBooking);
             }
 
+            List<BookingDetail> bookingDetails = rooms.stream().map(room -> {
+                List<Promotion> promotions = promotionService.findByRoomType(room.getRoomType().getCode());
+                if (promotions != null && !promotions.isEmpty()) {
+                    double promotionPrice = 0.0;
+                    promotionPrice = (100 - promotions.get(0).getPercent()) * room.getRoomType().getPrice() / 100;
+                    if ((promotions.get(0).getPercent() * room.getRoomType().getPrice() / 100) > promotions.get(0).getMaxDiscount()) {
+                        promotionPrice = room.getRoomType().getPrice() - promotions.get(0).getMaxDiscount();
+                    }
+                    return new BookingDetail(room, checkinDate, checkoutDate, booking, promotionPrice, "", BookingDetailStatus.PENDING.getCode(), new Date());
+                }
+                return new BookingDetail(room, checkinDate, checkoutDate, booking, room.getRoomType().getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date());
+            }).collect(Collectors.toList());
 
-            Account account = accountService.findByUsername(currentAccount.getUsername());
-            booking.setAccount(account);
-
-            Customer customer = new Customer();
-            if (customerService.findByPhoneNumber(bookingData.getPhoneNumber()) == null) {
-                customer.setFullName(bookingData.getFullName());
-                customer.setPhoneNumber(bookingData.getPhoneNumber());
-                customer.setEmail(bookingData.getEmail());
-                customer.setCustomerType(customerTypeService.findById(1));
-                customerService.create(customer);
+            double totalDeposit = 0.0;
+            for (BookingDetail bookingDetail : bookingDetails) {
+                long diffInMillis = bookingDetail.getCheckoutExpected().getTime() - bookingDetail.getCheckinExpected().getTime();
+                long diffInDays = TimeUnit.MILLISECONDS.toDays(diffInMillis);
+                double deposit = bookingDetail.getRoomPrice() * diffInDays;
+                totalDeposit += deposit;
             }
-            booking.setCustomer(customer);
+            booking.setDeposit(totalDeposit);
+
+            bookingService.create(booking);
+
+            bookingDetailService.createAll(bookingDetails);
 
         } catch (ParseException e) {
             throw new RuntimeException(e);

@@ -44,22 +44,6 @@ window.addEventListener('DOMContentLoaded', event => {
 
 });
 
-var bookButton = document.querySelector('button.book-now');
-var lastScrollTop = 0;
-
-window.addEventListener('scroll', function () {
-    var top = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (top > lastScrollTop) {
-        bookButton.style.display = 'none';
-    } else {
-        bookButton.style.display = 'block';
-    }
-
-    lastScrollTop = top;
-});
-
-
 var app = angular.module("myApp", ["ngRoute"]);
 
 app.config(function ($routeProvider) {
@@ -148,6 +132,9 @@ app.controller("bookOnlineCtrl", function ($scope, $http, $location) {
 app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
 
     $scope.formBook = {};
+    $scope.formBook.checkinDate = new Date();
+    $scope.formBook.checkoutDate = new Date();
+    $scope.formBook.checkoutDate.setDate($scope.formBook.checkoutDate.getDate() + 3);
     $scope.formBook.numAdults = 2;
     $scope.formBook.numChildren = 0;
     $scope.formBook.numRoomsBooking = [];
@@ -174,6 +161,9 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
     };
 
     $scope.checkRoom = function () {
+
+        $scope.loading = true;
+
         if ($scope.formBook.roomType == null || $scope.formBook.roomType == undefined) {
             $scope.formBook.roomType = "";
         };
@@ -200,6 +190,7 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
             if ($scope.infoRoomBooking.length == 0) {
                 alert('Không có phòng hợp lệ.');
             }
+            $scope.loading = false;
             console.log($scope.infoRoomBooking);
         }).catch(function (error) {
             console.error('Error fetching data:', error);
@@ -240,7 +231,6 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
         //     alert("Phòng đã hết!");
         //     return;
         // }
-        $scope.countDown();
         $('#book-modal').modal('show');
     }
 
@@ -285,6 +275,7 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
 
     $scope.init = function () {
         $scope.getRoomType();
+        $scope.checkRoom();
     }
 
     $scope.init()
