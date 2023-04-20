@@ -1,33 +1,44 @@
 package com.devz.hotelmanagement.models;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.devz.hotelmanagement.entities.Customer;
-import com.devz.hotelmanagement.entities.Room;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingOnlReq {
 
-    private Customer customer;
+    @JsonProperty("numAdults")
+    private int numAdults;
 
-    private Date checkinExpected;
+    @JsonProperty("numChildren")
+    private int numChildren;
 
-    private Date checkoutExpected;
+    @JsonProperty("numRoomsBooking")
+    private RoomBookingOnl[] numRoomsBooking;
 
+    @JsonProperty("checkinDate")
+    private String checkinDate;
+
+    @JsonProperty("checkoutDate")
+    private String checkoutDate;
+
+    @JsonProperty("roomType")
     private String roomType;
 
-    private Integer numRooms;
+    @JsonProperty("fullName")
+    private String fullName;
 
-    private Integer numAdults;
+    @JsonProperty("phoneNumber")
+    private String phoneNumber;
 
-    private Integer numChildren;
+    @JsonProperty("email")
+    private String email;
 
+    @JsonProperty("note")
     private String note;
 
 }
+

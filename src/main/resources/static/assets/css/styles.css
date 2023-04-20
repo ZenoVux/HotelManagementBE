@@ -12,7 +12,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
- .carousel-item img {
+.carousel-item img {
   height: 650px;
   object-fit: cover;
 }
