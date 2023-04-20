@@ -24,8 +24,6 @@ public class RoomBooking {
 
     String name;
 
-    String image;
-
     Long quantity;
 
     Long maxAdults;
@@ -34,8 +32,6 @@ public class RoomBooking {
 
     List<Room> listRooms;
 
-    Double minPrice;
-
-    Double maxPrice;
+    Double price;
 
 }

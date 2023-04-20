@@ -102,7 +102,8 @@ public class BookingRestController {
 
             return infoRoomBooking.stream().map(bookingInfo -> {
                 RoomBooking roomBooking = new RoomBooking();
-                roomBooking.setRoomType(roomTypeService.getRoomTypeByCode((String) bookingInfo[2]));
+                RoomType type = roomTypeService.getRoomTypeByCode((String) bookingInfo[2]);
+                roomBooking.setRoomType(type);
                 roomBooking.setName((String) bookingInfo[0]);
                 roomBooking.setQuantity((Long) bookingInfo[1]);
 
@@ -117,11 +118,7 @@ public class BookingRestController {
                 List<Integer> roomIds = bookingService.getRoomsByTimeBooking((String) bookingInfo[0], checkinDate, checkoutDate);
                 List<Room> roomList = roomService.findByIds(roomIds);
                 roomBooking.setListRooms(roomList);
-
-                DoubleSummaryStatistics priceStats = roomList.stream().map(r -> r.getRoomType().getPrice()).filter(Objects::nonNull).mapToDouble(Double::doubleValue).summaryStatistics();
-                roomBooking.setMinPrice(priceStats.getMin());
-                roomBooking.setMaxPrice(priceStats.getMax());
-
+                roomBooking.setPrice(type.getPrice());
                 roomBooking.setMaxAdults((Long) bookingInfo[3]);
                 roomBooking.setMaxChilds((Long) bookingInfo[4]);
 
@@ -144,7 +141,11 @@ public class BookingRestController {
             objectMapper.setDateFormat(dateFormat);
             BookingReq bookingReq = objectMapper.readValue(bookingReqJson, BookingReq.class);
 
-            List<Room> rooms = List.of(bookingReq.getRooms());
+            List<Room> roomReq = List.of(bookingReq.getRooms());
+            List<Room> rooms = roomReq.stream()
+                    .map(room -> roomService.findById(room.getId()))
+                    .collect(Collectors.toList());
+
             boolean areAllRoomsAvailable = true;
             for (Room room : rooms) {
                 if (!bookingDetailService.findByRoomCodeAndCheckinAndCheckout(room.getCode(), bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected()).isEmpty()) {
