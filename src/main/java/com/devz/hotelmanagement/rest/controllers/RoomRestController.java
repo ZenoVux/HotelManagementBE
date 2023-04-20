@@ -59,14 +59,6 @@ public class RoomRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/unbooked")
-    public List<Room> findUnbookedRoomByCheckinAndCheckout(
-            @RequestParam("checkin-date") @DateTimeFormat(pattern = "dd/MM/yyyy") Date checkinDate,
-            @RequestParam("checkout-date") @DateTimeFormat(pattern = "dd/MM/yyyy") Date checkoutDate
-    ) {
-        return roomService.findUnbookedRoomsByCheckinAndCheckout(checkinDate, checkoutDate);
-    }
-
     @GetMapping("/set-code-room/{floor_Id}")
     public String setCodeRoom(@PathVariable("floor_Id") Integer floor_Id) {
         return roomService.getMaxCode(floor_Id);

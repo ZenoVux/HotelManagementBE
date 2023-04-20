@@ -60,6 +60,9 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     private PromotionService promotionService;
 
     @Autowired
+    private PromotionRoomService promotionRoomService;
+
+    @Autowired
     private PaymentMethodService paymentMethodService;
 
     @Autowired
@@ -338,6 +341,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setCheckoutExpected(bookingDetail.getCheckoutExpected());
         invoiceDetail.setCheckin(new Date());
         invoiceDetail.setStatus(1); // trạng thái đang sử dụng
+        invoiceDetail.setNote("");
         if (invoiceDetailService.create(invoiceDetail) == null) {
             // check in thất bại
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
@@ -581,7 +585,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         Double lateCheckoutFee = invoiceDetail.getEarlyCheckinFee();
         Double earlyCheckinFee = invoiceDetail.getLateCheckoutFee();
 
-        Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
+        Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + invoiceDetail.getOrtherSurcharge() + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
 
         invoiceDetail.setTotal(total);
         invoiceDetail.setCheckout(new Date());
@@ -772,7 +776,21 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         // Tạo InvoiceDetail cho phòng muốn đổi
         InvoiceDetail newInvoiceDetail = new InvoiceDetail();
         newInvoiceDetail.setRoom(newRoom);
-        newInvoiceDetail.setRoomPrice(newRoom.getRoomType().getPrice());
+
+        // Lấy giá phòng hiện tại
+        List<RoomTypePromotion> roomTypePromotions = promotionRoomService.findAllCurrForRoomType();
+        RoomTypePromotion roomTypePromotion = roomTypePromotions.stream().filter(rtp -> rtp.getRoomType().getCode().equals(newRoom.getRoomType().getCode())).findAny().orElse(null);
+        if (roomTypePromotion != null) {
+            Promotion promotion = roomTypePromotion.getPromotion();
+            Double discount = newRoom.getRoomType().getPrice() / 100 * promotion.getPercent();
+            if (discount >= promotion.getMaxDiscount()) {
+                discount = promotion.getMaxDiscount();
+            }
+            newInvoiceDetail.setRoomPrice(newRoom.getRoomType().getPrice() - discount);
+        } else {
+            newInvoiceDetail.setRoomPrice(newRoom.getRoomType().getPrice());
+        }
+
         newInvoiceDetail.setInvoice(invoiceDetail.getInvoice());
         newInvoiceDetail.setCheckin(new Date());
         newInvoiceDetail.setCheckinExpected(Date.from(LocalDate.now(ZoneId.systemDefault()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
@@ -841,7 +859,11 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 // Không tìm thấy Promotion
                 throw new RuntimeException("{\"error\":\"Khuyến mại không hợp lệ!\"}");
             }
-            if (promotion.getType()) {
+            if (!promotion.getStatus()) {
+                // Promotion không đủ điều kiện sửa dụng Promotion
+                throw new RuntimeException("{\"error\":\"Khuyến mại không hợp lệ!\"}");
+            }
+            if (!promotion.getType()) {
                 // Promotion không đủ điều kiện sửa dụng Promotion
                 throw new RuntimeException("{\"error\":\"Khuyến mại không hợp lệ!\"}");
             }
@@ -928,16 +950,13 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     @Override
     @Transactional(rollbackFor = { RuntimeException.class })
     public void updateInvoiceDetail(InvoiceDetailUpdateReq invoiceDetailUpdateReq) {
-        if (invoiceDetailUpdateReq.getInvoiceDetailId() == null || invoiceDetailUpdateReq.getRoomPrice() == null || invoiceDetailUpdateReq.getDeposit() == null) {
+        if (invoiceDetailUpdateReq.getInvoiceDetailId() == null || invoiceDetailUpdateReq.getEarlyCheckinFee() == null) {
             throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
-        if (invoiceDetailUpdateReq.getEarlyCheckinFee() == null || invoiceDetailUpdateReq.getLateCheckoutFee() == null || invoiceDetailUpdateReq.getNote() == null) {
+        if (invoiceDetailUpdateReq.getLateCheckoutFee() == null || invoiceDetailUpdateReq.getNote() == null) {
             throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         if (invoiceDetailUpdateReq.getOrtherSurcharge() == null) {
-            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
-        }
-        if (invoiceDetailUpdateReq.getRoomPrice() < 0 || invoiceDetailUpdateReq.getDeposit() < 0) {
             throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
         if (invoiceDetailUpdateReq.getEarlyCheckinFee() < 0 || invoiceDetailUpdateReq.getLateCheckoutFee() < 0) {
@@ -966,14 +985,12 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setOrtherSurcharge(invoiceDetail.getOrtherSurcharge());
         invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
         invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
-        invoiceDetailHistory.setNote("Chỉnh sửa . " + invoiceDetail.getNote());
+        invoiceDetailHistory.setNote(invoiceDetail.getNote());
         invoiceDetailHistory.setCreatedBy(username);
         invoiceDetailHistory.setUpdateDate(new Date());
         if (invoiceDetailHistoryService.create(invoiceDetailHistory) == null) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
-        invoiceDetail.setRoomPrice(invoiceDetailUpdateReq.getRoomPrice());
-        invoiceDetail.setDeposit(invoiceDetailUpdateReq.getDeposit());
         invoiceDetail.setOrtherSurcharge(invoiceDetailUpdateReq.getOrtherSurcharge());
         invoiceDetail.setEarlyCheckinFee(invoiceDetailUpdateReq.getEarlyCheckinFee());
         invoiceDetail.setLateCheckoutFee(invoiceDetailUpdateReq.getLateCheckoutFee());
@@ -1037,7 +1054,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoiceDetail.setAdultSurcharge(totalAdultSurcharge);
             invoiceDetail.setChildSurcharge(totalChildSurcharge);
 
-            Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
+            Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + invoiceDetail.getOrtherSurcharge() + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
 
             invoiceDetail.setTotal(total);
         }
@@ -1072,12 +1089,13 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (invoice.getStatus() != 1 && invoice.getStatus() != 2) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
-        List<InvoiceDetail> invoiceDetails = invoiceDetailService.findByInvoiceCodeAndStatus(invoice.getCode(), InvoiceDetailStatus.COMPLETED.getCode());
-        if (invoiceDetails.size() <= 1) {
+        List<InvoiceDetail> invoiceDetails = invoiceDetailService.findByInvoiceCode(invoice.getCode());
+        List<InvoiceDetail> filterInvoiceDetails = invoiceDetails.stream().filter(ivd -> ivd.getStatus() == InvoiceDetailStatus.COMPLETED.getCode()).collect(Collectors.toList());
+        if (invoiceDetails.size() <= 0 || filterInvoiceDetails.size() <= 0) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         List<String> roomCodes = Arrays.asList(invoiceSplitReq.getRoomCodes());
-        List<InvoiceDetail> splitInvoiceDetails = invoiceDetails.stream().filter(ivd -> roomCodes.contains(ivd.getRoom().getCode())).collect(Collectors.toList());
+        List<InvoiceDetail> splitInvoiceDetails = filterInvoiceDetails.stream().filter(ivd -> roomCodes.contains(ivd.getRoom().getCode())).collect(Collectors.toList());
         if (splitInvoiceDetails.size() <= 0) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
@@ -1157,6 +1175,31 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         peopleInRoomResp.setAdultSurcharge(totalAdultSurcharge);
         peopleInRoomResp.setChildSurcharge(totalChildSurcharge);
         return peopleInRoomResp;
+    }
+
+    @Override
+    public List<RoomUnbookedResp> findAllRoomUnbooked(Date checkinDate, Date checkoutDate) {
+        List<RoomTypePromotion> roomTypePromotions = promotionRoomService.findAllCurrForRoomType();
+        List<Room> rooms = roomService.findUnbookedRoomsByCheckinAndCheckout(checkinDate, checkoutDate);
+        List<RoomUnbookedResp> roomUnbookedResps = new ArrayList<>();
+        for (Room room : rooms) {
+            RoomTypePromotion roomTypePromotion = roomTypePromotions.stream().filter(rtp -> rtp.getRoomType().getCode().equals(room.getRoomType().getCode())).findAny().orElse(null);
+            RoomUnbookedResp roomUnbookedResp = new RoomUnbookedResp();
+            roomUnbookedResp.setCode(room.getCode());
+            roomUnbookedResp.setRoomType(room.getRoomType().getName());
+            roomUnbookedResp.setArea(room.getRoomType().getArea());
+            roomUnbookedResp.setPrice(room.getRoomType().getPrice());
+            if (roomTypePromotion != null) {
+                Promotion promotion = roomTypePromotion.getPromotion();
+                Double discount = room.getRoomType().getPrice() / 100 * promotion.getPercent();
+                if (discount >= promotion.getMaxDiscount()) {
+                    discount = promotion.getMaxDiscount();
+                }
+                roomUnbookedResp.setNewPrice(room.getRoomType().getPrice() - discount);
+            }
+            roomUnbookedResps.add(roomUnbookedResp);
+        }
+        return roomUnbookedResps;
     }
 
 }

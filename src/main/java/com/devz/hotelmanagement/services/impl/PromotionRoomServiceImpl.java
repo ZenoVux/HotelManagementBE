@@ -11,27 +11,33 @@ import java.util.Optional;
 
 @Service
 public class PromotionRoomServiceImpl implements PromotionRoomService {
+
     @Autowired
-    RoomTypePromotionRepository roomTypePromotionRepository;
+    RoomTypePromotionRepository roomTypePromotionRepo;
 
     @Override
     public List<RoomTypePromotion> findByRoomTypeId(Integer roomTypeId) {
-        return roomTypePromotionRepository.findByRoomTypeId(roomTypeId);
+        return roomTypePromotionRepo.findByRoomTypeId(roomTypeId);
     }
 
     @Override
     public void delete(Integer id) {
-    	roomTypePromotionRepository.deleteById(id);
+    	roomTypePromotionRepo.deleteById(id);
+    }
+
+    @Override
+    public List<RoomTypePromotion> findAllCurrForRoomType() {
+        return roomTypePromotionRepo.findAllCurrForRoomType();
     }
 
     @Override
     public List<RoomTypePromotion> findAll() {
-        return roomTypePromotionRepository.findAll();
+        return roomTypePromotionRepo.findAll();
     }
 
     @Override
     public RoomTypePromotion findById(int id) {
-    	 Optional<RoomTypePromotion> optional = roomTypePromotionRepository.findById(id);
+    	 Optional<RoomTypePromotion> optional = roomTypePromotionRepo.findById(id);
          if (optional.isPresent()) {
              return optional.get();
          }
@@ -46,11 +52,11 @@ public class PromotionRoomServiceImpl implements PromotionRoomService {
     @Override
     public RoomTypePromotion create(RoomTypePromotion entity) {
     	entity.setId(null);
-    	return roomTypePromotionRepository.save(entity);
+    	return roomTypePromotionRepo.save(entity);
     }
 
     @Override
     public RoomTypePromotion update(RoomTypePromotion entity) {
-    	return roomTypePromotionRepository.save(entity);
+    	return roomTypePromotionRepo.save(entity);
     }
 }
