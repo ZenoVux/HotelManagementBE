@@ -643,8 +643,6 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
         invoiceDetailHistory.setRoomPrice(invoiceDetail.getRoomPrice());
         invoiceDetailHistory.setDeposit(invoiceDetail.getDeposit());
-        invoiceDetailHistory.setAdultSurcharge(invoiceDetail.getAdultSurcharge());
-        invoiceDetailHistory.setChildSurcharge(invoiceDetail.getChildSurcharge());
         invoiceDetailHistory.setOrtherSurcharge(invoiceDetail.getOrtherSurcharge());
         invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
         invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
@@ -929,6 +927,18 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (invoiceDetailUpdateReq.getEarlyCheckinFee() == null || invoiceDetailUpdateReq.getLateCheckoutFee() == null || invoiceDetailUpdateReq.getNote() == null) {
             throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
         }
+        if (invoiceDetailUpdateReq.getOrtherSurcharge() == null) {
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
+        }
+        if (invoiceDetailUpdateReq.getRoomPrice() < 0 || invoiceDetailUpdateReq.getDeposit() < 0) {
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
+        }
+        if (invoiceDetailUpdateReq.getEarlyCheckinFee() < 0 || invoiceDetailUpdateReq.getLateCheckoutFee() < 0) {
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
+        }
+        if (invoiceDetailUpdateReq.getOrtherSurcharge() < 0) {
+            throw new RuntimeException("{\"error\":\"Dữ liệu không hợp lệ!\"}");
+        }
         InvoiceDetail invoiceDetail = invoiceDetailService.findById(invoiceDetailUpdateReq.getInvoiceDetailId());
         if (invoiceDetail == null) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
@@ -946,8 +956,6 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetailHistory.setCheckoutExpected(invoiceDetail.getCheckoutExpected());
         invoiceDetailHistory.setRoomPrice(invoiceDetail.getRoomPrice());
         invoiceDetailHistory.setDeposit(invoiceDetail.getDeposit());
-        invoiceDetailHistory.setAdultSurcharge(invoiceDetail.getAdultSurcharge());
-        invoiceDetailHistory.setChildSurcharge(invoiceDetail.getChildSurcharge());
         invoiceDetailHistory.setOrtherSurcharge(invoiceDetail.getOrtherSurcharge());
         invoiceDetailHistory.setEarlyCheckinFee(invoiceDetail.getEarlyCheckinFee());
         invoiceDetailHistory.setLateCheckoutFee(invoiceDetail.getLateCheckoutFee());
@@ -959,6 +967,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         }
         invoiceDetail.setRoomPrice(invoiceDetailUpdateReq.getRoomPrice());
         invoiceDetail.setDeposit(invoiceDetailUpdateReq.getDeposit());
+        invoiceDetail.setOrtherSurcharge(invoiceDetailUpdateReq.getOrtherSurcharge());
         invoiceDetail.setEarlyCheckinFee(invoiceDetailUpdateReq.getEarlyCheckinFee());
         invoiceDetail.setLateCheckoutFee(invoiceDetailUpdateReq.getLateCheckoutFee());
         invoiceDetail.setNote(invoiceDetailUpdateReq.getNote());

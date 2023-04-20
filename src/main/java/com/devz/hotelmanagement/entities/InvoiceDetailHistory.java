@@ -30,12 +30,6 @@ public class InvoiceDetailHistory extends EntityBase {
     @Column
     private Double deposit;
 
-    @Column(name = "adult_surcharge")
-    private Double adultSurcharge;
-
-    @Column(name = "child_surcharge")
-    private Double childSurcharge;
-
     @Column(name = "orther_surcharge")
     private Double ortherSurcharge;
 
