@@ -109,8 +109,7 @@
             </div>
             <div class="col-md-1">
                 <label style="color: #ffffff">.</label>
-                <button ng-click="checkRoom()" class="btn btn-primary w-100 check-room">Kiểm
-                    tra</button>
+                <button ng-click="checkRoom()" class="btn btn-primary w-100 check-room">Tìm</button>
             </div>
         </div>
     </div>
@@ -118,14 +117,14 @@
     <!-- data room booking -->
 
     <div class="bg-white shadow" style="padding: 35px;">
-        <table class="table">
+        <table class="table table-bordered dt-responsive nowrap w-100">
             <thead class="table-warning">
                 <tr>
                     <th scope="col">Loại phòng</th>
                     <th scope="col">Thông tin</th>
                     <th scope="col">Giá hôm nay</th>
                     <th scope="col">Chúng tôi còn</th>
-                    <th scope="col">Chọn số phòng</th>
+                    <th scope="col">Số phòng đặt</th>
                 </tr>
             </thead>
             <tbody>
@@ -147,7 +146,7 @@
                             <div class="col-md-8">
                                 <p>: {{info.roomType.area}} m<sup>2</sup></p>
                                 <p>: {{info.roomType.isSmoking ? 'Có' : 'Không'}}</p>
-                                <p>: {{info.roomType.numAdults}} người lớn và
+                                <p>: {{info.roomType.numAdults}} người lớn <br> và
                                     {{info.roomType.numChilds}} trẻ em</p>
                             </div>
                         </div>

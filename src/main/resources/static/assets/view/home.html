@@ -1,461 +1,461 @@
 <app-layout name="">
 
     <header class="masthead">
-        <div class="container">
-            <div class="masthead-subheading">Chào mừng đến với</div>
-            <div class="masthead-heading text-uppercase">Khách sạn Nam Việt</div>
-            <a class="btn btn-primary btn-xl text-uppercase" ng-click="bookNow()">Đặt phòng ngay</a>
-        </div>
+        <div class="masthead-subheading">Chào mừng đến với</div>
+        <div class="masthead-heading text-uppercase">Khách sạn Nam Việt</div>
+        <a class="btn btn-primary btn-xl text-uppercase" ng-click="bookNow()">Đặt phòng ngay</a>
     </header>
 
-    <!-- room Grid-->
-    <div class=" container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h1 class="mb-5">Khám Phá<span class="text-primary"> Loại Phòng</span></h1>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="room-item shadow rounded overflow-hidden">
-                        <div class="position-relative">
-                            <img class="img-fluid"
-                                src="http://localhost:8000/images/1681564704447-z4266501356300_3e8d1a3dc68e231d54b3ed5b6e7ca204.jpg"
-                                alt="">
-                            <small
-                                class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].price
-                                | currency: '' : 0}}đ</small>
-                        </div>
-                        <div class="p-4 mt-2">
-                            <div class="d-flex justify-content-between mb-3">
-                                <h5 class="mb-0">{{roomTypes[0].name}}</h5>
-                                <div class="ps-2">
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
+    <div class="container">
+
+        <!-- room Grid-->
+        <div class=" container-xxl py-5">
+            <div class="container">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h1 class="mb-5">Khám Phá<span class="text-primary"> Loại Phòng</span></h1>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="room-item shadow rounded overflow-hidden">
+                            <div class="position-relative">
+                                <img class="img-fluid"
+                                    src="http://localhost:8000/images/1681566371247-z4266537403105_706d2c5f4ac9ce193381891b42291a5f.jpg"
+                                    alt="">
+                                <small
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    | currency: '' : 0}}đ</small>
+                            </div>
+                            <div class="p-4 mt-2">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5 class="mb-0">{{roomTypes[0].name}}</h5>
+                                    <div class="ps-2">
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex mb-3">
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
-                                    Bed</small>
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
-                                    Bath</small>
-                                <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
-                            </div>
-                            <p class="text-body mb-3">Là một loại phòng khách sạn phổ biến được cung cấp bởi hầu
-                                hết các
-                                khách sạn trên toàn thế giới.</p>
-                            <div class="d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary rounded py-2 px-4" ng-click="views(roomTypes[0],'201')"
-                                    class="room-link" data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
-                                <a class="btn btn-sm btn-dark rounded py-2 px-4" ng-click="books(roomTypes[0].code)">Đặt
-                                    ngay</a>
+                                <div class="d-flex mb-3">
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
+                                        Bed</small>
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
+                                        Bath</small>
+                                    <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
+                                </div>
+                                <p class="text-body mb-3">Là một loại phòng khách sạn phổ biến được cung cấp bởi hầu
+                                    hết các
+                                    khách sạn trên toàn thế giới.</p>
+                                <div class="d-flex justify-content-between">
+                                    <a class="btn btn-sm btn-primary rounded py-2 px-4"
+                                        ng-click="views(roomTypes[0],'201')" class="room-link" data-bs-toggle="modal"
+                                        href="#roomModal1">Chi Tiết</a>
+                                    <a class="btn btn-sm btn-dark rounded py-2 px-4"
+                                        ng-click="books(roomTypes[0].code)">Đặt
+                                        ngay</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="room-item shadow rounded overflow-hidden">
-                        <div class="position-relative">
-                            <img class="img-fluid"
-                                src="http://localhost:8000/images/1681566167076-z4266530473950_0b71957a8e275c71df2ed8ca4dde0380.jpg"
-                                alt="">
-                            <small
-                                class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[8].price
-                                | currency: '' : 0}}đ</small>
-                        </div>
-                        <div class="p-4 mt-2">
-                            <div class="d-flex justify-content-between mb-3">
-                                <h5 class="mb-0">{{roomTypes[1].name}}</h5>
-                                <div class="ps-2">
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
+                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="room-item shadow rounded overflow-hidden">
+                            <div class="position-relative">
+                                <img class="img-fluid"
+                                    src="http://localhost:8000/images/1681566167076-z4266530473950_0b71957a8e275c71df2ed8ca4dde0380.jpg"
+                                    alt="">
+                                <small
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    | currency: '' : 0}}đ</small>
+                            </div>
+                            <div class="p-4 mt-2">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5 class="mb-0">{{roomTypes[1].name}}</h5>
+                                    <div class="ps-2">
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex mb-3">
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
-                                    Bed</small>
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
-                                    Bath</small>
-                                <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
-                            </div>
-                            <p class="text-body mb-3">Là một loại phòng khách sạn cao cấp hơn, với nhiều tiện
-                                nghi và
-                                dịch vụ tốt hơn.</p>
-                            <div class="d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary rounded py-2 px-4" ng-click="views(roomTypes[1],'301')"
-                                    class="room-link" data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
-                                <a class="btn btn-sm btn-dark rounded py-2 px-4" ng-click="books(roomTypes[1].code)">Đặt
-                                    ngay</a>
+                                <div class="d-flex mb-3">
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
+                                        Bed</small>
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
+                                        Bath</small>
+                                    <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
+                                </div>
+                                <p class="text-body mb-3">Là một loại phòng khách sạn cao cấp hơn, với nhiều tiện
+                                    nghi và
+                                    dịch vụ tốt hơn.</p>
+                                <div class="d-flex justify-content-between">
+                                    <a class="btn btn-sm btn-primary rounded py-2 px-4"
+                                        ng-click="views(roomTypes[1],'301')" class="room-link" data-bs-toggle="modal"
+                                        href="#roomModal1">Chi Tiết</a>
+                                    <a class="btn btn-sm btn-dark rounded py-2 px-4"
+                                        ng-click="books(roomTypes[1].code)">Đặt
+                                        ngay</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="room-item shadow rounded overflow-hidden">
-                        <div class="position-relative">
-                            <img class="img-fluid"
-                                src="http://localhost:8000/images/1681566167372-z4266530458650_83c44678f2cf106bfff690031f9db8e4.jpg"
-                                alt="">
-                            <small
-                                class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[17].price
-                                | currency: '' : 0}}đ</small>
-                        </div>
-                        <div class="p-4 mt-2">
-                            <div class="d-flex justify-content-between mb-3">
-                                <h5 class="mb-0">{{roomTypes[2].name}}</h5>
-                                <div class="ps-2">
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
+                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
+                        <div class="room-item shadow rounded overflow-hidden">
+                            <div class="position-relative">
+                                <img class="img-fluid"
+                                    src="http://localhost:8000/images/1681566167372-z4266530458650_83c44678f2cf106bfff690031f9db8e4.jpg"
+                                    alt="">
+                                <small
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    | currency: '' : 0}}đ</small>
+                            </div>
+                            <div class="p-4 mt-2">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5 class="mb-0">{{roomTypes[2].name}}</h5>
+                                    <div class="ps-2">
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex mb-3">
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
-                                    Bed</small>
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
-                                    Bath</small>
-                                <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
-                            </div>
-                            <p class="text-body mb-3">Là một loại phòng khách sạn sang trọng hơn, với các tiện
-                                nghi và
-                                dịch vụ cao cấp hơn nữa.</p>
-                            <div class="d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary rounded py-2 px-4" ng-click="views(roomTypes[2],'401')"
-                                    class="room-link" data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
-                                <a class="btn btn-sm btn-dark rounded py-2 px-4" ng-click="books(roomTypes[2].code)">Đặt
-                                    ngay</a>
+                                <div class="d-flex mb-3">
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
+                                        Bed</small>
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
+                                        Bath</small>
+                                    <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
+                                </div>
+                                <p class="text-body mb-3">Là một loại phòng khách sạn sang trọng hơn, với các tiện
+                                    nghi và
+                                    dịch vụ cao cấp hơn nữa.</p>
+                                <div class="d-flex justify-content-between">
+                                    <a class="btn btn-sm btn-primary rounded py-2 px-4"
+                                        ng-click="views(roomTypes[2],'401')" class="room-link" data-bs-toggle="modal"
+                                        href="#roomModal1">Chi Tiết</a>
+                                    <a class="btn btn-sm btn-dark rounded py-2 px-4"
+                                        ng-click="books(roomTypes[2].code)">Đặt
+                                        ngay</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="room-item shadow rounded overflow-hidden">
-                        <div class="position-relative">
-                            <img class="img-fluid"
-                                src="http://localhost:8000/images/1681566371247-z4266537403105_706d2c5f4ac9ce193381891b42291a5f.jpg"
-                                alt="">
-                            <small
-                                class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[27].price
-                                | currency: '' : 0}}đ</small>
-                        </div>
-                        <div class="p-4 mt-2">
-                            <div class="d-flex justify-content-between mb-3">
-                                <h5 class="mb-0">{{roomTypes[3].name}}</h5>
-                                <div class="ps-2">
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
+                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
+                        <div class="room-item shadow rounded overflow-hidden">
+                            <div class="position-relative">
+                                <img class="img-fluid"
+                                    src="http://localhost:8000/images/1681566371247-z4266537403105_706d2c5f4ac9ce193381891b42291a5f.jpg"
+                                    alt="">
+                                <small
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    | currency: '' : 0}}đ</small>
+                            </div>
+                            <div class="p-4 mt-2">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5 class="mb-0">{{roomTypes[3].name}}</h5>
+                                    <div class="ps-2">
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                        <small class="fa fa-star text-primary"></small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex mb-3">
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
-                                    Bed</small>
-                                <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
-                                    Bath</small>
-                                <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
-                            </div>
-                            <p class="text-body mb-3">Là loại phòng cao cấp nhất trong khách sạn, phục vụ cho
-                                những nhu
-                                cầu đặc biệt</p>
-                            <div class="d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary rounded py-2 px-4" ng-click="views(roomTypes[3],'501')"
-                                    class="room-link" data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
-                                <a class="btn btn-sm btn-dark rounded py-2 px-4" ng-click="books(roomTypes[3].code)">Đặt
-                                    ngay</a>
+                                <div class="d-flex mb-3">
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>2
+                                        Bed</small>
+                                    <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>1
+                                        Bath</small>
+                                    <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
+                                </div>
+                                <p class="text-body mb-3">Là loại phòng cao cấp nhất trong khách sạn, phục vụ cho
+                                    những nhu
+                                    cầu đặc biệt</p>
+                                <div class="d-flex justify-content-between">
+                                    <a class="btn btn-sm btn-primary rounded py-2 px-4"
+                                        ng-click="views(roomTypes[3],'501')" class="room-link" data-bs-toggle="modal"
+                                        href="#roomModal1">Chi Tiết</a>
+                                    <a class="btn btn-sm btn-dark rounded py-2 px-4"
+                                        ng-click="books(roomTypes[3].code)">Đặt
+                                        ngay</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Services-->
-    <section class="page-section" id="services">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Khám Phá Dịch Vụ</h2>
-            </div>
+        <!-- Services-->
+        <section class="page-section" id="services">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Khám Phá Dịch Vụ</h2>
+                </div>
 
-            <div class="row">
-                <div class="card col-md-3">
-                    <div class="content">
-                        <h2 class="title">{{services[0].name}}</h2>
-                        <p class="copy">Dịch vụ giặt là của khách sạn là một dịch vụ tiện lợi và đáng tin cậy cho
-                            khách
-                            hàng. Với dịch vụ này,
-                            khách sạn sẽ đón nhận quần áo của khách hàng và sắp xếp,
-                            giặt là và trả lại chúng trong thời gian ngắn nhất có thể.</p>
-                    </div>
-                </div>
-                <div class="card col-md-3">
-                    <div class="content">
-                        <h2 class="title">{{services[2].name}}</h2>
-                        <p class="copy">Dịch vụ gym là nơi cung cấp thiết bị tập luyện và không gian phù hợp để
-                            khách
-                            hàng rèn luyện sức khỏe và thể lực của mình. Với dịch vụ này,
-                            khách hàng có thể lựa chọn các chương trình tập luyện phù hợp với mục tiêu của mình và
-                            được
-                            hướng dẫn bởi các huấn luyện viên chuyên nghiệp</p>
-                    </div>
-                </div>
-                <div class="card col-md-3">
-                    <div class="content">
-                        <h2 class="title">{{services[3].name}}</h2>
-                        <p class="copy">Dịch vụ spa là một dịch vụ thư giãn và chăm sóc
-                            sức khỏe được cung cấp trong một không gian yên tĩnh và thư thái. Với dịch vụ này,
-                            khách hàng có thể tận hưởng các liệu pháp thư giãn như massage, xông hơi, tắm trắng,
-                            chăm
-                            sóc da, móng tay và móng chân...</p>
-                    </div>
-                </div>
-                <div class="card col-md-3">
-                    <div class="content">
-                        <h2 class="title">{{services[1].name}}</h2>
-                        <p class="copy">Với dịch vụ này, khách hàng có thể yêu cầu một chiếc xe taxi để đưa đón mình
-                            tới
-                            nơi làm việc, đi chơi, du lịch hoặc các hoạt động khác. Dịch vụ taxi đưa đón cung cấp sự
-                            tiện lợi và nhanh chóng cho khách hàng khi không muốn sử dụng phương tiện công cộng hoặc
-                            không có xe cá nhân để di chuyển</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="page-section" id="promotion">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Khám Phá Khuyến Mại</h2>
-            </div>
-
-            <div class="container mt-5">
-                <div class="d-flex justify-content-center row">
-                    <div class="col-md-6">
-                        <div style="background-color: #212529;color: white;" class="coupon p-3 ">
-                            <div class="row no-gutters">
-                                <div class="col-md-4 border-right">
-                                    <div class="d-flex flex-column align-items-center"><img src="assets/img/namviet.png"
-                                            width="50" height="40" />
-                                        <span class="d-block">VIP</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div>
-                                        <div class="d-flex flex-row justify-content-end off">
-                                            <h1>{{promotions[4].percent}}%</h1><span>OFF</span>
-                                        </div>
-                                        <div class="d-flex flex-row justify-content-between off px-3 p-2">
-                                            <span>Promo
-                                                code:</span><span
-                                                class="border border-success px-3 rounded code">{{promotions[4].name}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="row">
+                    <div class="card col-md-3">
+                        <div class="content">
+                            <h2 class="title">{{services[0].name}}</h2>
+                            <p class="copy">Dịch vụ giặt là của khách sạn là một dịch vụ tiện lợi và đáng tin cậy cho
+                                khách
+                                hàng. Với dịch vụ này,
+                                khách sạn sẽ đón nhận quần áo của khách hàng và sắp xếp,
+                                giặt là và trả lại chúng trong thời gian ngắn nhất có thể.</p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div style="background-color: pink;" class="coupon p-3 ">
-                            <div class="row no-gutters">
-                                <div class="col-md-4 border-right">
-                                    <div class="d-flex flex-column align-items-center"><img
-                                            src="assets/img/namviet2.png" width="50" height="40" /><span
-                                            class="d-block">NORMAL</span></div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div>
-                                        <div class="d-flex flex-row justify-content-end off">
-                                            <h1>{{promotions[5].percent}}%</h1><span>OFF</span>
+                    <div class="card col-md-3">
+                        <div class="content">
+                            <h2 class="title">{{services[2].name}}</h2>
+                            <p class="copy">Dịch vụ gym là nơi cung cấp thiết bị tập luyện và không gian phù hợp để
+                                khách
+                                hàng rèn luyện sức khỏe và thể lực của mình. Với dịch vụ này,
+                                khách hàng có thể lựa chọn các chương trình tập luyện phù hợp với mục tiêu của mình và
+                                được
+                                hướng dẫn bởi các huấn luyện viên chuyên nghiệp</p>
+                        </div>
+                    </div>
+                    <div class="card col-md-3">
+                        <div class="content">
+                            <h2 class="title">{{services[3].name}}</h2>
+                            <p class="copy">Dịch vụ spa là một dịch vụ thư giãn và chăm sóc
+                                sức khỏe được cung cấp trong một không gian yên tĩnh và thư thái. Với dịch vụ này,
+                                khách hàng có thể tận hưởng các liệu pháp thư giãn như massage, xông hơi, tắm trắng,
+                                chăm
+                                sóc da, móng tay và móng chân...</p>
+                        </div>
+                    </div>
+                    <div class="card col-md-3">
+                        <div class="content">
+                            <h2 class="title">{{services[1].name}}</h2>
+                            <p class="copy">Với dịch vụ này, khách hàng có thể yêu cầu một chiếc xe taxi để đưa đón mình
+                                tới
+                                nơi làm việc, đi chơi, du lịch hoặc các hoạt động khác. Dịch vụ taxi đưa đón cung cấp sự
+                                tiện lợi và nhanh chóng cho khách hàng khi không muốn sử dụng phương tiện công cộng hoặc
+                                không có xe cá nhân để di chuyển</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section" id="promotion">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Khám Phá Khuyến Mại</h2>
+                </div>
+
+                <div class="container mt-5">
+                    <div class="d-flex justify-content-center row">
+                        <div class="col-md-6">
+                            <div style="background-color: #212529;color: white;" class="coupon p-3 ">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4 border-right">
+                                        <div class="d-flex flex-column align-items-center"><img
+                                                src="assets/img/namviet.png" width="50" height="40" />
+                                            <span class="d-block">VIP</span>
                                         </div>
-                                        <div class="d-flex flex-row justify-content-between off px-3 p-2">
-                                            <span>Promo
-                                                code:</span><span
-                                                class="border border-success px-3 rounded code">{{promotions[5].name}}</span>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div>
+                                            <div class="d-flex flex-row justify-content-end off">
+                                                <h1>{{promotions[4].percent}}%</h1><span>OFF</span>
+                                            </div>
+                                            <div class="d-flex flex-row justify-content-between off px-3 p-2">
+                                                <span>Promo
+                                                    code:</span><span
+                                                    class="border border-success px-3 rounded code">{{promotions[4].name}}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Team-->
-    <section class="page-section bg-light" id="team">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Vị trí khách sạn</h2>
-                <!-- <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3> -->
-            </div>
-
-        </div>
-    </section>
-    <!-- Clients-->
-    <!-- About-->
-    <section class="page-section" id="about">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Giới thiệu</h2>
-                <h3 class="section-subheading text-muted">Dự án tốt nghiệp</h3>
-            </div>
-            <ul class="timeline">
-                <li>
-                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/1.jpg"
-                            alt="..." /></div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <h4>01 - 2023</h4>
-                            <h4 class="subheading">Lên ý tưởng - Phân tích thiết kế</h4>
-                        </div>
-                        <div class="timeline-body">
-                            <p class="text-muted">Sau nhiều lần họp bàn để thảo luận về ý tưởng cho dự án tốt
-                                nghiệp,
-                                thành viên DevZ171 đã đưa ra các ý tưởng
-                                sáng tạo và độc đáo. Cuối cùng, nhóm quyết định triển khai ý tưởng về một Website
-                                quản
-                                lý khách sạn mang tên Nam Việt,
-                                với mục đích cung cấp cho khách hàng một trải nghiệm đáng nhớ và thuận tiện hơn khi
-                                đặt
-                                phòng và quản lý khách sạn vừa và nhỏ.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="timeline-inverted">
-                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/2.jpg"
-                            alt="..." /></div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <h4>02 - 2023</h4>
-                            <h4 class="subheading">Phát triển tính năng chính</h4>
-                        </div>
-                        <div class="timeline-body">
-                            <p class="text-muted">Sau khi hoàn thành việc đưa ra ý tưởng và thiết kế Database,
-                                Usecase,... , nhóm bắt
-                                đầu tập trung vào phát triển các tính năng cơ bản
-                                của trang web. Nhóm đã xác định các tính năng quan trọng và ưu tiên những tính năng
-                                này
-                                để phát triển trước.</p>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/3.jpg"
-                            alt="..." /></div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <h4>03 - 2023</h4>
-                            <h4 class="subheading">Phát triển các tính năng phụ</h4>
-                        </div>
-                        <div class="timeline-body">
-                            <p class="text-muted">Nhóm tiếp tục hoàn thiện các tính năng của trang web. Các
-                                thành viên tập trung vào việc cải thiện
-                                tính năng đặt phòng, thanh toán hoá đơn. Nhóm cũng đã dần hoàn
-                                thiện
-                                tính
-                                năng quản lý phòng, dịch vụ, khuyến mại,.. đồng thời tiến hành kiểm thử. </p>
-                        </div>
-                    </div>
-                </li>
-                <li class="timeline-inverted">
-                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/4.jpg"
-                            alt="..." /></div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <h4>04 - 2023</h4>
-                            <h4 class="subheading">Sửa lỗi - Hoàn thiện dự án</h4>
-                        </div>
-                        <div class="timeline-body">
-                            <p class="text-muted">Nhóm dần hoàn thiện toản bộ trang web, các thành viên dành thời
-                                gian
-                                để sửa
-                                lỗi và cải thiện hiệu suất theo từng ngày. Nhóm đã sẵn sàng cho ngày bảo vệ!</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="timeline-inverted">
-                    <div class="timeline-image">
-                        <h4>
-                            TỐT
-                            <br />
-                            NGHIỆP
-                            <br />
-                            FPOLY!
-                        </h4>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </section>
-    <!-- Contact-->
-
-    <section class="page-section" id="contact">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Liên Hệ Chúng Tôi</h2>
-                <!-- <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3> -->
-            </div>
-        </div>
-    </section>
-
-    <div class="room-modal modal fade modal-xl" id="roomModal1" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="container">
-                    <div>
-                        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                <div ng-repeat="img in imageRooms" class="carousel-item"
-                                    ng-class="{'active': $index === 0}">
-                                    <img src="{{url(img.fileName)}}" class="d-block w-100" alt="...">
+                        <div class="col-md-6">
+                            <div style="background-color: pink;" class="coupon p-3 ">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4 border-right">
+                                        <div class="d-flex flex-column align-items-center"><img
+                                                src="assets/img/namviet2.png" width="50" height="40" /><span
+                                                class="d-block">NORMAL</span></div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div>
+                                            <div class="d-flex flex-row justify-content-end off">
+                                                <h1>{{promotions[5].percent}}%</h1><span>OFF</span>
+                                            </div>
+                                            <div class="d-flex flex-row justify-content-between off px-3 p-2">
+                                                <span>Promo
+                                                    code:</span><span
+                                                    class="border border-success px-3 rounded code">{{promotions[5].name}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <button class="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button"
-                                data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="modal-body">
-                                <!-- Project details-->
-                                <h2 class="text-uppercase">{{form.name}}</h2>
-                                <p class="item-intro text-muted">Thông tin chi tiết phòng.</p>
-                                <p>{{form.description}}</p>
-                                <ul class="list-inline">
-                                    <li>
-                                        <strong>Chính sách huỷ phòng:</strong>
-                                        {{form.cancellationPolicy}}
-                                    </li>
-                                    <li>
-                                        <strong>Phụ phí trẻ em:</strong>
-                                        {{form.childSurcharge |currency: '' : 0}} đ
-                                    </li>
-                                </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Team-->
+        <section class="page-section bg-light" id="team">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Vị trí khách sạn</h2>
+                    <!-- <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3> -->
+                </div>
+
+            </div>
+        </section>
+        <!-- Clients-->
+        <!-- About-->
+        <section class="page-section" id="about">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Giới thiệu</h2>
+                    <h3 class="section-subheading text-muted">Dự án tốt nghiệp</h3>
+                </div>
+                <ul class="timeline">
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/1.jpg"
+                                alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>01 - 2023</h4>
+                                <h4 class="subheading">Lên ý tưởng - Phân tích thiết kế</h4>
+                            </div>
+                            <div class="timeline-body">
+                                <p class="text-muted">Sau nhiều lần họp bàn để thảo luận về ý tưởng cho dự án tốt
+                                    nghiệp,
+                                    thành viên DevZ171 đã đưa ra các ý tưởng
+                                    sáng tạo và độc đáo. Cuối cùng, nhóm quyết định triển khai ý tưởng về một Website
+                                    quản
+                                    lý khách sạn mang tên Nam Việt,
+                                    với mục đích cung cấp cho khách hàng một trải nghiệm đáng nhớ và thuận tiện hơn khi
+                                    đặt
+                                    phòng và quản lý khách sạn vừa và nhỏ.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/2.jpg"
+                                alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>02 - 2023</h4>
+                                <h4 class="subheading">Phát triển tính năng chính</h4>
+                            </div>
+                            <div class="timeline-body">
+                                <p class="text-muted">Sau khi hoàn thành việc đưa ra ý tưởng và thiết kế Database,
+                                    Usecase,... , nhóm bắt
+                                    đầu tập trung vào phát triển các tính năng cơ bản
+                                    của trang web. Nhóm đã xác định các tính năng quan trọng và ưu tiên những tính năng
+                                    này
+                                    để phát triển trước.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/3.jpg"
+                                alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>03 - 2023</h4>
+                                <h4 class="subheading">Phát triển các tính năng phụ</h4>
+                            </div>
+                            <div class="timeline-body">
+                                <p class="text-muted">Nhóm tiếp tục hoàn thiện các tính năng của trang web. Các
+                                    thành viên tập trung vào việc cải thiện
+                                    tính năng đặt phòng, thanh toán hoá đơn. Nhóm cũng đã dần hoàn
+                                    thiện
+                                    tính
+                                    năng quản lý phòng, dịch vụ, khuyến mại,.. đồng thời tiến hành kiểm thử. </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="/assets/img/about/4.jpg"
+                                alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>04 - 2023</h4>
+                                <h4 class="subheading">Sửa lỗi - Hoàn thiện dự án</h4>
+                            </div>
+                            <div class="timeline-body">
+                                <p class="text-muted">Nhóm dần hoàn thiện toản bộ trang web, các thành viên dành thời
+                                    gian
+                                    để sửa
+                                    lỗi và cải thiện hiệu suất theo từng ngày. Nhóm đã sẵn sàng cho ngày bảo vệ!</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image">
+                            <h4>
+                                TỐT
+                                <br />
+                                NGHIỆP
+                                <br />
+                                FPOLY!
+                            </h4>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="room-modal modal fade modal-xl" id="roomModal1" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="container">
+                        <div>
+                            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div ng-repeat="img in imageRooms" class="carousel-item"
+                                        ng-class="{'active': $index === 0}">
+                                        <img src="{{url(img.fileName)}}" class="d-block w-100" alt="...">
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">{{form.name}}</h2>
+                                    <p class="item-intro text-muted">Thông tin chi tiết phòng.</p>
+                                    <p>{{form.description}}</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Chính sách huỷ phòng:</strong>
+                                            {{form.cancellationPolicy}}
+                                        </li>
+                                        <li>
+                                            <strong>Phụ phí trẻ em:</strong>
+                                            {{form.childSurcharge |currency: '' : 0}} đ
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </app-layout>

@@ -1,0 +1,104 @@
+<app-layout name="">
+
+    <div class="container" style="margin-top: 100px">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Khách hàng</th>
+                    <th>{{booking.customer.fullName}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Số điện thoại</td>
+                    <td>
+                        {{booking.customer.phoneNumber}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>
+                        {{booking.customer.email}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ngày đặt</td>
+                    <td>
+                        {{booking.createdDate | date:'HH:mm dd-MM-yyyy'}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Số người lớn</td>
+                    <td>{{booking.numAdults}}</td>
+                </tr>
+                <tr>
+                    <td>Số trẻ em</td>
+                    <td>
+                        {{booking.numChildren}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Đã thanh toán</td>
+                    <td>
+                        {{booking.deposit | currency: '' : 0}}đ
+                    </td>
+                </tr>
+                <tr>
+                    <td>Phương thức thanh toán</td>
+                    <td>
+                        {{booking.paymentMethod.name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ghi chú</td>
+                    <td>
+                        {{booking.note}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Số phòng</td>
+                    <td>
+                        {{booking.numOfRooms}}
+                    </td>
+                </tr>
+                <!-- Danh sách phòng -->
+                <tr>
+                    <td>Danh sách phòng</td>
+                    <td colspan="2">
+                        <table class="table table-hover table-striped table-nowrap mb-0 ">
+                            <thead>
+                                <tr>
+                                    <th>Phòng</th>
+                                    <th>Giá</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Số đêm</th>
+                                    <th style="word-wrap: break-word;">Ghi chú</th>
+                                    <th>Ngày đặt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="bk in bookingDetails">
+                                    <td>{{bk.room.code}}</td>
+                                    <td>{{bk.room.price | currency: '' : 0}}đ</td>
+                                    <td>{{bk.checkinExpected | date:'dd-MM-yyyy'}}</td>
+                                    <td>{{bk.checkoutExpected | date:'dd-MM-yyyy'}}</td>
+                                    <td>{{(bk.checkoutExpected - bk.checkinExpected) /
+                                        (1000*60*60*24)}}</td>
+                                    <td>{{bk.note}}</td>
+                                    <td>{{bk.createdDate | date:'HH:mm dd-MM-yyyy'}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- card footer -->
+    <div class="card-footer">
+
+    </div>
+
+</app-layout>
