@@ -33,4 +33,6 @@ public interface HotelRoomService {
 
     Invoice splitInvoice(InvoiceSplitReq invoiceSplitReq);
 
+    PeopleInRoomResp peopleInRoom(Integer invoiceDetailId);
+
 }
