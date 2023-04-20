@@ -6,7 +6,7 @@ import com.devz.hotelmanagement.entities.RoomTypeImage;
 
 public interface RoomTypeImageService extends ServiceBase<RoomTypeImage> {
 
-//	List<RoomTypeImage> getListByCodeRoom(String codeRoom);
+	List<RoomTypeImage> getListByCodeRoomType(String codeRoom);
 
 	void deleteById(Integer id);
 
