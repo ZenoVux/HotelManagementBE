@@ -1,5 +1,3 @@
-
-
 window.addEventListener('DOMContentLoaded', event => {
 
     // Navbar shrink function
@@ -58,53 +56,57 @@ app.config(function ($routeProvider) {
             templateUrl: "/assets/view/book.html",
             controller: "bookCtrl",
         })
-})
-
+        .when("/book-now", {
+            templateUrl: "/assets/view/book.html",
+            controller: "bookCtrl",
+        })
+        .otherwise({
+            redirectTo: "/"
+        });
+});
 
 app.controller("bookOnlineCtrl", function ($scope, $http, $location) {
+
     $scope.form = {}
+
     $scope.init = function () {
         $http.get("http://localhost:8000/api/booking-online/room-types").then(resp => {
             $scope.roomTypes = resp.data;
-            // console.log($scope.roomTypes)
         }).catch(error => {
             console.log("Error", error);
         })
         $http.get("http://localhost:8000/api/booking-online/rooms").then(resp => {
             $scope.rooms = resp.data;
-            // console.log($scope.rooms)
         }).catch(error => {
             console.log("Error", error);
         })
         $http.get("http://localhost:8000/api/booking-online/services").then(resp => {
             $scope.services = resp.data;
-            // console.log($scope.services)
         }).catch(error => {
             console.log("Error", error);
         })
-
         $http.get("http://localhost:8000/api/booking-online/promotions").then(resp => {
             $scope.promotions = resp.data;
-            // console.log($scope.promotions)
         }).catch(error => {
             console.log("Error", error);
         })
-
     }
 
+    $scope.bookNow = function () {
+        $location.path("/book-now");
+    }
 
-    $scope.loadImageRoom = function (codeRoom) { // load anh phong
+    $scope.loadImageRoom = function (codeRoom) {
         $http.get("http://localhost:8000/api/booking-online/img/" + codeRoom).then(resp => {
             $scope.imageRooms = resp.data;
-            // console.log(resp.data)
         }).catch(error => {
             console.log("Error", error);
         })
     }
 
-    $scope.url = function(imageName){
+    $scope.url = function (imageName) {
         return `http://localhost:8000/images/${imageName}`;
-}
+    }
 
     $scope.close = function () {
         var myModalEl = document.getElementById('roomModal1');
@@ -114,56 +116,89 @@ app.controller("bookOnlineCtrl", function ($scope, $http, $location) {
 
     $scope.views = function (roomType, code) {
         $scope.loadImageRoom(code)
-
         // $scope.link = link;
         $scope.form = roomType;
     }
+
     $scope.books = function (roomTypeCode) {
         // $scope.close();
         $location.path("/book/" + roomTypeCode);
     }
 
     $scope.init();
+
 });
 
-app.controller("bookCtrl", function ($scope, $http, $routeParams) {
-    $scope.formBook={};
-    var code = $routeParams.code
+app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter) {
 
-    $scope.init = function(){
-    $scope.checkin=document.getElementById("myDate").value;
-    $scope.checkout=document.getElementById("myDate1").value;
-    $scope.formBook ={
-        checkin:$scope.checkin,
-        checkout:$scope.checkout,
+    $scope.formBook = {};
+    $scope.formBook.checkinDate = new Date();
+    $scope.formBook.checkoutDate = new Date();
+    $scope.formBook.checkoutDate.setDate($scope.formBook.checkoutDate.getDate() + 3);
+    $scope.formBook.numAdults = 2;
+    $scope.formBook.numChildren = 0;
+    $scope.formBook.numRoomsBooking = [];
+    $scope.infoRoomBooking = [];
+    $scope.roomTypes = [];
+
+    // var code = $routeParams.code
+    var code = null
+
+    $scope.getRoomType = function () {
+        $http.get("/api/booking-online/room-types").then(resp => {
+            $scope.roomTypes = resp.data
+        }).catch(error => {
+            console.log("Error", error);
+        });
     }
+
+    $scope.changeDate = function () {
+        $scope.infoRoomBooking = [];
     }
 
+    $scope.closeDropdown = function () {
+        $('.dropdown-menu').removeClass('show');
+    };
 
-    
-    $http.get("http://localhost:8000/api/booking-online/room-types/" + code).then(resp => {
-        $scope.form = resp.data
-    }).catch(error => {
-        console.log("Error", error);
-    })
+    $scope.checkRoom = function () {
 
+        $scope.loading = true;
 
-    paypal.Buttons({ // vi du phuong thuc thanh toan
-        style: {
-            label: 'checkout',
-            size: 'medium', // small | medium | large | responsive
-            shape: 'pill', // pill | rect
-            color: 'gold', // gold | blue | silver | black,
-            layout: 'vertical'
-        },
+        if ($scope.formBook.roomType == null || $scope.formBook.roomType == undefined) {
+            $scope.formBook.roomType = "";
+        };
+        $http.get('/api/booking-online/info', {
+            params: {
+                checkinDate: $filter('date')($scope.formBook.checkinDate, 'dd-MM-yyyy'),
+                checkoutDate: $filter('date')($scope.formBook.checkoutDate, 'dd-MM-yyyy'),
+                roomType: $scope.formBook.roomType
+            }
+        }).then(function (response) {
+            $scope.infoRoomBooking = response.data;
+            for (var i = 0; i < $scope.infoRoomBooking.length; i++) {
+                if ($scope.infoRoomBooking[i].promotion != null) {
+                    var percent = $scope.infoRoomBooking[i].promotion.percent;
+                    var price = $scope.infoRoomBooking[i].price;
+                    var maxDiscount = $scope.infoRoomBooking[i].promotion.maxDiscount;
 
-    }).render('#paypal-button-container')
-
-
-
+                    $scope.infoRoomBooking[i].newPrice = price * (100 - percent) / 100;
+                    if ((percent / 100 * price) > maxDiscount) {
+                        $scope.infoRoomBooking[i].newPrice = price - maxDiscount;
+                    }
+                }
+            }
+            if ($scope.infoRoomBooking.length == 0) {
+                alert('Không có phòng hợp lệ.');
+            }
+            $scope.loading = false;
+            console.log($scope.infoRoomBooking);
+        }).catch(function (error) {
+            console.error('Error fetching data:', error);
+        });
+    }
 
     $scope.countDown = function () {
-        alert("Hay chon ngay checkin-out de kiem tra lương phòng còn lại")
+
         var countdownElement = document.getElementById('countdown');
 
         var startTime = new Date().getTime();
@@ -187,11 +222,62 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams) {
 
     }
 
-    $scope.submit = function () {
-        alert("check đầu ra ở console.log")
-        console.log($scope.formBook)
+    $scope.openModalBooking = function () {
+        // if ($scope.infoRoomBooking == null || $scope.infoRoomBooking.length == 0) {
+        //     alert("Vui lòng chọn ngày checkin, checkout và kiểm tra lại lượng phòng còn lại!");
+        //     return;
+        // }
+        // if ($scope.infoRoomBooking[0].quantity == 0) {
+        //     alert("Phòng đã hết!");
+        //     return;
+        // }
+        $('#book-modal').modal('show');
     }
 
-$scope.init()
+    $scope.showDetailRoomType = function (roomType) {
+        $scope.currentRoomType = roomType;
+        console.log(roomType);
+        $('#room-type-modal').modal('show');
+    };
+
+    $scope.updateTotalNumRooms = function () {
+        $scope.formBook.numRoomsBooking = [];
+        for (var i = 0; i < $scope.infoRoomBooking.length; i++) {
+            var roomType = $scope.infoRoomBooking[i].name;
+            var numRooms = $scope.infoRoomBooking[i].numRooms || 0;
+            if (numRooms > 0) {
+                $scope.formBook.numRoomsBooking.push({
+                    roomType: roomType,
+                    numRooms: numRooms
+                });
+            }
+        }
+        console.log($scope.formBook.numRoomsBooking);
+    };
+
+    $scope.getBooking = function () {
+        console.log($scope.formBook);
+
+        $scope.formBook.checkinDate = $filter('date')($scope.formBook.checkinDate, 'dd-MM-yyyy');
+        $scope.formBook.checkoutDate = $filter('date')($scope.formBook.checkoutDate, 'dd-MM-yyyy');
+
+        var bookingJson = JSON.stringify($scope.formBook);
+
+        console.log(bookingJson);
+
+        $http.post("/api/booking-online/get-booking", $scope.formBook).then(resp => {
+            console.log(resp.data);
+            //window.location.href = "/booking-online";
+        }).catch(error => {
+            console.log("Error", error);
+        });
+    }
+
+    $scope.init = function () {
+        $scope.getRoomType();
+        $scope.checkRoom();
+    }
+
+    $scope.init()
 
 });
