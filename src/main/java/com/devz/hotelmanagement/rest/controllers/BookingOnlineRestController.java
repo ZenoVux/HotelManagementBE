@@ -150,6 +150,37 @@ public class BookingOnlineRestController {
 
     }
 
+    @PostMapping("/count-down")
+    public ResponseEntity<?> countDown(@RequestBody BookingOnlReq bookingData) {
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            Date checkinDate = dateFormat.parse(bookingData.getCheckinDate());
+            Date checkoutDate = dateFormat.parse(bookingData.getCheckoutDate());
+
+            List<RoomBookingOnl> numRoomsBooking = List.of(bookingData.getNumRoomsBooking());
+            List<Room> rooms = new ArrayList<>();
+            for (RoomBookingOnl roomBooking : numRoomsBooking) {
+                String roomType = roomBooking.getRoomType();
+                int numRooms = roomBooking.getNumRooms();
+                List<Integer> roomIds = bookingService.getRoomsByTimeBooking(roomType, checkinDate, checkoutDate).subList(0, numRooms);
+                List<Room> roomsForBooking = roomIds.stream()
+                        .map(id -> roomService.findById(id))
+                        .collect(Collectors.toList());
+                rooms.addAll(roomsForBooking);
+            }
+
+            rooms.forEach(room -> room.setStatus(3));
+            roomService.updateAll(rooms);
+
+            return ResponseEntity.ok().body(rooms);
+
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     @PostMapping("/get-booking")
     public ResponseEntity<?> createBooking(@RequestBody BookingOnlReq bookingData) {
         try {
