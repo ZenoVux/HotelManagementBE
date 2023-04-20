@@ -84,6 +84,20 @@ public class HotelRoomController {
         }
     }
 
+    @GetMapping("/people-in-room/{invoiceDetailId}")
+    public ResponseEntity<?> peopleInRoom(@PathVariable("invoiceDetailId") Optional<Integer> invoiceDetailId) {
+        if(!invoiceDetailId.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Dữ liệu không hợp lệ!\"}");
+        }
+        try {
+            PeopleInRoomResp peopleInRoomResp = hotelRoomService.peopleInRoom(invoiceDetailId.get());
+            return ResponseEntity.status(HttpStatus.OK).body(peopleInRoomResp);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
     @PostMapping("/checkin")
     public ResponseEntity<?> checkin(@RequestBody CheckinRoomReq checkinRoomReq) {
         try {

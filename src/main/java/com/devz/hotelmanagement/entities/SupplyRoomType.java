@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "supply_rooms")
+@Table(name = "supply_room_types")
 public class SupplyRoomType extends EntityBase {
 
     @ManyToOne
