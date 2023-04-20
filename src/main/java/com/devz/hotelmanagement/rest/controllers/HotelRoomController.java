@@ -3,6 +3,7 @@ package com.devz.hotelmanagement.rest.controllers;
 import com.devz.hotelmanagement.entities.Booking;
 import com.devz.hotelmanagement.entities.Customer;
 import com.devz.hotelmanagement.entities.Invoice;
+import com.devz.hotelmanagement.entities.Room;
 import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin("*")
@@ -82,6 +84,14 @@ public class HotelRoomController {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
+    }
+
+    @GetMapping("/room-unbooked")
+    public List<RoomUnbookedResp> findAllRoomUnbooked(
+            @RequestParam("checkin-date") @DateTimeFormat(pattern = "dd/MM/yyyy") Date checkinDate,
+            @RequestParam("checkout-date") @DateTimeFormat(pattern = "dd/MM/yyyy") Date checkoutDate
+    ) {
+        return hotelRoomService.findAllRoomUnbooked(checkinDate, checkoutDate);
     }
 
     @GetMapping("/people-in-room/{invoiceDetailId}")

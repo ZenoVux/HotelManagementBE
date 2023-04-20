@@ -4,6 +4,7 @@ import com.devz.hotelmanagement.entities.Invoice;
 import com.devz.hotelmanagement.models.*;
 
 import java.util.Date;
+import java.util.List;
 
 public interface HotelRoomService {
 
@@ -34,5 +35,7 @@ public interface HotelRoomService {
     Invoice splitInvoice(InvoiceSplitReq invoiceSplitReq);
 
     PeopleInRoomResp peopleInRoom(Integer invoiceDetailId);
+
+    List<RoomUnbookedResp> findAllRoomUnbooked(Date checkinDate, Date checkoutDate);
 
 }
