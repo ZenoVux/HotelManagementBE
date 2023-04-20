@@ -1,5 +1,25 @@
 <app-layout name="">
 
+    <div ng-show="loading" class="loader">
+        <div class="loader-inner">
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="bg-white shadow" style="padding: 35px ;margin-top: 80px;margin-bottom: 30px;">
         <div class="row g-2">
             <div class="col-md-3">
@@ -278,8 +298,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 style="color: red; font-size: 8px;" class="modal-title fs-5" id="staticBackdropLabel">
-                        <div id="countdown"></div>
+                    <h6 class="modal-title fs-5" id="staticBackdropLabel">
+                        Thông tin cá nhân
                     </h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
