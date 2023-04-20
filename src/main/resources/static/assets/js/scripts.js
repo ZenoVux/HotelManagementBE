@@ -238,6 +238,22 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $loca
             alert("Vui lòng chọn số lượng phòng!");
             return;
         }
+        $scope.countDown();
+
+        $scope.formBook.checkinDate = $filter('date')($scope.formBook.checkinDate, 'dd-MM-yyyy');
+        $scope.formBook.checkoutDate = $filter('date')($scope.formBook.checkoutDate, 'dd-MM-yyyy');
+
+        $scope.formBook.fullName = "";
+        $scope.formBook.phoneNumber = "";
+        $scope.formBook.email = "";
+        $scope.formBook.note = "";
+
+        $http.post('/api/booking-online/count-down', $scope.formBook).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.error('Error fetching data:', error);
+        });
+
         $('#book-modal').modal('show');
     }
 

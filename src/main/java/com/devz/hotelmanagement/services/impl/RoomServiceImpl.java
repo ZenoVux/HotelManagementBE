@@ -86,4 +86,9 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
+    @Override
+    public List<Room> updateAll(List<Room> rooms) {
+        return roomRepo.saveAll(rooms);
+    }
+
 }
