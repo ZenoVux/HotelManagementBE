@@ -9,9 +9,16 @@ import com.devz.hotelmanagement.services.*;
 import com.devz.hotelmanagement.statuses.BookingDetailStatus;
 import com.devz.hotelmanagement.statuses.BookingStatus;
 import com.devz.hotelmanagement.utilities.CurrentAccount;
+import com.devz.hotelmanagement.utilities.VNPayUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,6 +69,9 @@ public class BookingOnlineRestController {
     private CustomerService customerService;
 
     private CurrentAccount currentAccount;
+
+    @Autowired
+    private VNPayService vnPayService;
 
     @GetMapping("/room-types")
     public List<RoomType> findAllRoomType() {
@@ -141,7 +151,7 @@ public class BookingOnlineRestController {
     }
 
     @PostMapping("/get-booking")
-    public void createBooking(@RequestBody BookingOnlReq bookingData) {
+    public ResponseEntity<?> createBooking(@RequestBody BookingOnlReq bookingData) {
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -209,10 +219,22 @@ public class BookingOnlineRestController {
 
             bookingDetailService.createAll(bookingDetails);
 
+            return ResponseEntity.ok().body(booking);
+
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @GetMapping("/get-booking/{id}")
+    public Booking getBookingById(@PathVariable("id") Integer id) {
+        return bookingService.findById(id);
+    }
+
+    @GetMapping("/get-booking-detail/{id}")
+    public List<BookingDetail> getBookingDetailByBookingId(@PathVariable("id") Integer id) {
+        return bookingDetailService.findByBookingId(id);
     }
 
 }
