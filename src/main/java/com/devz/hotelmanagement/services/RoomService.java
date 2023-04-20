@@ -18,4 +18,6 @@ public interface RoomService extends ServiceBase<Room> {
 
     String getMaxCode(Integer floor_Id);
 
+    List<Room> updateAll(List<Room> rooms);
+
 }

@@ -208,6 +208,13 @@ public class BookingRestController {
         return bookingService.update(booking);
     }
 
+    @PostMapping("/confirm/{code}")
+    public void confirm(@PathVariable("code") String code) {
+        Booking booking = bookingService.findByCode(code);
+        booking.setStatus(BookingStatus.CONFIRMED.getCode());
+        bookingService.update(booking);
+    }
+
     @PutMapping("/cancel")
     public Booking cancelBooking(@RequestBody Booking booking) {
         Booking cancelBooking = bookingService.findByCode(booking.getCode());
