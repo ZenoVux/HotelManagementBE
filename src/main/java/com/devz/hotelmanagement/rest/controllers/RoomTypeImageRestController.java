@@ -20,10 +20,10 @@ public class RoomTypeImageRestController {
         return roomTypeImageService.findAll();
     }
     
-//    @GetMapping("/{codeRoom}")
-//    public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
-//        return roomTypeImageService.getListByCodeRoom(codeRoom);
-//    }
+    @GetMapping("/{codeRoom}")
+    public List<RoomTypeImage> getByCodeRoomType(@PathVariable("codeRoom") String codeRoom) {
+        return roomTypeImageService.getListByCodeRoomType(codeRoom);
+    }
 
     @PostMapping
     public RoomTypeImage create(@RequestBody RoomTypeImage roomTypeImage) {

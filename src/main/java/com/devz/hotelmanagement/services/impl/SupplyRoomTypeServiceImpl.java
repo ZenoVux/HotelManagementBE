@@ -46,12 +46,12 @@ public class SupplyRoomTypeServiceImpl implements SupplyRoomTypeService {
         return supplyRoomRepo.save(supplyRoomType);
     }
 
-//	@Override
-//	public List<SupplyRoomType> findByCodeRoom(String code) {
-//		return supplyRoomRepo.findByCodeRoom(code);
-//	}
+    @Override
+    public List<SupplyRoomType> findByCodeRoomType(String code) {
+        return supplyRoomRepo.findByCodeRoomType(code);
+    }
 
-	@Override
+    @Override
 	public void deleteById(Integer id) {
 		supplyRoomRepo.deleteById(id);
 		
