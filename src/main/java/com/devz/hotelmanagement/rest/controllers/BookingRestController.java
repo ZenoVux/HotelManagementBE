@@ -63,7 +63,7 @@ public class BookingRestController {
         List<Object[]> info = bookingService.getBooking();
 
         for (Object[] i : info) {
-            BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (Integer) i[2], (Integer) i[3], (String) i[4], (Date) i[5], (Integer) i[6], (Double) i[7]);
+            BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (String) i[2], (String) i[3], (String) i[4], (Date) i[5], (Integer) i[6], (Double) i[7]);
             bookingList.add(bookingInfo);
         }
 

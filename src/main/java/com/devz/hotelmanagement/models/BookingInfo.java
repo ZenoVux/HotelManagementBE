@@ -15,9 +15,9 @@ public class BookingInfo {
 
     private Long numOfRoom;
 
-    private Integer adults;
+    private String customer;
 
-    private Integer childs;
+    private String phoneNumber;
 
     private String note;
 
