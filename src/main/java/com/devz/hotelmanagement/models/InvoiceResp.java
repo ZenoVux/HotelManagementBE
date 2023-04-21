@@ -14,6 +14,7 @@ public class InvoiceResp {
     private String code;
     private String bookingCode;
     private String customer;
+    private String phoneNumber;
     private String staff;
     private Double total;
     private Integer status;

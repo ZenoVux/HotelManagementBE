@@ -70,6 +70,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "   iv.code, " +
             "   iv.booking.code, " +
             "   iv.booking.customer.fullName, " +
+            "   iv.booking.customer.phoneNumber, " +
             "   iv.account.fullName, " +
             "   iv.total, " +
             "   iv.status," +
@@ -83,6 +84,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "   iv.code, " +
             "   iv.booking.code, " +
             "   iv.booking.customer.fullName, " +
+            "   iv.booking.customer.phoneNumber, " +
             "   iv.account.fullName, " +
             "   iv.total, " +
             "   iv.status," +

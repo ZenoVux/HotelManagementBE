@@ -98,7 +98,7 @@ public class HostedAtServiceImpl implements HostedAtService {
     public void delete(Integer id) {
         HostedAt hostedAt = this.findById(id);
         if (hostedAt == null) {
-            throw new RuntimeException("Không tìm thấy người ở này!");
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
         InvoiceDetail invoiceDetail = hostedAt.getInvoiceDetail();
         List<HostedAt> hostedAts = this.findByInvoiceDetailId(invoiceDetail.getId());
@@ -109,7 +109,7 @@ public class HostedAtServiceImpl implements HostedAtService {
             return age >= 13;
         }).count();
         if (numAdults <= 1) {
-            throw new RuntimeException("Phải có ít nhất 1 người lớn trong phòng!");
+            throw new RuntimeException("{\"error\":\"Phải có ít nhất 1 người lớn trong phòng!\"}");
         }
         hostedAtRepo.deleteById(id);
     }
