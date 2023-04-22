@@ -174,6 +174,17 @@ public class HotelRoomController {
         }
     }
 
+    @PostMapping("/booking-room")
+    public ResponseEntity<?> bookingRoom(@RequestBody BookingRoomReq bookingRoomReq) {
+        try {
+            hotelRoomService.bookingRoom(bookingRoomReq);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
     @PostMapping("/payment")
     public ResponseEntity<?> payment(@RequestBody PaymentInvoiceReq paymentInvoiceReq) {
         try {

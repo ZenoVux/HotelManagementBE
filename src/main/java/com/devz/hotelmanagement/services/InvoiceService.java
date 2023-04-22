@@ -4,6 +4,7 @@ import com.devz.hotelmanagement.entities.Invoice;
 import com.devz.hotelmanagement.models.InvoiceResp;
 import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 
+import java.util.Date;
 import java.util.List;
 
 public interface InvoiceService extends ServiceBase<Invoice> {
@@ -22,4 +23,7 @@ public interface InvoiceService extends ServiceBase<Invoice> {
 
     Integer countInvoiceByPeopleId(String peopleId);
 
+    List<InvoiceResp> findByAllRespByStatusAndRangeDate(Integer status, Date startDate, Date endDate);
+
+    List<InvoiceResp> findByAllRespByRangeDate(Date startDate, Date endDate);
 }

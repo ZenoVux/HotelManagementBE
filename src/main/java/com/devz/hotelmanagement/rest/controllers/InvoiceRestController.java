@@ -6,6 +6,7 @@ import com.devz.hotelmanagement.models.InvoiceResp;
 import com.devz.hotelmanagement.repositories.InvoiceRepository;
 import com.devz.hotelmanagement.models.InvoiceStatusCountResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,16 @@ public class InvoiceRestController {
 
 
     @GetMapping
-    public List<InvoiceResp> findAll(@RequestParam("status") Optional<Integer> status) {
-        if (status.isPresent()) {
+    public List<InvoiceResp> findAll(
+            @RequestParam("status") Optional<Integer> status,
+            @RequestParam("startDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Optional<Date> startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Optional<Date> endDate
+    ) {
+        if (status.isPresent() && startDate.isPresent() && endDate.isPresent()) {
+            return invoiceService.findByAllRespByStatusAndRangeDate(status.get(), startDate.get(), endDate.get());
+        } else if (startDate.isPresent() && endDate.isPresent()) {
+            return invoiceService.findByAllRespByRangeDate(startDate.get(), endDate.get());
+        } else if (status.isPresent()) {
             return invoiceService.findByAllRespByStatus(status.get());
         } else {
             return invoiceService.findByAllResp();

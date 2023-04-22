@@ -38,4 +38,5 @@ public interface HotelRoomService {
 
     List<RoomUnbookedResp> findAllRoomUnbooked(Date checkinDate, Date checkoutDate);
 
+    void bookingRoom(BookingRoomReq bookingRoomReq);
 }

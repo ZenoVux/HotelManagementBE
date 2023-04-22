@@ -10,9 +10,10 @@ public interface InvoiceDetailService extends ServiceBase<InvoiceDetail> {
 
     List<InvoiceDetail> findByInvoiceCode(String code);
 
-    List<InvoiceDetail> updateAll(List<InvoiceDetail> invoiceDetails);
+    List<InvoiceDetail> updateOrSaveAll(List<InvoiceDetail> invoiceDetails);
 
     List<InvoiceDetail> findAllUsing();
 
     List<InvoiceDetail> findByInvoiceCodeAndStatus(String code, Integer status);
+
 }

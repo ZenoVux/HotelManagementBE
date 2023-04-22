@@ -31,17 +31,19 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             "FROM Room r " +
             "WHERE r.code NOT IN (SELECT bkd.room.code " +
             "                       FROM BookingDetail bkd " +
-            "                       WHERE bkd.checkinExpected < :checkout AND " +
-            "                           bkd.checkoutExpected > :checkin AND " +
+            "                       WHERE ((bkd.checkinExpected >= :checkinDate AND bkd.checkinExpected < :checkoutDate) OR " +
+            "                               (bkd.checkoutExpected > :checkinDate AND bkd.checkoutExpected <= :checkoutDate) OR " +
+            "                               (bkd.checkinExpected <= :checkinDate AND bkd.checkoutExpected >= :checkoutDate)) AND " +
             "                           bkd.status = 1 AND " + // trạng thái chờ nhận
             "                           (bkd.booking.status = 1 OR " + // trạng thái chờ xác nhận
             "                           bkd.booking.status = 2 OR " + // trạng thái đã xác nhận
             "                           bkd.booking.status = 3))" + // trạng thái đã xử lý
             "   AND r.code NOT IN (SELECT ivd.room.code " +
             "                       FROM InvoiceDetail ivd " +
-            "                       WHERE ivd.checkinExpected < :checkout AND " +
-            "                           ivd.checkoutExpected > :checkin AND " +
+            "                       WHERE ((ivd.checkinExpected >= :checkinDate AND ivd.checkinExpected < :checkoutDate) OR " +
+            "                               (ivd.checkoutExpected > :checkinDate AND ivd.checkoutExpected <= :checkoutDate) OR " +
+            "                               (ivd.checkinExpected <= :checkinDate AND ivd.checkoutExpected >= :checkoutDate)) AND " +
             "                           ivd.status = 1)" + // trạng thái đang sử dụng
             "ORDER BY r.code ASC")
-    List<Room> findUnbookedRoomsByCheckinAndCheckout(@Param("checkin") Date checkin, @Param("checkout") Date checkout);
+    List<Room> findUnbookedRoomsByCheckinAndCheckout(@Param("checkinDate") Date checkinDate, @Param("checkoutDate") Date checkoutDate);
 }

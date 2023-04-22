@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,7 +94,37 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "FROM Invoice iv WHERE iv.status = :status")
     List<InvoiceResp> findByAllRespByStatus(@Param("status") Integer status);
 
+    @Query("SELECT " +
+            "new com.devz.hotelmanagement.models.InvoiceResp(" +
+            "   iv.code, " +
+            "   iv.booking.code, " +
+            "   iv.booking.customer.fullName, " +
+            "   iv.booking.customer.phoneNumber, " +
+            "   iv.account.fullName, " +
+            "   iv.total, " +
+            "   iv.status," +
+            "   iv.createdDate" +
+            ") " +
+            "FROM Invoice iv " +
+            "WHERE iv.status = :status AND " +
+            "   iv.createdDate BETWEEN :startDate AND :endDate")
+    List<InvoiceResp> findByAllRespByStatusAndRangeDate(@Param("status") Integer status, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT " +
+            "new com.devz.hotelmanagement.models.InvoiceResp(" +
+            "   iv.code, " +
+            "   iv.booking.code, " +
+            "   iv.booking.customer.fullName, " +
+            "   iv.booking.customer.phoneNumber, " +
+            "   iv.account.fullName, " +
+            "   iv.total, " +
+            "   iv.status," +
+            "   iv.createdDate" +
+            ") " +
+            "FROM Invoice iv " +
+            "WHERE iv.createdDate BETWEEN :startDate AND :endDate")
+    List<InvoiceResp> findByAllRespByRangeDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
     @Query("SELECT COUNT(iv) FROM Invoice iv WHERE iv.status = 4 AND iv.booking.customer.peopleId = :customerId")
     Integer countInvoiceByPeopleId(@Param("customerId") String customerId);
-
 }

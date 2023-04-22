@@ -1,5 +1,6 @@
 package com.devz.hotelmanagement.services.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,6 +106,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Integer countInvoiceByPeopleId(String peopleId) {
         return invoiceRepo.countInvoiceByPeopleId(peopleId);
+    }
+
+    @Override
+    public List<InvoiceResp> findByAllRespByStatusAndRangeDate(Integer status, Date startDate, Date endDate) {
+        return invoiceRepo.findByAllRespByStatusAndRangeDate(status, startDate, endDate);
+    }
+
+    @Override
+    public List<InvoiceResp> findByAllRespByRangeDate(Date startDate, Date endDate) {
+        return invoiceRepo.findByAllRespByRangeDate(startDate, endDate);
     }
 
 }

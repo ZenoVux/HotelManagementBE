@@ -76,7 +76,7 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
     }
 
     @Override
-    public List<InvoiceDetail> updateAll(List<InvoiceDetail> invoiceDetails) {
+    public List<InvoiceDetail> updateOrSaveAll(List<InvoiceDetail> invoiceDetails) {
         return invoiceDetailRepo.saveAll(invoiceDetails);
     }
 
@@ -89,4 +89,5 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService {
     public List<InvoiceDetail> findByInvoiceCodeAndStatus(String code, Integer status) {
         return invoiceDetailRepo.findByInvoiceCodeAndStatus(code, status);
     }
+
 }
