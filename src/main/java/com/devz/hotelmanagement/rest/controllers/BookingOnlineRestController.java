@@ -98,10 +98,10 @@ public class BookingOnlineRestController {
         return roomTypeService.findByCode(code);
     }
 
-//	@GetMapping("/img/{codeRoom}")
-//	public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
-//		return roomTypeImageService.getListByCodeRoom(codeRoom);
-//	}
+	@GetMapping("/img/{codeRoom}")
+	public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+		return roomTypeImageService.getListByCodeRoom(codeRoom);
+	}
 
     @GetMapping("/info")
     public List<RoomBooking> getInfoRoomBooking(@RequestParam("checkinDate") String checkin, @RequestParam("checkoutDate") String checkout, @RequestParam("roomType") String roomType) {
@@ -170,7 +170,7 @@ public class BookingOnlineRestController {
                 rooms.addAll(roomsForBooking);
             }
 
-            rooms.forEach(room -> room.setStatus(3));
+            rooms.forEach(room -> room.setStatus(0));
             roomService.updateAll(rooms);
 
             return ResponseEntity.ok().body(rooms);

@@ -20,174 +20,178 @@
         </div>
     </div>
 
-    <div class="bg-white shadow" style="padding: 35px ;margin-top: 80px;margin-bottom: 30px;">
-        <div class="row g-2">
-            <div class="col-md-3">
-                <label>Ngày checkin</label>
-                <input class="form-control" type="date" id="checkin" ng-model="formBook.checkinDate"
-                    ng-change="changeDate()">
-            </div>
-            <div class="col-md-3">
-                <label>Ngày checkout</label>
-                <input class="form-control" type="date" id="checkout" ng-model=formBook.checkoutDate
-                    ng-change="changeDate()">
-            </div>
-            <div class="col-md-2">
-                <label>Loại phòng</label>
-                <select class="form-control" ng-model="formBook.roomType"
-                    ng-options="rt.code as rt.name for rt in roomTypes">
-                    <option value="">Chọn loại phòng</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label>Chi tiết</label>
-                <div class="dropdown-center">
-                    <input type="text" class="form-control" placeholder="1 phòng : 2 người lớn : 0 trẻ em" readonly
-                        ng-value="formBook.numRooms + ' phòng : ' +  formBook.numAdults + ' người lớn : ' + formBook.numChildren + ' trẻ em'"
-                        role="button" data-bs-toggle="dropdown" data-bs-auto-close="false" />
-                    <ul class="dropdown-menu">
-                        <li>
-                            <div class="row">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-5">
-                                    <label style="margin-top: 22px;">Số phòng</label>
-                                </div>
-                                <div class="col-md-5">
-                                    <p></p>
-                                    <div class="input-group">
-                                        <input class="form-control" type="number" ng-model="formBook.numRooms" min="1">
-                                    </div>
-                                </div>
-                                <div class="col-md-1"></div>
-                            </div>
-                        </li>
-                        <p></p>
-                        <li>
-                            <div class="row">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-5">
-                                    <label style="margin-top: 9px;">Người lớn <br> (≥
-                                        13 tuổi)</label>
-                                </div>
-                                <div class="col-md-5">
-                                    <p></p>
-                                    <div class="input-group">
-                                        <input class="form-control" type="number" ng-model="formBook.numAdults" min="1">
-                                    </div>
-                                </div>
-                                <div class="col-md-1"></div>
-                            </div>
-                        </li>
-                        <p></p>
-                        <li>
-                            <div class="row">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-5">
-                                    <label style="margin-top: 9px;">Trẻ em <br> (< 13 tuổi) </label>
-                                </div>
-                                <div class="col-md-5">
-                                    <p></p>
-                                    <div class="input-group">
-                                        <input class="form-control" type="number" ng-model="formBook.numChildren"
-                                            min="0">
-                                    </div>
-                                </div>
-                                <div class="col-md-1"></div>
-                            </div>
-                        </li>
-                        <p></p>
-                        <li>
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <button class="btn btn-warning" type="button"
-                                        ng-click="closeDropdown()">Xong</button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+    <div class="container">
+        <div class="bg-white shadow" style="padding: 35px ;margin-top: 80px;margin-bottom: 30px;">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label>Ngày checkin</label>
+                    <input class="form-control" type="date" id="checkin" ng-model="formBook.checkinDate"
+                        ng-change="changeDate()">
                 </div>
-            </div>
-            <div class="col-md-1">
-                <label style="color: #ffffff">.</label>
-                <button ng-click="checkRoom()" class="btn btn-primary w-100 check-room">Tìm</button>
+                <div class="col-md-3">
+                    <label>Ngày checkout</label>
+                    <input class="form-control" type="date" id="checkout" ng-model=formBook.checkoutDate
+                        ng-change="changeDate()">
+                </div>
+                <div class="col-md-2">
+                    <label>Loại phòng</label>
+                    <select class="form-control" ng-model="formBook.roomType"
+                        ng-options="rt.code as rt.name for rt in roomTypes">
+                        <option value="">Chọn loại phòng</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Chi tiết</label>
+                    <div class="dropdown-center">
+                        <input type="text" class="form-control" placeholder="1 phòng : 2 người lớn : 0 trẻ em" readonly
+                            ng-value="formBook.numRooms + ' phòng : ' +  formBook.numAdults + ' người lớn : ' + formBook.numChildren + ' trẻ em'"
+                            role="button" data-bs-toggle="dropdown" data-bs-auto-close="false" />
+                        <ul class="dropdown-menu">
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-5">
+                                        <label style="margin-top: 22px;">Số phòng</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <p></p>
+                                        <div class="input-group">
+                                            <input class="form-control" type="number" ng-model="formBook.numRooms" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                            </li>
+                            <p></p>
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-5">
+                                        <label style="margin-top: 9px;">Người lớn <br> (≥
+                                            13 tuổi)</label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <p></p>
+                                        <div class="input-group">
+                                            <input class="form-control" type="number" ng-model="formBook.numAdults" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                            </li>
+                            <p></p>
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-5">
+                                        <label style="margin-top: 9px;">Trẻ em <br> (< 13 tuổi) </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <p></p>
+                                        <div class="input-group">
+                                            <input class="form-control" type="number" ng-model="formBook.numChildren"
+                                                min="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                            </li>
+                            <p></p>
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-warning" type="button"
+                                            ng-click="closeDropdown()">Xong</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <label style="color: #ffffff">.</label>
+                    <button ng-click="checkRoom()" class="btn btn-primary w-100 check-room">Tìm</button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- data room booking -->
 
-    <div class="bg-white shadow" style="padding: 35px;">
-        <table class="table table-bordered dt-responsive nowrap w-100">
-            <thead class="table-warning">
-                <tr>
-                    <th scope="col">Loại phòng</th>
-                    <th scope="col">Thông tin</th>
-                    <th scope="col">Giá hôm nay</th>
-                    <th scope="col">Chúng tôi còn</th>
-                    <th scope="col">Số phòng đặt</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="info in infoRoomBooking">
-                    <td style="width: 350px;">
-                        <div class="row">
-                            <a ng-click="showDetailRoomType(info.roomType)" class="room-type-detail">
-                                <h5>{{ info.name }}</h5>
-                            </a>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p>Diện tích</p>
-                                <p>Hút thuốc</p>
-                                <p>Phù hợp</p>
+    <div class="container">
+        <div class="bg-white shadow" style="padding: 35px;">
+            <table class="table table-bordered dt-responsive nowrap w-100">
+                <thead class="table-warning">
+                    <tr>
+                        <th scope="col">Loại phòng</th>
+                        <th scope="col">Thông tin</th>
+                        <th scope="col">Giá hôm nay</th>
+                        <th scope="col">Chúng tôi còn</th>
+                        <th scope="col">Số phòng đặt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="info in infoRoomBooking">
+                        <td style="width: 350px;">
+                            <div class="row">
+                                <a ng-click="showDetailRoomType(info.roomType)" class="room-type-detail">
+                                    <h5>{{ info.name }}</h5>
+                                </a>
                             </div>
-                            <div class="col-md-8">
-                                <p>: {{info.roomType.area}} m<sup>2</sup></p>
-                                <p>: {{info.roomType.isSmoking ? 'Có' : 'Không'}}</p>
-                                <p>: {{info.roomType.numAdults}} người lớn <br> và
-                                    {{info.roomType.numChilds}} trẻ em</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td ng-if="info.promotion == null">
-                        <strong>{{ info.price | currency: '' : 0}}đ</strong>
-                    </td>
-                    <td ng-if="info.promotion != null">
-                        <strong style="text-decoration: line-through;">{{ info.price |
-                            currency: '' : 0 }}đ</strong>
-                        <br>
-                        <strong style="color: red">{{ info.newPrice |
-                            currency: '' : 0}}đ</strong>
-                        <br>
-                        <span style="color: red">({{info.promotion.name}}-{{
-                            info.promotion.percent }}%</span>
-                        <br>
-                        <span style="color: red">Tối đa: {{info.promotion.maxDiscount |
-                            currency: '' : 0}}đ)</span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span>{{ info.quantity }} phòng</span>
-                    </td>
-                    <td>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <select class="form-control" ng-model="info.numRooms"
-                                        ng-change="updateTotalNumRooms()">
-                                        <option value="0">0</option>
-                                        <option ng-repeat="i in [].constructor(info.quantity) track by $index+1"
-                                            value="{{ $index+1 }}">{{ $index+1 }}
-                                        </option>
-                                    </select>
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>Diện tích</p>
+                                    <p>Hút thuốc</p>
+                                    <p>Phù hợp</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>: {{info.roomType.area}} m<sup>2</sup></p>
+                                    <p>: {{info.roomType.isSmoking ? 'Có' : 'Không'}}</p>
+                                    <p>: {{info.roomType.numAdults}} người lớn <br> và
+                                        {{info.roomType.numChilds}} trẻ em</p>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                        <td ng-if="info.promotion == null">
+                            <strong>{{ info.price | currency: '' : 0}}đ</strong>
+                        </td>
+                        <td ng-if="info.promotion != null">
+                            <strong style="text-decoration: line-through;">{{ info.price |
+                                currency: '' : 0 }}đ</strong>
+                            <br>
+                            <strong style="color: red">{{ info.newPrice |
+                                currency: '' : 0}}đ</strong>
+                            <br>
+                            <span style="color: red">({{info.promotion.name}}-{{
+                                info.promotion.percent }}%</span>
+                            <br>
+                            <span style="color: red">Tối đa: {{info.promotion.maxDiscount |
+                                currency: '' : 0}}đ)</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <span>{{ info.quantity }} phòng</span>
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <select class="form-control" ng-model="info.numRooms"
+                                            ng-change="updateTotalNumRooms()">
+                                            <option value="0">0</option>
+                                            <option ng-repeat="i in [].constructor(info.quantity) track by $index+1"
+                                                value="{{ $index+1 }}">{{ $index+1 }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- room type detail -->
