@@ -46,12 +46,12 @@ public class RoomTypeImageServiceImpl implements RoomTypeImageService {
         return roomImageRepo.save(roomTypeImage);
     }
 
-    @Override
-    public List<RoomTypeImage> getListByCodeRoomType(String codeRoom) {
-        return roomImageRepo.getListByCodeRoomType(codeRoom);
-    }
+	@Override
+	public List<RoomTypeImage> getListByCodeRoom(String codeRoom) {
+		return roomImageRepo.getListByCodeRoom(codeRoom);
+	}
 
-    @Override
+	@Override
 	public void deleteById(Integer id) {
 		roomImageRepo.deleteById(id);;
 	}

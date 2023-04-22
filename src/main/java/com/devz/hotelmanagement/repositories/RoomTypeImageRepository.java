@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface RoomTypeImageRepository extends JpaRepository<RoomTypeImage, Integer> {
 
     @Query("SELECT p FROM RoomTypeImage p WHERE p.roomType.code=?1")
-    List<RoomTypeImage> getListByCodeRoomType(String code);
+    List<RoomTypeImage> getListByCodeRoom(String code);
 
 }

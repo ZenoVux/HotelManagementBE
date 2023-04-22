@@ -22,7 +22,7 @@ public class RoomTypeImageRestController {
     
     @GetMapping("/{codeRoom}")
     public List<RoomTypeImage> getByCodeRoomType(@PathVariable("codeRoom") String codeRoom) {
-        return roomTypeImageService.getListByCodeRoomType(codeRoom);
+        return roomTypeImageService.getListByCodeRoom(codeRoom);
     }
 
     @PostMapping

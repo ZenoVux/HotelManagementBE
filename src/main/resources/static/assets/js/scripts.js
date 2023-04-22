@@ -76,6 +76,7 @@ app.controller("bookOnlineCtrl", function ($scope, $http, $location) {
     $scope.init = function () {
         $http.get("http://localhost:8000/api/booking-online/room-types").then(resp => {
             $scope.roomTypes = resp.data;
+            // console.log(resp.data)
         }).catch(error => {
             console.log("Error", error);
         })

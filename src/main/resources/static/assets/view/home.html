@@ -9,7 +9,7 @@
     <div class="container">
 
         <!-- room Grid-->
-        <div class=" container-xxl py-5">
+        <div id="room" class=" container-xxl py-5">
             <div class="container">
                 <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                     <h1 class="mb-5">Khám Phá<span class="text-primary"> Loại Phòng</span></h1>
@@ -22,7 +22,7 @@
                                     src="http://localhost:8000/images/1681566371247-z4266537403105_706d2c5f4ac9ce193381891b42291a5f.jpg"
                                     alt="">
                                 <small
-                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{roomTypes[0].price
                                     | currency: '' : 0}}đ</small>
                             </div>
                             <div class="p-4 mt-2">
@@ -43,13 +43,15 @@
                                         Bath</small>
                                     <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
                                 </div>
-                                <p class="text-body mb-3">Là một loại phòng khách sạn phổ biến được cung cấp bởi hầu
-                                    hết các
-                                    khách sạn trên toàn thế giới.</p>
+                                <div style="height: 150px;">
+                                    <p class="text-body mb-3">Là một loại phòng khách sạn phổ biến được cung cấp bởi hầu
+                                        hết các
+                                        khách sạn trên toàn thế giới.</p>
+                                </div>
                                 <div class="d-flex justify-content-between">
                                     <a class="btn btn-sm btn-primary rounded py-2 px-4"
-                                        ng-click="views(roomTypes[0],'201')" class="room-link" data-bs-toggle="modal"
-                                        href="#roomModal1">Chi Tiết</a>
+                                        ng-click="views(roomTypes[0],roomTypes[0].code)" class="room-link"
+                                        data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
                                     <a class="btn btn-sm btn-dark rounded py-2 px-4"
                                         ng-click="books(roomTypes[0].code)">Đặt
                                         ngay</a>
@@ -64,7 +66,7 @@
                                     src="http://localhost:8000/images/1681566167076-z4266530473950_0b71957a8e275c71df2ed8ca4dde0380.jpg"
                                     alt="">
                                 <small
-                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{roomTypes[1].price
                                     | currency: '' : 0}}đ</small>
                             </div>
                             <div class="p-4 mt-2">
@@ -85,13 +87,16 @@
                                         Bath</small>
                                     <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
                                 </div>
-                                <p class="text-body mb-3">Là một loại phòng khách sạn cao cấp hơn, với nhiều tiện
-                                    nghi và
-                                    dịch vụ tốt hơn.</p>
+                                <div style="height: 150px;">
+                                    <p class="text-body mb-3">Là một loại phòng khách sạn cao cấp hơn, với nhiều tiện
+                                        nghi và
+                                        dịch vụ tốt hơn.</p>
+                                </div>
+
                                 <div class="d-flex justify-content-between">
                                     <a class="btn btn-sm btn-primary rounded py-2 px-4"
-                                        ng-click="views(roomTypes[1],'301')" class="room-link" data-bs-toggle="modal"
-                                        href="#roomModal1">Chi Tiết</a>
+                                        ng-click="views(roomTypes[1],roomTypes[0].code)" class="room-link"
+                                        data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
                                     <a class="btn btn-sm btn-dark rounded py-2 px-4"
                                         ng-click="books(roomTypes[1].code)">Đặt
                                         ngay</a>
@@ -106,7 +111,7 @@
                                     src="http://localhost:8000/images/1681566167372-z4266530458650_83c44678f2cf106bfff690031f9db8e4.jpg"
                                     alt="">
                                 <small
-                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{roomTypes[2].price
                                     | currency: '' : 0}}đ</small>
                             </div>
                             <div class="p-4 mt-2">
@@ -127,13 +132,16 @@
                                         Bath</small>
                                     <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
                                 </div>
-                                <p class="text-body mb-3">Là một loại phòng khách sạn sang trọng hơn, với các tiện
-                                    nghi và
-                                    dịch vụ cao cấp hơn nữa.</p>
+                                <div style="height: 150px;">
+                                    <p class="text-body mb-3">Là một loại phòng khách sạn sang trọng hơn, với các tiện
+                                        nghi và
+                                        dịch vụ cao cấp hơn nữa.</p>
+                                </div>
+
                                 <div class="d-flex justify-content-between">
                                     <a class="btn btn-sm btn-primary rounded py-2 px-4"
-                                        ng-click="views(roomTypes[2],'401')" class="room-link" data-bs-toggle="modal"
-                                        href="#roomModal1">Chi Tiết</a>
+                                        ng-click="views(roomTypes[2],roomTypes[0].code)" class="room-link"
+                                        data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
                                     <a class="btn btn-sm btn-dark rounded py-2 px-4"
                                         ng-click="books(roomTypes[2].code)">Đặt
                                         ngay</a>
@@ -148,7 +156,7 @@
                                     src="http://localhost:8000/images/1681566371247-z4266537403105_706d2c5f4ac9ce193381891b42291a5f.jpg"
                                     alt="">
                                 <small
-                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{rooms[0].roomType.price
+                                    class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">{{roomTypes[3].price
                                     | currency: '' : 0}}đ</small>
                             </div>
                             <div class="p-4 mt-2">
@@ -169,13 +177,16 @@
                                         Bath</small>
                                     <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
                                 </div>
-                                <p class="text-body mb-3">Là loại phòng cao cấp nhất trong khách sạn, phục vụ cho
-                                    những nhu
-                                    cầu đặc biệt</p>
+                                <div style="height: 150px;">
+                                    <p class="text-body mb-3">Là loại phòng cao cấp nhất trong khách sạn, phục vụ cho
+                                        những nhu
+                                        cầu đặc biệt</p>
+                                </div>
+
                                 <div class="d-flex justify-content-between">
                                     <a class="btn btn-sm btn-primary rounded py-2 px-4"
-                                        ng-click="views(roomTypes[3],'501')" class="room-link" data-bs-toggle="modal"
-                                        href="#roomModal1">Chi Tiết</a>
+                                        ng-click="views(roomTypes[3],roomTypes[0].code)" class="room-link"
+                                        data-bs-toggle="modal" href="#roomModal1">Chi Tiết</a>
                                     <a class="btn btn-sm btn-dark rounded py-2 px-4"
                                         ng-click="books(roomTypes[3].code)">Đặt
                                         ngay</a>
