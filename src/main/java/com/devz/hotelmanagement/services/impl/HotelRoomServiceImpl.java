@@ -296,6 +296,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoice.setBooking(booking);
             invoice.setCreatedDate(new Date());
             invoice.setTotalDeposit(0.0);
+            invoice.setAmount(0.0);
             invoice.setDiscountMoney(0.0);
             invoice.setTotal(0.0);
             invoice.setTotalPayment(0.0);
@@ -430,58 +431,58 @@ public class HotelRoomServiceImpl implements HotelRoomService {
                 // Huỷ phòng thất bại
                 throw new RuntimeException("{\"error\":\"Huỷ phòng thất bại!\"}");
             }
-        } else if (room.getStatus() == 2) {
-            InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(room.getCode());
-            if (invoiceDetail != null) {
-                // update status for invoiceDetail
-
-                // tính tổng tiền dịch vụ
-                List<UsedService> usedServices = usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetail.getId(), true);
-                Double totalServiceFee = usedServices.stream()
-                        .map(usedService -> {
-                            LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
-                            LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
-                            return usedService.getServicePrice() * ChronoUnit.DAYS.between(startedDate, endedDate);
-                        })
-                        .reduce(0.0, Double::sum);
-
-                invoiceDetail.setTotalServiceFee(totalServiceFee);
-
-                // tính tổng tiền phòng
-                Date checkinExpected = invoiceDetail.getCheckinExpected();
-                Date checkoutExpected = invoiceDetail.getCheckoutExpected();
-
-                LocalDate now = LocalDate.now(ZoneId.systemDefault());
-                LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
-                LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
-
-                long days;
-                if (!now.isAfter(checkinExpectedDate) && !now.isBefore(checkinExpectedDate)) {
-                    days = 0;
-                } else if (now.isAfter(checkoutExpectedDate)) {
-                    days = ChronoUnit.DAYS.between(checkinExpectedDate, checkoutExpectedDate);
-                } else {
-                    days = ChronoUnit.DAYS.between(checkinExpectedDate, now);
-                }
-                Double totalRoomFee = invoiceDetail.getRoomPrice() * days;
-
-                invoiceDetail.setTotalRoomFee(totalRoomFee);
-                //
-                invoiceDetail.setTotal(totalRoomFee + totalServiceFee - invoiceDetail.getDeposit());
-                invoiceDetail.setNote(note);
-                invoiceDetail.setStatus(2); // trạng thái chờ thanh toán
-                invoiceDetailService.update(invoiceDetail);
-
-                // Trạng thái dọn phòng
-                room.setStatus(6);
-                if (roomService.update(room) == null) {
-                    // Cập nhật trạng thái phòng thất bại
-                    throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
-                }
-            } else {
-                // Huỷ phòng thất bại
-                throw new RuntimeException("{\"error\":\"Huỷ phòng thất bại!\"}");
-            }
+//        } else if (room.getStatus() == 2) {
+//            InvoiceDetail invoiceDetail = invoiceDetailService.findUsingByRoomCode(room.getCode());
+//            if (invoiceDetail != null) {
+//                // update status for invoiceDetail
+//
+//                // tính tổng tiền dịch vụ
+//                List<UsedService> usedServices = usedServiceService.findAllByInvoiceDetailIdAndStatus(invoiceDetail.getId(), true);
+//                Double totalServiceFee = usedServices.stream()
+//                        .map(usedService -> {
+//                            LocalDate startedDate = LocalDate.ofInstant(usedService.getStartedTime().toInstant(), ZoneId.systemDefault());
+//                            LocalDate endedDate = LocalDate.ofInstant(usedService.getEndedTime().toInstant(), ZoneId.systemDefault());
+//                            return usedService.getServicePrice() * ChronoUnit.DAYS.between(startedDate, endedDate);
+//                        })
+//                        .reduce(0.0, Double::sum);
+//
+//                invoiceDetail.setTotalServiceFee(totalServiceFee);
+//
+//                // tính tổng tiền phòng
+//                Date checkinExpected = invoiceDetail.getCheckinExpected();
+//                Date checkoutExpected = invoiceDetail.getCheckoutExpected();
+//
+//                LocalDate now = LocalDate.now(ZoneId.systemDefault());
+//                LocalDate checkinExpectedDate = LocalDate.ofInstant(checkinExpected.toInstant(), ZoneId.systemDefault());
+//                LocalDate checkoutExpectedDate = LocalDate.ofInstant(checkoutExpected.toInstant(), ZoneId.systemDefault());
+//
+//                long days;
+//                if (!now.isAfter(checkinExpectedDate) && !now.isBefore(checkinExpectedDate)) {
+//                    days = 0;
+//                } else if (now.isAfter(checkoutExpectedDate)) {
+//                    days = ChronoUnit.DAYS.between(checkinExpectedDate, checkoutExpectedDate);
+//                } else {
+//                    days = ChronoUnit.DAYS.between(checkinExpectedDate, now);
+//                }
+//                Double totalRoomFee = invoiceDetail.getRoomPrice() * days;
+//
+//                invoiceDetail.setTotalRoomFee(totalRoomFee);
+//                //
+//                invoiceDetail.setTotal(totalRoomFee + totalServiceFee - invoiceDetail.getDeposit());
+//                invoiceDetail.setNote(note);
+//                invoiceDetail.setStatus(2); // trạng thái chờ thanh toán
+//                invoiceDetailService.update(invoiceDetail);
+//
+//                // Trạng thái dọn phòng
+//                room.setStatus(6);
+//                if (roomService.update(room) == null) {
+//                    // Cập nhật trạng thái phòng thất bại
+//                    throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+//                }
+//            } else {
+//                // Huỷ phòng thất bại
+//                throw new RuntimeException("{\"error\":\"Huỷ phòng thất bại!\"}");
+//            }
         } else {
             // Huỷ phòng thất bại
             throw new RuntimeException("{\"error\":\"Huỷ phòng thất bại!\"}");
@@ -586,7 +587,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         Double lateCheckoutFee = invoiceDetail.getEarlyCheckinFee();
         Double earlyCheckinFee = invoiceDetail.getLateCheckoutFee();
 
-        Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + invoiceDetail.getOrtherSurcharge() + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
+        Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + invoiceDetail.getOrtherSurcharge() + lateCheckoutFee + earlyCheckinFee;
 
         invoiceDetail.setTotal(total);
         invoiceDetail.setCheckout(new Date());
@@ -1063,7 +1064,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoiceDetail.setAdultSurcharge(totalAdultSurcharge);
             invoiceDetail.setChildSurcharge(totalChildSurcharge);
 
-            Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + invoiceDetail.getOrtherSurcharge() + lateCheckoutFee + earlyCheckinFee - invoiceDetail.getDeposit();
+            Double total = totalRoomFee + totalServiceFee + totalAdultSurcharge + totalChildSurcharge + invoiceDetail.getOrtherSurcharge() + lateCheckoutFee + earlyCheckinFee;
 
             invoiceDetail.setTotal(total);
         }
@@ -1120,6 +1121,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         Double totalInvoice = splitInvoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
         newInvoice.setTotal(totalInvoice);
 
+        newInvoice.setAmount(0.0);
         newInvoice.setDiscountMoney(0.0);
         newInvoice.setTotalPayment(0.0);
         invoice.setNote("");
@@ -1267,6 +1269,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             } else {
                 invoiceDetail.setRoomPrice(room.getRoomType().getPrice());
             }
+            invoiceDetail.setDeposit(0.0);
             invoiceDetail.setTotalRoomFee(0.0);
             invoiceDetail.setTotalServiceFee(0.0);
             invoiceDetail.setAdultSurcharge(0.0);

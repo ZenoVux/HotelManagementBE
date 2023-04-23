@@ -74,10 +74,13 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "   iv.booking.customer.phoneNumber, " +
             "   iv.account.fullName, " +
             "   iv.total, " +
-            "   iv.status," +
-            "   iv.createdDate" +
+            "   iv.status, " +
+            "   iv.createdDate, " +
+            "   COUNT(ivd) " +
             ") " +
-            "FROM Invoice iv")
+            "FROM InvoiceDetail ivd " +
+            "   JOIN Invoice iv ON ivd.invoice.id = iv.id " +
+            "GROUP BY iv.code, iv.booking.code, iv.booking.customer.fullName, iv.booking.customer.phoneNumber, iv.account.fullName, iv.total, iv.status, iv.createdDate")
     List<InvoiceResp> findByAllResp();
 
     @Query("SELECT " +
@@ -88,10 +91,14 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "   iv.booking.customer.phoneNumber, " +
             "   iv.account.fullName, " +
             "   iv.total, " +
-            "   iv.status," +
-            "   iv.createdDate" +
+            "   iv.status, " +
+            "   iv.createdDate, " +
+            "   COUNT(ivd) " +
             ") " +
-            "FROM Invoice iv WHERE iv.status = :status")
+            "FROM InvoiceDetail ivd " +
+            "   JOIN Invoice iv ON ivd.invoice.id = iv.id " +
+            "WHERE iv.status = :status " +
+            "GROUP BY iv.code, iv.booking.code, iv.booking.customer.fullName, iv.booking.customer.phoneNumber, iv.account.fullName, iv.total, iv.status, iv.createdDate")
     List<InvoiceResp> findByAllRespByStatus(@Param("status") Integer status);
 
     @Query("SELECT " +
@@ -102,12 +109,14 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "   iv.booking.customer.phoneNumber, " +
             "   iv.account.fullName, " +
             "   iv.total, " +
-            "   iv.status," +
-            "   iv.createdDate" +
+            "   iv.status, " +
+            "   iv.createdDate, " +
+            "   COUNT(ivd) " +
             ") " +
-            "FROM Invoice iv " +
-            "WHERE iv.status = :status AND " +
-            "   iv.createdDate BETWEEN :startDate AND :endDate")
+            "FROM InvoiceDetail ivd " +
+            "   JOIN Invoice iv ON ivd.invoice.id = iv.id " +
+            "WHERE iv.status = :status AND iv.createdDate BETWEEN :startDate AND :endDate " +
+            "GROUP BY iv.code, iv.booking.code, iv.booking.customer.fullName, iv.booking.customer.phoneNumber, iv.account.fullName, iv.total, iv.status, iv.createdDate")
     List<InvoiceResp> findByAllRespByStatusAndRangeDate(@Param("status") Integer status, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Query("SELECT " +
@@ -118,11 +127,14 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
             "   iv.booking.customer.phoneNumber, " +
             "   iv.account.fullName, " +
             "   iv.total, " +
-            "   iv.status," +
-            "   iv.createdDate" +
+            "   iv.status, " +
+            "   iv.createdDate, " +
+            "   COUNT(ivd) " +
             ") " +
-            "FROM Invoice iv " +
-            "WHERE iv.createdDate BETWEEN :startDate AND :endDate")
+            "FROM InvoiceDetail ivd " +
+            "   JOIN Invoice iv ON ivd.invoice.id = iv.id " +
+            "WHERE iv.createdDate BETWEEN :startDate AND :endDate " +
+            "GROUP BY iv.code, iv.booking.code, iv.booking.customer.fullName, iv.booking.customer.phoneNumber, iv.account.fullName, iv.total, iv.status, iv.createdDate")
     List<InvoiceResp> findByAllRespByRangeDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Query("SELECT COUNT(iv) FROM Invoice iv WHERE iv.status = 4 AND iv.booking.customer.peopleId = :customerId")

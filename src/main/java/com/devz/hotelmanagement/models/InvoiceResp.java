@@ -19,5 +19,6 @@ public class InvoiceResp {
     private Double total;
     private Integer status;
     private Date createdDate;
+    private Long roomCount;
 
 }

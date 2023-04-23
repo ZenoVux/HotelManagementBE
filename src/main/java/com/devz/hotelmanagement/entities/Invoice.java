@@ -26,6 +26,9 @@ public class Invoice extends EntityBase {
     @Column(name = "total_deposit")
     private Double totalDeposit;
 
+    @Column
+    private Double amount;
+
     @Column(name = "discount_money")
     private Double discountMoney;
 
