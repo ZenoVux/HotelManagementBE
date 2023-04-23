@@ -9,25 +9,17 @@ import com.devz.hotelmanagement.services.*;
 import com.devz.hotelmanagement.statuses.BookingDetailStatus;
 import com.devz.hotelmanagement.statuses.BookingStatus;
 import com.devz.hotelmanagement.utilities.CurrentAccount;
-import com.devz.hotelmanagement.utilities.VNPayUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @CrossOrigin("*")
@@ -238,7 +230,7 @@ public class BookingOnlineRestController {
             }).collect(Collectors.toList());
 
             // update all room
-            roomService.updateAll(rooms);
+            roomService.updateOrSaveAll(rooms);
 
             double totalDeposit = 0.0;
             for (BookingDetail bookingDetail : bookingDetails) {
