@@ -313,13 +313,13 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $loca
 });
 
 app.controller("bookDetailCtrl", function ($scope, $http, $routeParams,$location) {
-    var bookingId = $routeParams.code
+
     $scope.bookingDetails = [];
     $scope.booking = {};
     $scope.booking.numOfRooms = 0;
 
     $scope.getBooking = function () {
-        $http.get("/api/booking-online/get-booking/" + bookingId).then(resp => {
+        $http.get("/api/booking-online/get-booking/" + $routeParams.code).then(resp => {
             $scope.booking = resp.data;
             $scope.getBookingDetail(resp.data.id);
         }).catch(error => {
