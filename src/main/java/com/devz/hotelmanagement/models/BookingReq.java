@@ -21,15 +21,7 @@ public class BookingReq {
 
     private Customer customer;
 
-    private Room[] rooms;
-
-    private Integer numAdults;
-
-    private Integer numChildren;
-
-    private Date checkinExpected;
-
-    private Date checkoutExpected;
+    private BookingDetailRangeDay[] bookingDetailRangeDay;
 
     private String note;
 

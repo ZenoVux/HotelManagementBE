@@ -63,7 +63,7 @@ public class BookingRestController {
         List<Object[]> info = bookingService.getBooking();
 
         for (Object[] i : info) {
-            BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (String) i[2], (String) i[3], (String) i[4], (Date) i[5], (Integer) i[6], (Double) i[7]);
+            BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (String) i[2], (String) i[3], (String) i[4], (Date) i[5], (Integer) i[6], (Double) i[7], (Integer) i[8], (Integer) i[9]);
             bookingList.add(bookingInfo);
         }
 
@@ -135,66 +135,79 @@ public class BookingRestController {
     public ResponseEntity<?> createBooking(@RequestParam("frontIdCard") MultipartFile frontIdCard, @RequestParam("backIdCard") MultipartFile backIdCard, @RequestParam("bookingReq") String bookingReqJson) {
 
         try {
-
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.setDateFormat(dateFormat);
+            ObjectMapper objectMapper = new ObjectMapper().setDateFormat(dateFormat);
             BookingReq bookingReq = objectMapper.readValue(bookingReqJson, BookingReq.class);
 
-            List<Room> roomReq = List.of(bookingReq.getRooms());
-            List<Room> rooms = roomReq.stream()
+            List<BookingDetailRangeDay> bookingDetailRangeDays = List.of(bookingReq.getBookingDetailRangeDay());
+            List<Room> allRooms = new ArrayList<>();
+            int numAdults = 0, numChildren = 0;
+
+            for (BookingDetailRangeDay bkd : bookingDetailRangeDays) {
+                numAdults += bkd.getNumAdults();
+                numChildren += bkd.getNumChildren();
+                allRooms.addAll(Arrays.asList(bkd.getRooms()));
+
+                boolean areAllRoomsAvailable = true;
+                numAdults += bkd.getNumAdults();
+                numChildren += bkd.getNumChildren();
+                for (Room room : bkd.getRooms()) {
+                    if (!bookingDetailService.findByRoomCodeAndCheckinAndCheckout(room.getCode(), bkd.getCheckinDate(), bkd.getCheckoutDate()).isEmpty()) {
+                        areAllRoomsAvailable = false;
+                        break;
+                    }
+                }
+
+                if (!areAllRoomsAvailable) {
+                    throw new RuntimeException("{\"error\": \"Trong danh sách phòng đã chọn có phòng đã được book, vui lòng chọn phòng lại!\"}");
+                }
+            }
+
+            List<Room> rooms = allRooms.stream()
                     .map(room -> roomService.findById(room.getId()))
                     .collect(Collectors.toList());
 
-            boolean areAllRoomsAvailable = true;
-            for (Room room : rooms) {
-                if (!bookingDetailService.findByRoomCodeAndCheckinAndCheckout(room.getCode(), bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected()).isEmpty()) {
-                    areAllRoomsAvailable = false;
-                    break;
-                }
+            if (bookingReq.getNote() == null) {
+                bookingReq.setNote("");
             }
 
-            if (!areAllRoomsAvailable) {
-                throw new RuntimeException("{\"error\": \"Trong danh sách phòng đã chọn có phòng đã được book, vui lòng chọn phòng lại!\"}");
-            } else {
+            String peopleId = bookingReq.getCustomer().getPeopleId();
+            Customer customer = customerService.searchByPeopleId(peopleId);
+            if (customer == null) {
+                bookingReq.getCustomer().setCustomerType(customerTypeService.findById(1));
+                bookingReq.getCustomer().setFrontIdCard(storageService.saveFile(frontIdCard));
+                bookingReq.getCustomer().setBackIdCard(storageService.saveFile(backIdCard));
+                customer = customerService.create(bookingReq.getCustomer());
+            }
 
-                String peopelId = bookingReq.getCustomer().getPeopleId();
+            Account account = accountService.findByUsername(currentAccount.getUsername());
+            Booking booking = new Booking(account, customer, new Date(), numAdults, numChildren, 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
+            bookingService.create(booking);
 
-                Customer customer = customerService.searchByPeopleId(peopelId);
+            List<BookingDetail> bookingDetails = allRooms.stream()
+                    .map(room -> {
+                        BookingDetailRangeDay bkd = bookingDetailRangeDays.stream()
+                                .filter(range -> Arrays.asList(range.getRooms()).contains(room))
+                                .findFirst().get();
 
-                if (customer == null) {
-                    bookingReq.getCustomer().setCustomerType(customerTypeService.findById(1));
-                    bookingReq.getCustomer().setFrontIdCard(storageService.saveFile(frontIdCard));
-                    bookingReq.getCustomer().setBackIdCard(storageService.saveFile(backIdCard));
-                    customer = customerService.create(bookingReq.getCustomer());
-                }
+                        double price = roomService.findById(room.getId()).getRoomType().getPrice();
 
-                Account account = accountService.findByUsername(currentAccount.getUsername());
+                        List<Promotion> promotions = promotionService.findByRoomType(room.getRoomType().getCode());
 
-                if (bookingReq.getNote() == null) {
-                    bookingReq.setNote("");
-                }
-                Booking booking = new Booking(account, customer, new Date(), bookingReq.getNumAdults(), bookingReq.getNumChildren(), 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
-                bookingService.create(booking);
-
-                List<BookingDetail> bookingDetails = rooms.stream().map(room -> {
-                    List<Promotion> promotions = promotionService.findByRoomType(room.getRoomType().getCode());
-
-                    if (promotions != null && !promotions.isEmpty()) {
-                        double promotionPrice = 0.0;
-                        promotionPrice = (100 - promotions.get(0).getPercent()) * room.getRoomType().getPrice() / 100;
-                        if ((promotions.get(0).getPercent() * room.getRoomType().getPrice() / 100) > promotions.get(0).getMaxDiscount()) {
-                            promotionPrice = room.getRoomType().getPrice() - promotions.get(0).getMaxDiscount();
+                        if (promotions != null && !promotions.isEmpty()) {
+                            double promotionPrice = (100 - promotions.get(0).getPercent()) * price / 100;
+                            if ((promotions.get(0).getPercent() * price / 100) > promotions.get(0).getMaxDiscount()) {
+                                promotionPrice = price - promotions.get(0).getMaxDiscount();
+                            }
+                            price = promotionPrice;
                         }
-                        return new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, promotionPrice, "", BookingDetailStatus.PENDING.getCode(), new Date());
-                    }
-                    return new BookingDetail(room, bookingReq.getCheckinExpected(), bookingReq.getCheckoutExpected(), booking, room.getRoomType().getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date());
-                }).collect(Collectors.toList());
-                bookingDetailService.createAll(bookingDetails);
 
-                return ResponseEntity.ok().body(booking);
-            }
+                        return new BookingDetail(room, bkd.getCheckinDate(), bkd.getCheckoutDate(), booking, price, "", BookingDetailStatus.PENDING.getCode(), new Date());
+                    }).collect(Collectors.toList());
 
+            bookingDetailService.createAll(bookingDetails);
+
+            return ResponseEntity.ok().body(booking);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         } catch (RuntimeException e) {

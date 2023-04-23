@@ -27,4 +27,8 @@ public class BookingInfo {
 
     private Double deposit;
 
+    private Integer adults;
+
+    private Integer childs;
+
 }
