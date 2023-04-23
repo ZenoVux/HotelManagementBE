@@ -64,45 +64,16 @@
                         {{booking.numOfRooms}}
                     </td>
                 </tr>
-                <!-- Danh sách phòng -->
-                <!-- <tr>
-                    <td>Danh sách phòng</td>
-                    <td colspan="2">
-                        <table class="table table-hover table-striped table-nowrap mb-0 ">
-                            <thead>
-                                <tr>
-                                    <th>Phòng</th>
-                                    <th>Giá</th>
-                                    <th>Check-in</th>
-                                    <th>Check-out</th>
-                                    <th>Số đêm</th>
-                                    <th style="word-wrap: break-word;">Ghi chú</th>
-                                    <th>Ngày đặt</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="bk in bookingDetails">
-                                    <td>{{bk.room.code}}</td>
-                                    <td>{{bk.room.price | currency: '' : 0}}đ</td>
-                                    <td>{{bk.checkinExpected | date:'dd-MM-yyyy'}}</td>
-                                    <td>{{bk.checkoutExpected | date:'dd-MM-yyyy'}}</td>
-                                    <td>{{(bk.checkoutExpected - bk.checkinExpected) /
-                                        (1000*60*60*24)}}</td>
-                                    <td>{{bk.note}}</td>
-                                    <td>{{bk.createdDate | date:'HH:mm dd-MM-yyyy'}}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr> -->
             </tbody>
         </table>
         <div class="row">
             <div class="col-md-9">
                 <a class="btn btn-sm btn-primary rounded py-2 px-4"
-                href="http://localhost:8000/home"  class="room-link">Về trang chủ</a>
+                    ng-click="cancelBooking(booking.id)" class="room-link">Huỷ đơn</a>
+                <a class="btn btn-sm btn-dark rounded py-2 px-4"
+                    href="http://localhost:8000/payment/booking/{{booking.id}}">Tiếp tục thanh toán</a>
             </div>
+            <div class="col-md-3" id="countdown" style="color: red"></div>
         </div>
     </div>
     <!-- card footer -->

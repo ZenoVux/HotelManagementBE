@@ -171,8 +171,7 @@ public class BookingOnlineRestController {
             }
 
             rooms.forEach(room -> room.setStatus(0));
-            roomService.updateAll(rooms);
-
+//            roomService.updateAll(rooms);
             return ResponseEntity.ok().body(rooms);
 
         } catch (ParseException e) {
@@ -233,9 +232,9 @@ public class BookingOnlineRestController {
                     if ((promotions.get(0).getPercent() * room.getRoomType().getPrice() / 100) > promotions.get(0).getMaxDiscount()) {
                         promotionPrice = room.getRoomType().getPrice() - promotions.get(0).getMaxDiscount();
                     }
-                    return new BookingDetail(room, checkinDate, checkoutDate, booking, promotionPrice, "", BookingDetailStatus.PENDING.getCode(), new Date());
+                    return new BookingDetail(room, checkinDate, checkoutDate, booking, promotionPrice, "", BookingDetailStatus.CANCELLED.getCode(), new Date());
                 }
-                return new BookingDetail(room, checkinDate, checkoutDate, booking, room.getRoomType().getPrice(), "", BookingDetailStatus.PENDING.getCode(), new Date());
+                return new BookingDetail(room, checkinDate, checkoutDate, booking, room.getRoomType().getPrice(), "", BookingDetailStatus.CANCELLED.getCode(), new Date());
             }).collect(Collectors.toList());
 
             // update all room
@@ -262,14 +261,24 @@ public class BookingOnlineRestController {
 
     }
 
-    @GetMapping("/get-booking/{id}")
-    public Booking getBookingById(@PathVariable("id") Integer id) {
-        return bookingService.findById(id);
+    @GetMapping("/get-booking/{code}")
+    public Booking getBookingById(@PathVariable("code") String code) {
+        return bookingService.findByCode(code);
     }
 
     @GetMapping("/get-booking-detail/{id}")
     public List<BookingDetail> getBookingDetailByBookingId(@PathVariable("id") Integer id) {
         return bookingDetailService.findByBookingId(id);
+    }
+
+    @PostMapping("/cancel-booking/{id}")
+    public Booking cancelBookingById(@PathVariable("id") Integer id) {
+       Booking bk = new Booking();
+       bk = bookingService.findById(id);
+       bk.setStatus(BookingStatus.CANCELLED.getCode());
+       bookingService.update(bk);
+       return bk;
+
     }
 
 }

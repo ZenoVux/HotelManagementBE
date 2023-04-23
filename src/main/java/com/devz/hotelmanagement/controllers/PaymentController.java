@@ -137,10 +137,11 @@ public class PaymentController {
                 if ("00".equals(req.getParameter("vnp_TransactionStatus"))) {
                     System.out.println("Success");
                     bookingService.update(booking);
+                    resp.sendRedirect("http://localhost:8000/home#!/booking/detail/" + code);
                 } else {
                     System.out.println("Failed");
+                    resp.sendRedirect("http://localhost:8000/home#!/booking/error/" + code);
                 }
-                resp.sendRedirect("http://localhost:8000/home#!/booking/detail/" + code);
             }
         } else {
             System.out.println("invalid signature");
