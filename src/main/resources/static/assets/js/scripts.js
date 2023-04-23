@@ -64,6 +64,10 @@ app.config(function ($routeProvider) {
             templateUrl: "/assets/view/booking-detail.html",
             controller: "bookDetailCtrl",
         })
+        .when("/booking/error/:code", {
+            templateUrl: "/assets/view/error-contract.html",
+            controller: "bookErrorCtrl",
+        })
         .otherwise({
             redirectTo: "/"
         });
@@ -308,9 +312,8 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $loca
 
 });
 
-app.controller("bookDetailCtrl", function ($scope, $http, $routeParams) {
+app.controller("bookDetailCtrl", function ($scope, $http, $routeParams,$location) {
     var bookingId = $routeParams.code
-    $scope.bookingDetails = [];
     $scope.bookingDetails = [];
     $scope.booking = {};
     $scope.booking.numOfRooms = 0;
@@ -318,13 +321,14 @@ app.controller("bookDetailCtrl", function ($scope, $http, $routeParams) {
     $scope.getBooking = function () {
         $http.get("/api/booking-online/get-booking/" + bookingId).then(resp => {
             $scope.booking = resp.data;
+            $scope.getBookingDetail(resp.data.id);
         }).catch(error => {
             console.log("Error", error);
         });
     }
 
-    $scope.getBookingDetail = function () {
-        $http.get("/api/booking-online/get-booking-detail/" + bookingId).then(resp => {
+    $scope.getBookingDetail = function (id) {
+        $http.get("/api/booking-online/get-booking-detail/" + id).then(resp => {
             $scope.bookingDetails = resp.data;
             for (var i = 0; i < $scope.bookingDetails.length; i++) {
                 $scope.bookingDetails[i].checkinExpected = new Date($scope.bookingDetails[i].checkinExpected);
@@ -338,9 +342,82 @@ app.controller("bookDetailCtrl", function ($scope, $http, $routeParams) {
 
     $scope.init = function () {
         $scope.getBooking();
-        $scope.getBookingDetail();
     }
+
+    
 
     $scope.init();
 
+});
+
+app.controller("bookErrorCtrl", function ($scope, $http, $routeParams,$location) {
+    var bookingId = $routeParams.code
+    $scope.bookingDetails = [];
+    $scope.booking = {};
+    $scope.booking.numOfRooms = 0;
+
+    $scope.getBooking = function () {
+        $http.get("/api/booking-online/get-booking/" + bookingId).then(resp => {
+            $scope.booking = resp.data;
+            $scope.getBookingDetail(resp.data.id);
+        }).catch(error => {
+            console.log("Error", error);
+        });
+    }
+
+    $scope.getBookingDetail = function (id) {
+        $http.get("/api/booking-online/get-booking-detail/" + id).then(resp => {
+            $scope.bookingDetails = resp.data;
+            for (var i = 0; i < $scope.bookingDetails.length; i++) {
+                $scope.bookingDetails[i].checkinExpected = new Date($scope.bookingDetails[i].checkinExpected);
+                $scope.bookingDetails[i].checkoutExpected = new Date($scope.bookingDetails[i].checkoutExpected);
+            }
+            $scope.booking.numOfRooms = $scope.bookingDetails.length;
+        }).catch(error => {
+            console.log("Error", error);
+        });
+    }
+
+    $scope.init = function () {
+        $scope.getBooking();
+        $scope.countDown();
+    }
+
+    $scope.cancelBooking = function(id){
+        $http.post("/api/booking-online/cancel-booking/" + id).then(resp => {
+            alert("Huỷ đơn thành công !")
+            $location.path("/home#!")
+        }).catch(error => {
+            console.log("Error", error);
+        });
+    }
+
+    $scope.countDown = function () {
+
+        var countdownElement = document.getElementById('countdown');
+
+        var startTime = new Date().getTime();
+        var endTime = startTime + 10 * 60 * 1000; // giu phong 10p
+
+        var countdownInterval = setInterval(function () {
+            var timeLeft = endTime - new Date().getTime();
+
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                countdownElement.innerHTML = 'Hết thời gian!';
+                $scope.cancelBooking($scope.booking.id);
+                $location.path("/home#!")
+                return;
+            }
+
+            var minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
+            var seconds = Math.floor((timeLeft / 1000) % 60);
+
+            var formattedTime = ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2) + ' phút';
+            countdownElement.innerHTML = 'Đơn đặt sẽ tự huỷ sau: ' + formattedTime;
+        }, 1000);
+
+    }
+
+    $scope.init();
 });
