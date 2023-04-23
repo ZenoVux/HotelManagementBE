@@ -80,8 +80,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Object[]> getBooking() {
-        return bookingRepo.getBooking();
+    public List<Object[]> getBooking(Date startDate, Date endDate) {
+        return bookingRepo.getBooking(startDate, endDate);
     }
 
     @Override

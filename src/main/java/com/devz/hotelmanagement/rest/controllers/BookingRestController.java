@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -58,15 +59,14 @@ public class BookingRestController {
     private CurrentAccount currentAccount;
 
     @GetMapping
-    public List<BookingInfo> getBooking() {
+    public List<BookingInfo> getBookings(@RequestParam("startDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
+                                         @RequestParam("endDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDate) {
         List<BookingInfo> bookingList = new ArrayList<>();
-        List<Object[]> info = bookingService.getBooking();
-
+        List<Object[]> info = bookingService.getBooking(startDate, endDate);
         for (Object[] i : info) {
             BookingInfo bookingInfo = new BookingInfo((String) i[0], (Long) i[1], (String) i[2], (String) i[3], (String) i[4], (Date) i[5], (Integer) i[6], (Double) i[7], (Integer) i[8], (Integer) i[9]);
             bookingList.add(bookingInfo);
         }
-
         return bookingList;
     }
 
