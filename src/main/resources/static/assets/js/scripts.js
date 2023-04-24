@@ -322,6 +322,7 @@ app.controller("bookDetailCtrl", function ($scope, $http, $routeParams,$location
         $http.get("/api/booking-online/get-booking/" + $routeParams.code).then(resp => {
             $scope.booking = resp.data;
             $scope.getBookingDetail(resp.data.id);
+            $scope.getQR(resp.data);
         }).catch(error => {
             console.log("Error", error);
         });
@@ -335,6 +336,15 @@ app.controller("bookDetailCtrl", function ($scope, $http, $routeParams,$location
                 $scope.bookingDetails[i].checkoutExpected = new Date($scope.bookingDetails[i].checkoutExpected);
             }
             $scope.booking.numOfRooms = $scope.bookingDetails.length;
+        }).catch(error => {
+            console.log("Error", error);
+        });
+    }
+
+    $scope.getQR = function (bk) { // send Mail
+        var mails = {email:bk.customer.email,bookingCode:bk.code}
+        $http.post("/reset-password/qrcode" ,mails).then(resp => {
+            alert("QR thanh cong")
         }).catch(error => {
             console.log("Error", error);
         });
