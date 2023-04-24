@@ -949,12 +949,22 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             if (discount >= promotion.getMaxDiscount()) {
                 discount = promotion.getMaxDiscount();
             }
+            invoice.setPromotion(promotion);
             invoice.setDiscountMoney(discount);
             invoice.setTotalPayment(invoice.getTotal() - discount);
-            invoice.setPromotion(promotion);
+            if (invoice.getTotalDeposit() - invoice.getTotal() + discount <= 0) {
+                invoice.setAmount(invoice.getTotal() - invoice.getTotalDeposit() - discount);
+            } else {
+                invoice.setAmount(0.0);
+            }
         } else {
             invoice.setDiscountMoney(0.0);
             invoice.setTotalPayment(invoice.getTotal());
+            if (invoice.getTotalDeposit() - invoice.getTotal() <= 0) {
+                invoice.setAmount(invoice.getTotal() - invoice.getTotalDeposit());
+            } else {
+                invoice.setAmount(0.0);
+            }
         }
 
         switch (paymentMethod.getCode()) {

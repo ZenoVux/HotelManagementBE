@@ -52,7 +52,7 @@ public class PaymentController {
         }
         String ip = VNPayUtil.getIpAddress(req);
 
-        String paymentUrl = vnPayService.paymentUrl(code + "-" + VNPayUtil.getRandomNumber(8), invoice.getTotalPayment().intValue(), ip);
+        String paymentUrl = vnPayService.paymentUrl(code + "-" + VNPayUtil.getRandomNumber(8), invoice.getAmount().intValue(), ip);
         // chuyển hướng trang sang VNPay
         resp.sendRedirect(paymentUrl);
     }
@@ -116,7 +116,7 @@ public class PaymentController {
             if (code.startsWith("IV")) {
                 Invoice invoice = invoiceService.findByCode(code);
                 if (invoice == null) {
-                    resp.sendRedirect("http://127.0.0.1:5500/#!/invoices");
+                    resp.sendRedirect("http://localhost:5500/#!/invoices");
                     return;
                 }
                 if ("00".equals(req.getParameter("vnp_TransactionStatus"))) {
@@ -127,7 +127,7 @@ public class PaymentController {
                 } else {
                     System.out.println("Failed");
                 }
-                resp.sendRedirect("http://127.0.0.1:5500/#!/invoices/" + code);
+                resp.sendRedirect("http://localhost:5500/#!/invoices/" + code);
             } else if (code.startsWith("BK")) {
                 Booking booking = bookingService.findByCode(code);
                 if (booking == null) {
