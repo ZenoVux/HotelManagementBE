@@ -2,10 +2,7 @@ package com.devz.hotelmanagement.services.impl;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.amazonaws.services.s3.model.ListObjectsV2Result;
-import com.amazonaws.services.s3.model.PutObjectResult;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.*;
 import com.devz.hotelmanagement.services.StorageService;
 import jakarta.activation.MimetypesFileTypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -108,5 +106,15 @@ public class S3StorageServiceImpl implements StorageService {
 
         return url.toString();
 
+    }
+
+    @Override
+    public String saveFile2(InputStream inputStream, String fileName) {
+        try {
+            s3.putObject(bucketName, fileName, inputStream, new ObjectMetadata());
+            return fileName;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
