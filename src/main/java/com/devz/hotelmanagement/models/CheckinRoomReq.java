@@ -9,6 +9,7 @@ import java.util.List;
 public class CheckinRoomReq {
 
     private String code;
+    private Double earlyCheckinFee;
     private List<CustomerCheckinReq> customers;
     private List<ServiceCheckinReq> services;
 

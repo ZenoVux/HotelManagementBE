@@ -6,5 +6,6 @@ import lombok.Data;
 public class CheckoutRoomReq {
 
     private String code;
+    private Double lateCheckoutFee;
 
 }

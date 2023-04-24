@@ -274,6 +274,9 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             // Trạng thái phòng không hợp lệ
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
+        if (checkinRoomReq.getEarlyCheckinFee() != null && checkinRoomReq.getEarlyCheckinFee() < 0) {
+            throw new RuntimeException("{\"error\":\"Phụ phí nhận phòng sớm phải lớn hơn hoặc bằng 0!\"}");
+        }
 
         // update status for Room
         room.setStatus(2); // trạng thái đang ở
@@ -325,7 +328,11 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         invoiceDetail.setAdultSurcharge(0.0);
         invoiceDetail.setChildSurcharge(0.0);
         invoiceDetail.setOrtherSurcharge(0.0);
-        invoiceDetail.setEarlyCheckinFee(0.0);
+        if (checkinRoomReq.getEarlyCheckinFee() != null && checkinRoomReq.getEarlyCheckinFee() > 0) {
+            invoiceDetail.setEarlyCheckinFee(checkinRoomReq.getEarlyCheckinFee());
+        } else {
+            invoiceDetail.setEarlyCheckinFee(0.0);
+        }
         invoiceDetail.setLateCheckoutFee(0.0);
 
         if (booking.getDeposit() != null && booking.getDeposit() > 0) {
@@ -518,6 +525,15 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (room.getStatus() != 2) {
             // Trạng thái phòng không hợp lệ
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+        if (checkoutRoomReq.getLateCheckoutFee() != null && checkoutRoomReq.getLateCheckoutFee() < 0) {
+            throw new RuntimeException("{\"error\":\"Phụ phí trả phòng muộn phải lớn hơn hoặc bằng 0!\"}");
+        }
+
+        if (checkoutRoomReq.getLateCheckoutFee() != null && checkoutRoomReq.getLateCheckoutFee() > 0) {
+            invoiceDetail.setLateCheckoutFee(checkoutRoomReq.getLateCheckoutFee());
+        } else {
+            invoiceDetail.setEarlyCheckinFee(0.0);
         }
 
         // trạng thái dọn phòng
@@ -940,8 +956,10 @@ public class HotelRoomServiceImpl implements HotelRoomService {
             invoice.setDiscountMoney(0.0);
             invoice.setTotalPayment(invoice.getTotal());
         }
+
         switch (paymentMethod.getCode()) {
             case "CASH":
+            case "DEPOSIT":
                 invoice.setPaidDate(new Date());
                 invoice.setStatus(4);
                 break;
@@ -1157,23 +1175,37 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (splitInvoiceDetails.size() <= 0) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
+
+        if (invoiceDetails.size() - splitInvoiceDetails.size() <= 0) {
+            throw new RuntimeException("{\"error\":\"Phải có ít nhất một phòng trong hoá đơn!\"}");
+        }
+
+        Long count = splitInvoiceDetails.stream().filter(ivd -> ivd.getTotal() == 0).count();
+        if (count > 0) {
+            throw new RuntimeException("{\"error\":\"Không thể tách phòng có tổng tiền bằng 0!\"}");
+        }
+
+//        if (count <= (invoiceDetails.size() - splitInvoiceDetails.size())) {
+//            throw new RuntimeException("{\"error\":\"Phải có ít nhất một phòng có tổng tiền lớn hơn 0!\"}");
+//        }
+
         Invoice newInvoice = new Invoice();
         newInvoice.setBooking(invoice.getBooking());
         newInvoice.setCreatedDate(new Date());
 
-        // Tổng tiền trả trước
-        Double totalDeposit = splitInvoiceDetails.stream().map(ivd -> ivd.getDeposit()).reduce(0.0, Double::sum);
-        newInvoice.setTotalDeposit(totalDeposit);
+        // Tổng tiền trả trước hoá đơn mới
+        Double newInvoiceTotalDeposit = splitInvoiceDetails.stream().map(ivd -> ivd.getDeposit()).reduce(0.0, Double::sum);
+        newInvoice.setTotalDeposit(newInvoiceTotalDeposit);
 
-        // Tổng tiền hoá đơn
-        Double totalInvoice = splitInvoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
-        newInvoice.setTotal(totalInvoice);
+        // Tổng tiền hoá đơn đơn mới
+        Double newInvoiceTotalInvoice = splitInvoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
+        newInvoice.setTotal(newInvoiceTotalInvoice);
 
         newInvoice.setAmount(0.0);
         newInvoice.setDiscountMoney(0.0);
         newInvoice.setTotalPayment(0.0);
-        invoice.setNote("");
-        newInvoice.setStatus(2); // trạng thái chờ
+        newInvoice.setNote("");
+        newInvoice.setStatus(2); // trạng thái chưa thanh toán
 
         String username = req.getAttribute("username").toString();
 
@@ -1191,6 +1223,21 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (invoiceDetailService.updateOrSaveAll(splitInvoiceDetails).size() != splitInvoiceDetails.size()) {
             throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
         }
+
+        invoiceDetails = invoiceDetailService.findByInvoiceCode(invoice.getCode());
+
+        // Tổng tiền trả trước hoá đơn cũ
+        Double totalDeposit = invoiceDetails.stream().map(ivd -> ivd.getDeposit()).reduce(0.0, Double::sum);
+        invoice.setTotalDeposit(totalDeposit);
+
+        // Tổng tiền hoá đơn đơn cũ
+        Double totalInvoice = invoiceDetails.stream().map(ivd -> ivd.getTotal()).reduce(0.0, Double::sum);
+        invoice.setTotal(totalInvoice);
+
+        if (invoiceService.update(invoice) == null) {
+            throw new RuntimeException("{\"error\":\"Có lỗi xảy ra vui lòng thử lại!\"}");
+        }
+
         return newInvoice;
     }
 
