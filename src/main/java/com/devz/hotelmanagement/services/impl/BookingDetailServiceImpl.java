@@ -108,6 +108,11 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     }
 
     @Override
+    public List<BookingDetail> updateAll(List<BookingDetail> bookingDetails) {
+        return bookingDetailRepo.saveAll(bookingDetails);
+    }
+
+    @Override
     public List<BookingDetail> findByBookingId(Integer id) {
         return bookingDetailRepo.findByBookingId(id);
     }

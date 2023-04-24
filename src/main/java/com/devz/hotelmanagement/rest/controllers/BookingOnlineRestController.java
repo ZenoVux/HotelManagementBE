@@ -1,15 +1,15 @@
 package com.devz.hotelmanagement.rest.controllers;
 
 import com.devz.hotelmanagement.entities.*;
-import com.devz.hotelmanagement.models.BookingOnlReq;
-import com.devz.hotelmanagement.models.RoomBooking;
-import com.devz.hotelmanagement.models.RoomBookingOnl;
+import com.devz.hotelmanagement.models.*;
 import com.devz.hotelmanagement.services.*;
 
 import com.devz.hotelmanagement.statuses.BookingDetailStatus;
 import com.devz.hotelmanagement.statuses.BookingStatus;
 import com.devz.hotelmanagement.utilities.CurrentAccount;
 import com.devz.hotelmanagement.utilities.VNPayUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -257,6 +258,47 @@ public class BookingOnlineRestController {
 
         } catch (ParseException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<?> confirm(@RequestParam("bookingConfirmJson") String bookingConfirmJson) {
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            BookingConfirmReq bookingConfirmReq = objectMapper.readValue(bookingConfirmJson, BookingConfirmReq.class);
+
+            System.out.println(bookingConfirmReq);
+
+            Account account = accountService.findByUsername(currentAccount.getUsername());
+            Booking booking = bookingService.findByCode(bookingConfirmReq.getBookingCode());
+            booking.setAccount(account);
+            booking.setStatus(BookingStatus.CONFIRMED.getCode());
+            booking.setNote(bookingConfirmReq.getNote());
+
+            List<BookingDetail> bookingDetails = bookingDetailService.findByBookingId(booking.getId());
+            List<Room> rooms = List.of(bookingConfirmReq.getRooms());
+
+            if (rooms.size() != bookingDetails.size()) {
+                throw new RuntimeException("{\"error\": \"Số lượng phòng chọn không đúng với số phòng đã book!\"}");
+            }
+
+            for (int i = 0; i < bookingDetails.size(); i++) {
+                BookingDetail bookingDetail = bookingDetails.get(i);
+                Room room = rooms.get(i);
+                bookingDetail.setRoom(room);
+                bookingDetail.setStatus(BookingDetailStatus.PENDING.getCode());
+            }
+
+            bookingService.update(booking);
+            bookingDetailService.updateAll(bookingDetails);
+
+            return ResponseEntity.ok().body(booking);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }

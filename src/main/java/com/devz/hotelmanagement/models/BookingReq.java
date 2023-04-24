@@ -23,6 +23,8 @@ public class BookingReq {
 
     private BookingDetailRangeDay[] bookingDetailRangeDay;
 
+    private String paymentCode;
+
     private String note;
 
 }
