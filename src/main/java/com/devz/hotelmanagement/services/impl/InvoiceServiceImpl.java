@@ -45,18 +45,18 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice create(Invoice invoice) {
         invoice.setId(null);
-        try {
-            String maxCode = invoiceRepo.getMaxCode();
-            Integer index = 1;
-            if (maxCode != null) {
-                index = Integer.parseInt(maxCode.replace("IV", ""));
-                index++;
-            }
-            String code = String.format("IV%05d", index);
-            invoice.setCode(code);
-        } catch (Exception ex) {
-
-        }
+//        try {
+//            String maxCode = invoiceRepo.getMaxCode();
+//            Integer index = 1;
+//            if (maxCode != null) {
+//                index = Integer.parseInt(maxCode.replace("IV", ""));
+//                index++;
+//            }
+//            String code = String.format("IV%05d", index);
+//            invoice.setCode(code);
+//        } catch (Exception ex) {
+//
+//        }
         return invoiceRepo.save(invoice);
     }
 

@@ -533,7 +533,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
         if (checkoutRoomReq.getLateCheckoutFee() != null && checkoutRoomReq.getLateCheckoutFee() > 0) {
             invoiceDetail.setLateCheckoutFee(checkoutRoomReq.getLateCheckoutFee());
         } else {
-            invoiceDetail.setEarlyCheckinFee(0.0);
+            invoiceDetail.setLateCheckoutFee(0.0);
         }
 
         // trạng thái dọn phòng
