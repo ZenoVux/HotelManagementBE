@@ -342,7 +342,7 @@ app.controller("bookDetailCtrl", function ($scope, $http, $routeParams,$location
             $scope.booking = resp.data;
             $scope.getBookingDetail(resp.data.id);
             $scope.getQR(resp.data);
-            alert("Thông tin booking đã được gửi đến email của bản. Vui lòng check email!");
+            alert("Đặt phòng thành công!");
         }).catch(error => {
             console.log("Error", error);
         });
@@ -364,7 +364,7 @@ app.controller("bookDetailCtrl", function ($scope, $http, $routeParams,$location
     $scope.getQR = function (bk) { // send Mail
         var mails = {email:bk.customer.email,bookingCode:bk.code}
         $http.post("/reset-password/qrcode" ,mails).then(resp => {
-            alert("QR thanh cong")
+            console.log("QR thanh cong")
         }).catch(error => {
             console.log("Error", error);
         });
