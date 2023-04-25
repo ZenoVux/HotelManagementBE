@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin("*")
 @RestController
@@ -62,6 +60,14 @@ public class RoomRestController {
     @GetMapping("/set-code-room/{floor_Id}")
     public String setCodeRoom(@PathVariable("floor_Id") Integer floor_Id) {
         return roomService.getMaxCode(floor_Id);
+    }
+
+    @GetMapping("/get-name-type/{roomCode}")
+    public ResponseEntity<Map<String, Object>> getNameTypeByRoomCode(@PathVariable("roomCode") String roomCode) {
+        Map<String, Object> result = new HashMap<>();
+        String nameType = roomService.getNameTypeByRoomCode(roomCode);
+        result.put("type", nameType);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

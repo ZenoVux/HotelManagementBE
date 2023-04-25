@@ -91,4 +91,9 @@ public class RoomServiceImpl implements RoomService {
         return roomRepo.saveAll(rooms);
     }
 
+    @Override
+    public String getNameTypeByRoomCode(String roomCode) {
+        return roomRepo.getNameTypeByRoomCode(roomCode);
+    }
+
 }

@@ -2,6 +2,7 @@ package com.devz.hotelmanagement.services;
 
 import com.devz.hotelmanagement.entities.Booking;
 import com.devz.hotelmanagement.models.BookingInfo;
+import com.devz.hotelmanagement.models.NumberRoomBookingOnl;
 
 import java.util.Date;
 import java.util.List;
@@ -18,5 +19,6 @@ public interface BookingService extends ServiceBase<Booking> {
 
     List<Booking> getBookingByCusId(Integer id);
 
+    List<Object[]> getNumberRoomBookingOnl(Date checkin, Date checkout);
 
 }

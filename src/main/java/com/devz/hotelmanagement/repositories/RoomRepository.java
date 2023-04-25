@@ -46,4 +46,19 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             "                           ivd.status = 1)" + // trạng thái đang sử dụng
             "ORDER BY r.code ASC")
     List<Room> findUnbookedRoomsByCheckinAndCheckout(@Param("checkinDate") Date checkinDate, @Param("checkoutDate") Date checkoutDate);
+
+    @Query(value =
+            "SELECT " +
+            "CONCAT(rt.name, ' | ', GROUP_CONCAT(DISTINCT CONCAT(br.quantity_bed, ' ', bt.name) ORDER BY bt.name SEPARATOR ' & ')) AS category_name " +
+            "FROM " +
+            "rooms r " +
+            "LEFT JOIN room_types rt ON r.room_type_id = rt.id " +
+            "LEFT JOIN bed_rooms br ON r.id = br.room_id " +
+            "LEFT JOIN bed_types bt ON br.bed_type_id = bt.id " +
+            "WHERE " +
+            "r.code = :roomCode " +
+            "GROUP BY " +
+            "rt.id ", nativeQuery = true)
+    String getNameTypeByRoomCode(@Param("roomCode") String roomCode);
+
 }
