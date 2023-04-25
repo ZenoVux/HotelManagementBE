@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.devz.hotelmanagement.models.BookingInfo;
+import com.devz.hotelmanagement.models.NumberRoomBookingOnl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,5 +88,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getBookingByCusId(Integer id) {
         return bookingRepo.getBookingByCusId(id);
+    }
+
+    @Override
+    public List<Object[]> getNumberRoomBookingOnl(Date checkin, Date checkout) {
+        return bookingRepo.getNumberRoomBookingOnl(checkin, checkout);
     }
 }

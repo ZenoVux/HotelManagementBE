@@ -99,10 +99,10 @@ public class BookingOnlineRestController {
         return roomTypeService.findByCode(code);
     }
 
-	@GetMapping("/img/{codeRoom}")
-	public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
-		return roomTypeImageService.getListByCodeRoom(codeRoom);
-	}
+    @GetMapping("/img/{codeRoom}")
+    public List<RoomTypeImage> getByCodeRoom(@PathVariable("codeRoom") String codeRoom) {
+        return roomTypeImageService.getListByCodeRoom(codeRoom);
+    }
 
     @GetMapping("/info")
     public List<RoomBooking> getInfoRoomBooking(@RequestParam("checkinDate") String checkin, @RequestParam("checkoutDate") String checkout, @RequestParam("roomType") String roomType) {
@@ -201,7 +201,7 @@ public class BookingOnlineRestController {
                 customer.setEmail(bookingData.getEmail());
                 customer.setCustomerType(customerTypeService.findById(1));
                 customerService.create(customer);
-            }else{
+            } else {
                 customer = customerService.findByPhoneNumber(bookingData.getPhoneNumber());
             }
             booking.setCustomer(customer);
@@ -225,7 +225,6 @@ public class BookingOnlineRestController {
             }
 
             List<BookingDetail> bookingDetails = rooms.stream().map(room -> {
-                room.setStatus(0);
                 List<Promotion> promotions = promotionService.findByRoomType(room.getRoomType().getCode());
                 if (promotions != null && !promotions.isEmpty()) {
                     double promotionPrice = 0.0;
@@ -237,9 +236,6 @@ public class BookingOnlineRestController {
                 }
                 return new BookingDetail(room, checkinDate, checkoutDate, booking, room.getRoomType().getPrice(), "", BookingDetailStatus.CANCELLED.getCode(), new Date());
             }).collect(Collectors.toList());
-
-            // update all room
-            roomService.updateOrSaveAll(rooms);
 
             double totalDeposit = 0.0;
             for (BookingDetail bookingDetail : bookingDetails) {
@@ -315,12 +311,33 @@ public class BookingOnlineRestController {
 
     @PostMapping("/cancel-booking/{id}")
     public Booking cancelBookingById(@PathVariable("id") Integer id) {
-       Booking bk = new Booking();
-       bk = bookingService.findById(id);
-       bk.setStatus(BookingStatus.CANCELLED.getCode());
-       bookingService.update(bk);
-       return bk;
+        Booking bk = new Booking();
+        bk = bookingService.findById(id);
+        bk.setStatus(BookingStatus.CANCELLED.getCode());
+        bookingService.update(bk);
+        return bk;
 
+    }
+
+    @GetMapping("/get-number-room/pending")
+    public List<NumberRoomBookingOnl> getNumberRoomBookingOnl(@RequestParam("checkinDate") String checkin, @RequestParam("checkoutDate") String checkout) {
+
+        try {
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            Date checkinDate = formatter.parse(checkin);
+            Date checkoutDate = formatter.parse(checkout);
+
+            List<Object[]> infoRoomPending = bookingService.getNumberRoomBookingOnl(checkinDate,checkoutDate);
+            return infoRoomPending.stream().map(roomPending -> {
+                NumberRoomBookingOnl numberRoomBookingOnl = new NumberRoomBookingOnl();
+                numberRoomBookingOnl.setType((String) roomPending[0]);
+                numberRoomBookingOnl.setNumberPending((Long) roomPending[1]);
+                return numberRoomBookingOnl;
+            }).collect(Collectors.toList());
+
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

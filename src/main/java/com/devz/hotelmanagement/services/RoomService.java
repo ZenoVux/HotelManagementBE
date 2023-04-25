@@ -20,4 +20,6 @@ public interface RoomService extends ServiceBase<Room> {
 
     List<Room> updateOrSaveAll(List<Room> rooms);
 
+    String getNameTypeByRoomCode(String roomCode);
+
 }

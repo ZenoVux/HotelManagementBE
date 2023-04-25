@@ -149,6 +149,7 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $loca
     $scope.formBook.numRoomsBooking = [];
     $scope.infoRoomBooking = [];
     $scope.roomTypes = [];
+    $scope.numRoomPending = [];
 
     $scope.formBook.roomType = $routeParams.code
 
@@ -181,9 +182,28 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $loca
                 checkoutDate: $filter('date')($scope.formBook.checkoutDate, 'dd-MM-yyyy'),
                 roomType: $scope.formBook.roomType
             }
-        }).then(function (response) {
+        }).then(async function (response) {
             $scope.infoRoomBooking = response.data;
+
+            await $http.get("/api/booking-online/get-number-room/pending", {
+                params: {
+                    checkinDate: $filter('date')($scope.formBook.checkinDate, 'dd-MM-yyyy'),
+                    checkoutDate: $filter('date')($scope.formBook.checkoutDate, 'dd-MM-yyyy'),
+                }
+            }).then(function (resp) {
+                $scope.numRoomPending = resp.data;
+            }).catch(function (error) {
+                console.error('Error fetching data payment method:', error);
+            });
+
             for (var i = 0; i < $scope.infoRoomBooking.length; i++) {
+
+                for (var j = 0; j < $scope.numRoomPending.length; j++) {
+                    if ($scope.infoRoomBooking[i].name == $scope.numRoomPending[j].type) {
+                        $scope.infoRoomBooking[i].quantity = $scope.infoRoomBooking[i].quantity - $scope.numRoomPending[j].numberPending;
+                    }
+                }
+
                 if ($scope.infoRoomBooking[i].promotion != null) {
                     var percent = $scope.infoRoomBooking[i].promotion.percent;
                     var price = $scope.infoRoomBooking[i].price;
@@ -243,7 +263,6 @@ app.controller("bookCtrl", function ($scope, $http, $routeParams, $filter, $loca
             alert("Vui lòng chọn số lượng phòng!");
             return;
         }
-        $scope.countDown();
 
         $scope.formBook.checkinDate = $filter('date')($scope.formBook.checkinDate, 'dd-MM-yyyy');
         $scope.formBook.checkoutDate = $filter('date')($scope.formBook.checkoutDate, 'dd-MM-yyyy');
@@ -390,7 +409,6 @@ app.controller("bookErrorCtrl", function ($scope, $http, $routeParams,$location)
 
     $scope.init = function () {
         $scope.getBooking();
-        $scope.countDown();
     }
 
     $scope.cancelBooking = function(id){
