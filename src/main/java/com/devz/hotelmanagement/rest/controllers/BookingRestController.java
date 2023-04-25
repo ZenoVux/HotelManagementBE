@@ -56,6 +56,9 @@ public class BookingRestController {
     @Autowired
     private PromotionService promotionService;
 
+    @Autowired
+    private PaymentMethodService paymentService;
+
     private CurrentAccount currentAccount;
 
     @GetMapping
@@ -163,10 +166,6 @@ public class BookingRestController {
                 }
             }
 
-            List<Room> rooms = allRooms.stream()
-                    .map(room -> roomService.findById(room.getId()))
-                    .collect(Collectors.toList());
-
             if (bookingReq.getNote() == null) {
                 bookingReq.setNote("");
             }
@@ -182,7 +181,6 @@ public class BookingRestController {
 
             Account account = accountService.findByUsername(currentAccount.getUsername());
             Booking booking = new Booking(account, customer, new Date(), numAdults, numChildren, 0.0, null, bookingReq.getNote(), BookingStatus.CONFIRMED.getCode(), null, null);
-            bookingService.create(booking);
 
             List<BookingDetail> bookingDetails = allRooms.stream()
                     .map(room -> {
@@ -205,6 +203,20 @@ public class BookingRestController {
                         return new BookingDetail(room, bkd.getCheckinDate(), bkd.getCheckoutDate(), booking, price, "", BookingDetailStatus.PENDING.getCode(), new Date());
                     }).collect(Collectors.toList());
 
+            PaymentMethod payment;
+            if (bookingReq.getPaymentCode() == null) {
+                payment = null;
+            } else {
+                payment = paymentService.findByCode(bookingReq.getPaymentCode());
+                double deposit = bookingDetails.stream()
+                        .mapToDouble(BookingDetail::getRoomPrice)
+                        .sum();
+                booking.setDeposit(deposit);
+                booking.setPaymentMethod(payment);
+            }
+
+            bookingService.create(booking);
+
             bookingDetailService.createAll(bookingDetails);
 
             return ResponseEntity.ok().body(booking);
@@ -221,16 +233,10 @@ public class BookingRestController {
         return bookingService.update(booking);
     }
 
-    @PostMapping("/confirm/{code}")
-    public void confirm(@PathVariable("code") String code) {
-        Booking booking = bookingService.findByCode(code);
-        booking.setStatus(BookingStatus.CONFIRMED.getCode());
-        bookingService.update(booking);
-    }
-
     @PutMapping("/cancel")
-    public Booking cancelBooking(@RequestBody Booking booking) {
+    public Booking cancelBooking(@RequestBody CancelBookingRequest booking) {
         Booking cancelBooking = bookingService.findByCode(booking.getCode());
+
         cancelBooking.setNote(booking.getNote() + " - (Người huỷ: " + currentAccount.getUsername() + ")");
         cancelBooking.setStatus(BookingStatus.CANCELLED.getCode());
         List<BookingDetail> bookingDetails = bookingDetailService.findByBookingId(cancelBooking.getId());
@@ -260,7 +266,7 @@ public class BookingRestController {
     private <T> T getApiResponse(MultipartFile image, Class<T> responseType) {
         try {
             String url = "https://api.fpt.ai/vision/idr/vnm";
-            String apiKey = "mu63Zu3Z31b1elIo6ku5cscfD3FVcxz4";
+            String apiKey = "BPBdFv4sP861DYwGj3DPulC26DUvPOC1";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.set("api-key", apiKey);

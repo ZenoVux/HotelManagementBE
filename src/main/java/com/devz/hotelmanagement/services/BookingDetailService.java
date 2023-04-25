@@ -18,6 +18,8 @@ public interface BookingDetailService extends ServiceBase<BookingDetail> {
 
     List<BookingDetail> createAll(List<BookingDetail> bookingDetails);
 
+    List<BookingDetail> updateAll(List<BookingDetail> bookingDetails);
+
     List<BookingDetail>  findByBookingId(Integer id);
 
     List<BookingDetail> findByRoomCodeAndCheckinAndCheckout(String code, Date checkin, Date checkout);
