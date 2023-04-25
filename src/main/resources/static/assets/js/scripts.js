@@ -342,6 +342,7 @@ app.controller("bookDetailCtrl", function ($scope, $http, $routeParams,$location
             $scope.booking = resp.data;
             $scope.getBookingDetail(resp.data.id);
             $scope.getQR(resp.data);
+            alert("Thông tin booking đã được gửi đến email của bản. Vui lòng check email!");
         }).catch(error => {
             console.log("Error", error);
         });
