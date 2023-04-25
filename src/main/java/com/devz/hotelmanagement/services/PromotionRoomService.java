@@ -12,4 +12,6 @@ public interface PromotionRoomService extends ServiceBase<RoomTypePromotion>{
 
     List<RoomTypePromotion> findAllCurrForRoomType();
 
+    RoomTypePromotion findCurrByRoomTypeCode(String code);
+
 }

@@ -31,6 +31,15 @@ public class PromotionRoomServiceImpl implements PromotionRoomService {
     }
 
     @Override
+    public RoomTypePromotion findCurrByRoomTypeCode(String code) {
+        Optional<RoomTypePromotion> optional = roomTypePromotionRepo.findCurrByRoomTypeCode(code);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
+
+    @Override
     public List<RoomTypePromotion> findAll() {
         return roomTypePromotionRepo.findAll();
     }
